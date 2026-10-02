@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="../">
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Admin · Portfolio</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./config.js"></script>
+<script src="./content.js"></script>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+body{margin:0;background:#0A0F1E;color:#E9EDF7;font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#22D3EE;text-decoration:none}a:hover{color:#7AA2FF}
+::selection{background:#22D3EE;color:#0A0F1E}
+input,textarea,select,button{font-family:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</helmet>
+
+<sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 30% 20%,rgba(34,211,238,.12),transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(122,162,255,.10),transparent 50%)">
+    <div style="width:min(400px,100%);padding:36px;border-radius:24px;background:#111830;border:1px solid rgba(233,237,247,.1);box-shadow:0 40px 80px -30px rgba(0,0,0,.8);animation:fadeUp .5s both">
+      <div style="display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;font:600 15px 'IBM Plex Mono',monospace">SA</div>
+      <h1 style="margin:22px 0 0;font-weight:600;font-size:28px;letter-spacing:-.03em">Portfolio admin</h1>
+      <p style="margin:8px 0 0;font-size:15px;color:#AEB6CC">Sign in to manage your site content.</p>
+      <form onSubmit="{{ login }}" style="display:flex;flex-direction:column;gap:12px;margin-top:26px">
+        <sc-if value="{{ isRemote }}" hint-placeholder-val="{{ false }}">
+          <input type="email" autoComplete="username" placeholder="Email" value="{{ email }}" onChange="{{ onEmail }}" style="padding:14px 16px;border-radius:12px;border:1px solid rgba(233,237,247,.14);background:#0A0F1E;color:#E9EDF7;font-size:15px;outline:none" style-focus="border-color:#22D3EE">
+        </sc-if>
+        <input type="password" autoComplete="current-password" placeholder="Password" value="{{ pw }}" onChange="{{ onPw }}" disabled="{{ isLocked }}" style="padding:14px 16px;border-radius:12px;border:1px solid rgba(233,237,247,.14);background:#0A0F1E;color:#E9EDF7;font-size:15px;outline:none" style-focus="border-color:#22D3EE">
+        <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#F59E9E">{{ err }}</div></sc-if>
+        <button type="submit" disabled="{{ loginBusy }}" style="padding:14px;border:0;border-radius:12px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:15px;cursor:pointer;opacity:{{ loginOpacity }}">{{ loginLabel }}</button>
+      </form>
+      <p style="margin:18px 0 0;font:400 12px 'IBM Plex Mono',monospace;color:#7F89A3;line-height:1.6">{{ loginHint }}</p>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ unlocked }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh">
+  <aside style="position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px;padding:22px 16px;border-right:1px solid rgba(233,237,247,.08);background:#0C1224;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 8px 20px">
+      <div style="display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;font:600 12px 'IBM Plex Mono',monospace">SA</div>
+      <div><div style="font-weight:600;font-size:16px">Admin</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">Portfolio CMS</div></div>
+    </div>
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+      <button onClick="{{ n.go }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:0;border-radius:10px;cursor:pointer;text-align:left;font-size:15px;font-weight:500;background:{{ n.bg }};color:{{ n.fg }};transition:background .2s,color .2s" style-hover="background:rgba(233,237,247,.06)">
+        <span>{{ n.label }}</span>
+        <sc-if value="{{ n.hasCount }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 8px;border-radius:999px;background:rgba(233,237,247,.08);font:400 11px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ n.count }}</span></sc-if>
+      </button>
+    </sc-for>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:16px;border-top:1px solid rgba(233,237,247,.08)">
+      <a href="./" target="_blank" style="display:flex;justify-content:space-between;padding:11px 12px;border-radius:10px;font-size:14px;color:#AEB6CC" style-hover="background:rgba(233,237,247,.06);color:#E9EDF7">View site <span>↗</span></a>
+      <button onClick="{{ logout }}" style="padding:11px 12px;border:0;border-radius:10px;background:transparent;color:#AEB6CC;font-size:14px;text-align:left;cursor:pointer" style-hover="background:rgba(233,237,247,.06);color:#E9EDF7">Sign out</button>
+    </div>
+  </aside>
+
+  <main style="min-width:0">
+    <header style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(20px,3vw,40px);background:rgba(10,15,30,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(233,237,247,.08)">
+      <div style="min-width:0">
+        <h1 style="margin:0;font-weight:600;font-size:24px;letter-spacing:-.02em">{{ groupLabel }}</h1>
+        <p style="margin:4px 0 0;font-size:14px;color:#7F89A3">{{ groupDesc }}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex:none">
+        <span style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid rgba(233,237,247,.1);font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusColor }}"></span>{{ statusText }}</span>
+        <a href="./" target="_blank" style="padding:10px 18px;border-radius:999px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:14px" style-hover="color:#0A0F1E;background:#67E3F4">Preview ↗</a>
+      </div>
+    </header>
+
+    <div style="display:flex;flex-direction:column;gap:20px;padding:clamp(20px,3vw,40px);max-width:1100px">
+      <sc-if value="{{ notSettings }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="2">
+          <section style="padding:22px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08);animation:fadeUp .35s both">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <h2 style="margin:0;font-weight:600;font-size:19px;letter-spacing:-.01em">{{ b.title }}</h2>
+                <p style="margin:4px 0 0;font-size:14px;color:#7F89A3">{{ b.desc }}</p>
+              </div>
+              <sc-if value="{{ b.isList }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px">
+                  <sc-if value="{{ b.canCollapse }}" hint-placeholder-val="{{ false }}"><button onClick="{{ b.collapseAll }}" style="padding:9px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#AEB6CC;font-size:13px;cursor:pointer">Collapse all</button></sc-if>
+                  <sc-if value="{{ b.hasBulk }}" hint-placeholder-val="{{ false }}"><label style="padding:9px 16px;border-radius:10px;border:1px solid rgba(34,211,238,.45);color:#22D3EE;font-weight:600;font-size:13px;cursor:pointer">Upload photos<input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ b.onBulk }}" style="display:none"></label></sc-if>
+                  <button onClick="{{ b.add }}" style="padding:9px 16px;border-radius:10px;border:0;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">+ Add {{ b.noun }}</button>
+                </div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ b.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:16px;padding:28px;border-radius:12px;border:1px dashed rgba(233,237,247,.14);text-align:center;font-size:14px;color:#7F89A3">Nothing here yet.</div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+              <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="1">
+                <div style="border-radius:14px;border:1px solid {{ it.border }};background:#0E1428;overflow:hidden;transition:border-color .2s">
+                  <sc-if value="{{ it.showHeader }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ it.toggle }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer" style-hover="background:rgba(233,237,247,.03)">
+                      <span style="width:26px;font:400 11px 'IBM Plex Mono',monospace;color:#626C87;flex:none">{{ it.num }}</span>
+                      <sc-if value="{{ it.hasThumb }}" hint-placeholder-val="{{ false }}"><img src="{{ it.thumb }}" alt="" style="width:44px;height:30px;border-radius:6px;object-fit:cover;flex:none;background:#111830"></sc-if>
+                      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:500">{{ it.title }}</span>
+                      <sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="padding:3px 9px;border-radius:999px;background:rgba(34,211,238,.1);color:#22D3EE;font:400 11px 'IBM Plex Mono',monospace;white-space:nowrap">{{ it.sub }}</span></sc-if>
+                      <div style="display:flex;gap:4px;flex:none">
+                        <button onClick="{{ it.up }}" title="Move up" style="width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#AEB6CC;cursor:pointer;font-size:14px" style-hover="background:rgba(233,237,247,.08)">↑</button>
+                        <button onClick="{{ it.down }}" title="Move down" style="width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#AEB6CC;cursor:pointer;font-size:14px" style-hover="background:rgba(233,237,247,.08)">↓</button>
+                        <button onClick="{{ it.dup }}" title="Duplicate" style="width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#AEB6CC;cursor:pointer;font-size:14px" style-hover="background:rgba(233,237,247,.08)">⧉</button>
+                        <button onClick="{{ it.del }}" title="Delete" style="width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#F59E9E;cursor:pointer;font-size:14px" style-hover="background:rgba(245,158,158,.12)">✕</button>
+                        <span style="display:grid;place-items:center;width:30px;height:30px;color:#7F89A3;transform:rotate({{ it.rot }});transition:transform .25s">⌄</span>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ it.open }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;padding:16px;border-top:1px solid {{ it.innerBorder }}">
+                      <sc-for list="{{ it.fields }}" as="f" hint-placeholder-count="3">
+                        <div style="grid-column:{{ f.span }};display:flex;flex-direction:column;gap:7px;min-width:0">
+                          <label style="font:500 12px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ f.label }}</label>
+                          <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                            <input value="{{ f.value }}" onChange="{{ f.onInput }}" placeholder="{{ f.placeholder }}" list="{{ f.list }}" style="padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none;min-width:0" style-focus="border-color:#22D3EE">
+                          </sc-if>
+                          <sc-if value="{{ f.isNum }}" hint-placeholder-val="{{ false }}">
+                            <input type="number" value="{{ f.value }}" onChange="{{ f.onInput }}" style="padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none" style-focus="border-color:#22D3EE">
+                          </sc-if>
+                          <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                            <textarea rows="{{ f.rows }}" value="{{ f.value }}" onChange="{{ f.onInput }}" placeholder="{{ f.placeholder }}" style="padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;line-height:1.5;outline:none;resize:vertical" style-focus="border-color:#22D3EE"></textarea>
+                          </sc-if>
+                          <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                            <select value="{{ f.value }}" onChange="{{ f.onInput }}" style="padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none">
+                              <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="2"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                            </select>
+                          </sc-if>
+                          <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+                              <div style="display:grid;place-items:center;width:120px;height:80px;border-radius:10px;border:1px dashed rgba(233,237,247,.18);background:repeating-conic-gradient(#111830 0 25%,#0E1428 0 50%) 0 0/16px 16px;overflow:hidden;flex:none">
+                                <sc-if value="{{ f.hasValue }}" hint-placeholder-val="{{ false }}"><img src="{{ f.value }}" alt="" style="width:100%;height:100%;object-fit:contain"></sc-if>
+                                <sc-if value="{{ f.noValue }}" hint-placeholder-val="{{ true }}"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#626C87">No image</span></sc-if>
+                              </div>
+                              <div style="display:flex;flex-direction:column;gap:8px">
+                                <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(34,211,238,.12);color:#22D3EE;font-size:13px;font-weight:600;cursor:pointer">Upload image<input type="file" accept="image/*" onChange="{{ f.onFile }}" style="display:none"></label>
+                                <sc-if value="{{ f.hasValue }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.onClear }}" style="padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#F59E9E;font-size:13px;cursor:pointer;text-align:left">Remove</button></sc-if>
+                              </div>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ f.isGallery }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch">
+                              <sc-for list="{{ f.gallery }}" as="gi" hint-placeholder-count="2">
+                                <div style="display:flex;flex-direction:column;gap:6px;width:132px">
+                                  <div style="position:relative;height:84px;border-radius:10px;overflow:hidden;border:1px solid {{ gi.border }};background:repeating-conic-gradient(#111830 0 25%,#0E1428 0 50%) 0 0/16px 16px">
+                                    <img src="{{ gi.src }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+                                    <span style="position:absolute;left:6px;top:6px;padding:2px 7px;border-radius:999px;background:rgba(10,15,30,.85);font:500 10px 'IBM Plex Mono',monospace;color:{{ gi.numColor }}">{{ gi.label }}</span>
+                                  </div>
+                                  <div style="display:flex;gap:4px">
+                                    <button onClick="{{ gi.left }}" title="Move left" style="flex:1;height:28px;border:0;border-radius:7px;background:rgba(233,237,247,.06);color:#AEB6CC;cursor:pointer">←</button>
+                                    <button onClick="{{ gi.right }}" title="Move right" style="flex:1;height:28px;border:0;border-radius:7px;background:rgba(233,237,247,.06);color:#AEB6CC;cursor:pointer">→</button>
+                                    <button onClick="{{ gi.remove }}" title="Remove" style="flex:1;height:28px;border:0;border-radius:7px;background:rgba(245,158,158,.1);color:#F59E9E;cursor:pointer">✕</button>
+                                  </div>
+                                </div>
+                              </sc-for>
+                              <label style="display:grid;place-items:center;gap:4px;width:132px;height:118px;border-radius:10px;border:1px dashed rgba(34,211,238,.45);background:rgba(34,211,238,.06);color:#22D3EE;font-size:13px;font-weight:600;cursor:pointer;text-align:center">+ Add images<input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ f.onFiles }}" style="display:none"></label>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#626C87">{{ f.hint }}</span></sc-if>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(34,211,238,.3)">
+          <sc-if value="{{ isRemote }}" hint-placeholder-val="{{ false }}">
+            <h2 style="margin:0;font-weight:600;font-size:19px">Connected to Supabase</h2>
+            <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#AEB6CC;max-width:720px">Every change is saved to your database and is live for all visitors right away. Signed in as {{ sessEmail }}.</p>
+          </sc-if>
+          <sc-if value="{{ isLocal }}" hint-placeholder-val="{{ true }}">
+          <h2 style="margin:0;font-weight:600;font-size:19px">Publish to your live site</h2>
+          <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#AEB6CC;max-width:720px">Edits save to this browser and show instantly on the site when you open it here. To make them live for every visitor, download the content file and replace <code style="font-family:'IBM Plex Mono',monospace;color:#22D3EE">content.js</code> on your hosting.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <button onClick="{{ downloadJs }}" style="padding:12px 20px;border:0;border-radius:12px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:14px;cursor:pointer">Download content.js</button>
+          </div>
+          <p style="margin:16px 0 0;font-size:13px;color:#7F89A3">Want edits to go live instantly? Connect Supabase. Steps are in SETUP.md.</p>
+          </sc-if>
+        </section>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px">
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h2 style="margin:0;font-weight:600;font-size:19px">Backup</h2>
+            <p style="margin:8px 0 0;font-size:14px;color:#7F89A3">Export everything as JSON or restore from a backup.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+              <button onClick="{{ exportJson }}" style="padding:11px 18px;border-radius:12px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:14px;cursor:pointer">Export JSON</button>
+              <label style="padding:11px 18px;border-radius:12px;border:1px solid rgba(233,237,247,.14);color:#E9EDF7;font-size:14px;cursor:pointer">Import JSON<input type="file" accept="application/json,.json" onChange="{{ importJson }}" style="display:none"></label>
+            </div>
+          </section>
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h2 style="margin:0;font-weight:600;font-size:19px">Admin password</h2>
+            <sc-if value="{{ isRemote }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;font-size:14px;color:#7F89A3">Managed by Supabase. Change it in Supabase → Authentication → Users.</p></sc-if>
+            <sc-if value="{{ isLocal }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:8px 0 0;font-size:14px;color:#7F89A3">Stored hashed in this browser.</p>
+            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+              <input type="password" placeholder="New password" value="{{ newPw }}" onChange="{{ onNewPw }}" style="flex:1;min-width:160px;padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none" style-focus="border-color:#22D3EE">
+              <button onClick="{{ savePw }}" style="padding:11px 18px;border:0;border-radius:10px;background:#E9EDF7;color:#0A0F1E;font-weight:600;font-size:14px;cursor:pointer">Update</button>
+            </div>
+            </sc-if>
+          </section>
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h2 style="margin:0;font-weight:600;font-size:19px">Storage</h2>
+            <p style="margin:8px 0 0;font-size:14px;color:#7F89A3">{{ storageText }}</p>
+            <div style="height:8px;margin-top:16px;border-radius:4px;background:rgba(233,237,247,.08);overflow:hidden"><div style="height:100%;width:{{ storagePct }};background:linear-gradient(90deg,#22D3EE,#7AA2FF);border-radius:4px"></div></div>
+            <p style="margin:12px 0 0;font-size:12px;color:#626C87">Uploaded images are compressed automatically. Browser limit is about 5 MB.</p>
+          </section>
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(245,158,158,.25)">
+            <h2 style="margin:0;font-weight:600;font-size:19px">Reset</h2>
+            <p style="margin:8px 0 0;font-size:14px;color:#7F89A3">Discard all edits in this browser and go back to the published content.</p>
+            <button onClick="{{ resetAll }}" style="margin-top:18px;padding:11px 18px;border-radius:12px;border:1px solid rgba(245,158,158,.4);background:transparent;color:#F59E9E;font-size:14px;cursor:pointer">Reset all content</button>
+          </section>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+</div>
+<datalist id="cat-list"><sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co }}"></option></sc-for></datalist>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100;padding:12px 18px;border-radius:12px;background:#E9EDF7;color:#0A0F1E;font-size:14px;font-weight:500;box-shadow:0 20px 40px -12px rgba(0,0,0,.6);animation:fadeUp .3s both">{{ toast }}</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}];
+const GROUPS = [
+ {key:'intro', label:'Intro', desc:'First page: headline quotes, intro text, photo, counters and the scrolling strip.', blocks:[
+  {path:'hero', kind:'object', title:'Hero', desc:'Main intro content and buttons.', fields:[
+   {k:'brand',label:'Top-left brand text'},{k:'navCta',label:'Top bar button'},
+   {k:'available',label:'Availability badge text',hint:'Shown in the top bar.'},{k:'availableOn',label:'Availability badge',t:'select',options:[{value:'show',label:'Show'},{value:'hide',label:'Hide'}]},
+   {k:'intro',label:'Intro paragraph',t:'area',rows:4,full:true},
+   {k:'photo',label:'Hero photo',t:'image',full:true,hint:'Use a PNG with a transparent background for the cut-out look.'},
+   {k:'cta1',label:'Primary button'},{k:'cta2',label:'Secondary button'},
+   {k:'cvUrl',label:'CV file link',hint:'Optional. If set, the secondary button opens this link.',full:true}]},
+  {path:'quotes', kind:'list', noun:'quote', title:'Rotating quotes', desc:'Shown as the big headline, one after another.', titleKey:'a', subKey:'c', blank:{a:'New quote',b:'',c:'',by:''}, fields:[
+   {k:'a',label:'Line 1'},{k:'b',label:'Line 2'},{k:'c',label:'Highlighted word (italic)'},{k:'by',label:'Credit'}]},
+  {path:'stats', kind:'list', noun:'counter', title:'Counters', desc:'Animated numbers under the intro.', titleKey:'label', blank:{prefix:'',value:0,suffix:'',label:'New counter'}, fields:[
+   {k:'prefix',label:'Prefix'},{k:'value',label:'Number',t:'num'},{k:'suffix',label:'Suffix'},{k:'label',label:'Label'}]},
+  {path:'marquee', kind:'list', noun:'item', title:'Scrolling strip', desc:'Words in the moving band at the bottom of the intro.', titleKey:'text', blank:{text:'New item'}, fields:[{k:'text',label:'Text'}]},
+ ]},
+ {key:'projects', label:'Projects', desc:'Dashboards, Excel tools, web apps (Operation & CI portals) and Android apps.', count:'projects', blocks:[
+  {path:'work', kind:'object', title:'Section heading', fields:HEAD},
+  {path:'projects', kind:'list', noun:'project', title:'Projects', desc:'Categories become the filter buttons on the Work page.', titleKey:'title', subKey:'cat', thumbKey:'image', blank:{title:'New project',cat:'Power BI',summary:'',desc:'',tags:'',image:'',images:[],link:''}, fields:[
+   {k:'title',label:'Title'},{k:'cat',label:'Category',list:'cat-list',hint:'Pick one or type a new category.'},
+   {k:'summary',label:'Card summary',t:'area',rows:2,full:true},
+   {k:'desc',label:'Full description (shown when opened)',t:'area',rows:5,full:true},
+   {k:'tags',label:'Tags',t:'tags',hint:'Comma separated'},{k:'link',label:'Project link',placeholder:'https://…',hint:'Optional. Play Store, live app, etc.'},
+   {k:'images',label:'Screenshots (slides in the popup)',t:'gallery',full:true,hint:'The first image is the card cover. Use ← → to reorder.'}]},
+ ]},
+ {key:'skills', label:'Skills', desc:'Skill cards and certificates.', count:'skills', blocks:[
+  {path:'skillsHead', kind:'object', title:'Section heading', fields:HEAD},
+  {path:'skills', kind:'list', noun:'skill', title:'Skill cards', titleKey:'name', subKey:'area', blank:{name:'New skill',area:'',desc:'',tags:''}, fields:[
+   {k:'name',label:'Skill'},{k:'area',label:'Area'},{k:'desc',label:'Description',t:'area',rows:3,full:true},{k:'tags',label:'Tags',t:'tags',hint:'Comma separated',full:true}]},
+  {path:'badges', kind:'list', noun:'badge', title:'Certificates & badges', titleKey:'title', subKey:'value', blank:{value:'',title:'New badge',text:'',tone:'accent'}, fields:[
+   {k:'value',label:'Big value',hint:'e.g. 5%, LSS'},{k:'tone',label:'Colour',t:'select',options:[{value:'accent',label:'Cyan'},{value:'blue',label:'Blue'}]},
+   {k:'title',label:'Title (bold)',full:true},{k:'text',label:'Text',t:'area',rows:2,full:true}]},
+ ]},
+ {key:'certifications', label:'Certifications', desc:'Certificates shown on the Certifications page.', count:'certifications', blocks:[
+  {path:'certsHead', kind:'object', title:'Section heading', fields:HEAD},
+  {path:'certifications', kind:'list', noun:'certificate', title:'Certificates', desc:'Upload the certificate image so visitors can open it full screen.', titleKey:'title', subKey:'issuer', thumbKey:'image', blank:{title:'New certificate',issuer:'',date:'',category:'',credentialId:'',url:'',image:'',note:''}, fields:[
+   {k:'title',label:'Certificate name'},{k:'issuer',label:'Issued by',placeholder:'e.g. LinkedIn, Coursera'},
+   {k:'date',label:'Date',placeholder:'e.g. Mar 2024'},{k:'category',label:'Category',placeholder:'e.g. Power BI'},
+   {k:'credentialId',label:'Credential ID'},{k:'url',label:'Verify link',placeholder:'https://…'},
+   {k:'note',label:'Short note',t:'area',rows:2,full:true},
+   {k:'image',label:'Certificate image',t:'image',full:true}]},
+ ]},
+ {key:'experience', label:'Experience', desc:'Jobs, recommendations and education.', count:'jobs', blocks:[
+  {path:'expHead', kind:'object', title:'Section heading', fields:HEAD},
+  {path:'jobs', kind:'list', noun:'job', title:'Jobs', titleKey:'role', subKey:'dates', thumbKey:'logo', blank:{role:'New role',company:'',dates:'',points:'',logo:''}, fields:[
+   {k:'role',label:'Role'},{k:'company',label:'Company'},{k:'dates',label:'Dates'},
+   {k:'points',label:'Responsibilities',t:'lines',rows:6,full:true,hint:'One per line'},
+   {k:'logo',label:'Company logo',t:'image',full:true,hint:'Square PNG or SVG works best. Shown on a white tile.'}]},
+  {path:'recsHead', kind:'object', title:'Recommendations heading', desc:'Shown at the bottom of the Experience page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
+  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:''}, fields:[
+   {k:'name',label:'Name'},{k:'role',label:'Role · Company'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…'},
+   {k:'text',label:'Recommendation',t:'area',rows:6,full:true},{k:'photo',label:'Photo',t:'image',full:true}]},
+  {path:'education', kind:'list', noun:'entry', title:'Education', titleKey:'degree', subKey:'period', blank:{period:'',degree:'New degree',school:''}, fields:[
+   {k:'degree',label:'Degree'},{k:'period',label:'Years'},{k:'school',label:'Institution',full:true}]},
+ ]},
+ {key:'hobbies', label:'Hobbies', desc:'Your photography gallery.', count:'photos', blocks:[
+  {path:'hobbiesHead', kind:'object', title:'Section heading', fields:[...HEAD,{k:'intro',label:'Intro line',t:'area',rows:2,full:true}]},
+  {path:'photos', kind:'list', noun:'photo', title:'Photos', desc:'Use "Upload photos" to add many at once, then add titles. Categories become filter buttons.', titleKey:'title', subKey:'category', thumbKey:'image', bulk:'image', blank:{title:'',place:'',date:'',category:'',image:''}, fields:[
+   {k:'title',label:'Title'},{k:'category',label:'Category',placeholder:'e.g. Nature, Street, Travel'},
+   {k:'place',label:'Place'},{k:'date',label:'Date'},
+   {k:'image',label:'Photo',t:'image',full:true}]},
+ ]},
+ {key:'contact', label:'Contact', desc:'Contact page, links and footer.', count:'links', blocks:[
+  {path:'contact', kind:'object', title:'Contact page', fields:[
+   {k:'label',label:'Small label'},{k:'email',label:'Email (headline link)'},
+   {k:'head1',label:'Headline line 1'},{k:'head2',label:'Headline line 2'},
+   {k:'footer',label:'Footer text'},{k:'location',label:'Location'}]},
+  {path:'links', kind:'list', noun:'link', title:'Contact links', titleKey:'label', subKey:'value', blank:{label:'New link',value:'',href:''}, fields:[
+   {k:'label',label:'Label'},{k:'value',label:'Shown text'},{k:'href',label:'Link',placeholder:'https://… / mailto: / tel:',full:true}]},
+ ]},
+ {key:'settings', label:'Settings', desc:'Publish, analytics, backup and password.', blocks:[
+  {path:'site', kind:'object', title:'Google Analytics', desc:'Private visitor stats. Create a property at analytics.google.com and paste the Measurement ID.', fields:[{k:'gaId',label:'Measurement ID',placeholder:'G-XXXXXXXXXX',hint:'Leave empty to turn analytics off.'}]}]},
+];
+const PASS_KEY='shuvo-admin-pass-hash', OLD_PASS_KEY='shuvo-admin-pass', AUTH_KEY='shuvo-admin-auth', LOCK_KEY='shuvo-admin-lock';
+const MAX_TRIES=5, LOCK_MS=60000;
+async function sha(t){ const b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode('shuvo-portfolio:'+t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+function getLock(){ try{ return JSON.parse(localStorage.getItem(LOCK_KEY)||'{"fails":0,"until":0}'); }catch(e){ return {fails:0,until:0}; } }
+function setLock(l){ try{ localStorage.setItem(LOCK_KEY, JSON.stringify(l)); }catch(e){} }
+function dataUrlToBlob(d){ const [h,b]=d.split(','); const m=h.match(/:(.*?);/)[1]; const bin=atob(b); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new Blob([u],{type:m}); }
+
+function compress(file, cb){
+  const r=new FileReader();
+  r.onload=()=>{ const img=new Image(); img.onload=()=>{
+    const png=file.type==='image/png'||file.type==='image/webp'; const max=png?1200:1600;
+    const k=Math.min(1,max/Math.max(img.width,img.height)); const c=document.createElement('canvas');
+    c.width=Math.round(img.width*k); c.height=Math.round(img.height*k); c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    cb(png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82)); }; img.src=r.result; };
+  r.readAsDataURL(file);
+}
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
+
+class Component extends DCLogic {
+  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'intro', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'' };
+  componentDidMount(){
+    const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
+      if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
+      else this.setState({c:PC.load(), status: PC.hasDraft()?'saved':'published'}); };
+    this.lockTick=setInterval(()=>{ if(getLock().until>Date.now()-1500) this.setState({now:Date.now()}); },1000);
+    this.w=setInterval(init,40); init();
+    this.tick=setInterval(()=>this.forceUpdate(),30000);
+  }
+  componentWillUnmount(){ clearInterval(this.lockTick); clearInterval(this.w); clearInterval(this.tick); clearTimeout(this.st); clearTimeout(this.tt); }
+  flash(msg){ clearTimeout(this.tt); this.setState({toast:msg}); this.tt=setTimeout(()=>this.setState({toast:''}),2600); }
+  commit(fn){ this.setState(s=>{ const c=JSON.parse(JSON.stringify(s.c)); fn(c); return {c,status:'saving'}; }, ()=>{ clearTimeout(this.st); this.st=setTimeout(()=>this.persist(),450); }); }
+  persist(){
+    const PC=window.PortfolioContent, remote=PC.remote;
+    let p; try{ p=PC.save(this.state.c); }catch(e){ p=Promise.reject(e); }
+    Promise.resolve(p).then(()=>this.setState({status:remote?'live':'saved',savedAt:Date.now()})).catch(e=>{
+      this.setState({status:'error'});
+      if(remote && /Signed out|JWT|401|refresh/i.test(String(e&&e.message))){ PC.signOut(); this.setState({authed:false}); this.flash('Session expired. Sign in again; your last change was not saved.'); }
+      else this.flash(remote ? 'Could not save to Supabase: '+String(e&&e.message||e).slice(0,120) : 'Could not save: browser storage is full. Remove or shrink some images.');
+    });
+  }
+  toUrl(dataUrl){
+    const PC=window.PortfolioContent;
+    if(!PC.remote) return Promise.resolve(dataUrl);
+    const blob=dataUrlToBlob(dataUrl);
+    return PC.uploadImage(blob, blob.type==='image/png'?'png':'jpg');
+  }
+  setGallery(path, idx, fn){ this.commit(c=>{ const it=c[path][idx]; const cur=(Array.isArray(it.images)&&it.images.length)?it.images.slice():(it.image?[it.image]:[]); const next=fn(cur); it.images=next; it.image=next[0]||''; }); }
+  uploadTo(set, dataUrl){
+    const PC=window.PortfolioContent;
+    if(!PC.remote){ set(dataUrl); this.flash('Image uploaded'); return; }
+    this.flash('Uploading…');
+    const blob=dataUrlToBlob(dataUrl);
+    PC.uploadImage(blob, blob.type==='image/png'?'png':'jpg').then(url=>{ set(url); this.flash('Image uploaded'); }).catch(e=>this.flash('Upload failed: '+String(e&&e.message||e).slice(0,100)));
+  }
+  async doLogin(e){
+    e.preventDefault(); const PC=window.PortfolioContent; if(!PC) return;
+    const lk=getLock(); if(lk.until>Date.now()) return;
+    this.setState({busy:true, err:''});
+    let ok=false, msg='Wrong password';
+    try{
+      if(PC.remote){ await PC.signIn(this.state.email.trim(), this.state.pw); ok=true; }
+      else {
+        let stored=null; try{ stored=localStorage.getItem(PASS_KEY); const old=localStorage.getItem(OLD_PASS_KEY); if(!stored && old){ stored=await sha(old); localStorage.setItem(PASS_KEY,stored); localStorage.removeItem(OLD_PASS_KEY); } }catch(_){}
+        ok = (await sha(this.state.pw)) === (stored || await sha('admin'));
+      }
+    }catch(err){ msg = PC.remote ? (String(err&&err.message||'Sign-in failed')) : 'Sign-in failed'; }
+    if(ok){ setLock({fails:0,until:0}); if(!PC.remote){ try{sessionStorage.setItem(AUTH_KEY,'1');}catch(_){} } this.setState({authed:true,pw:'',busy:false});
+      if(PC.remote) PC.fetchRemote().then(c=>this.setState({c})); return; }
+    const fails=(lk.fails||0)+1; const locked=fails>=MAX_TRIES;
+    setLock({fails: locked?0:fails, until: locked?Date.now()+LOCK_MS:0});
+    this.setState({busy:false, pw:'', err: locked ? 'Too many attempts.' : msg+' ('+(MAX_TRIES-fails)+' tries left)', now:Date.now()});
+  }
+  setField(path, idx, k, v){ this.commit(c=>{ if(idx==null) c[path]={...(c[path]||{}),[k]:v}; else c[path][idx]={...c[path][idx],[k]:v}; }); }
+  keyOf(path,i){ return path+':'+i; }
+  listOp(path, op, i, blank){
+    const n=(this.state.c[path]||[]).length;
+    this.commit(c=>{ const a=c[path]=c[path]||[];
+      if(op==='add'){ a.push(JSON.parse(JSON.stringify(blank))); }
+      if(op==='up' && i>0){ [a[i-1],a[i]]=[a[i],a[i-1]]; }
+      if(op==='down' && i<a.length-1){ [a[i+1],a[i]]=[a[i],a[i+1]]; }
+      if(op==='dup'){ a.splice(i+1,0,JSON.parse(JSON.stringify(a[i]))); }
+      if(op==='del'){ a.splice(i,1); }
+    });
+    if(op==='add') this.setState(s=>({open:{...s.open,[this.keyOf(path,n)]:true}}));
+    else this.setState({open:{}});
+  }
+  fieldVals(f, val, set, ctx){
+    const t=f.t||'text';
+    const gal = t==='gallery' && ctx ? ((Array.isArray(val)&&val.length)?val:(ctx.item.image?[ctx.item.image]:[])) : [];
+    let v=val; if(t==='tags' && Array.isArray(v)) v=v.join(', '); if(t==='lines' && Array.isArray(v)) v=v.join('\n');
+    return { label:f.label, hint:f.hint||'', hasHint:!!f.hint, placeholder:f.placeholder||'', list:f.list||undefined, rows:f.rows||3,
+      span: f.full?'1 / -1':'auto',
+      isText: t==='text'||t==='tags', isNum: t==='num', isArea: t==='area'||t==='lines', isSelect: t==='select', isImage: t==='image', isGallery: t==='gallery',
+      gallery: gal.map((src,k)=>({src, label: k===0?'Cover':String(k+1), numColor:k===0?'#22D3EE':'#E9EDF7', border:k===0?'rgba(34,211,238,.6)':'rgba(233,237,247,.12)',
+        left:()=>this.setGallery(ctx.path,ctx.idx,a=>{ if(k>0){ [a[k-1],a[k]]=[a[k],a[k-1]]; } return a; }),
+        right:()=>this.setGallery(ctx.path,ctx.idx,a=>{ if(k<a.length-1){ [a[k+1],a[k]]=[a[k],a[k+1]]; } return a; }),
+        remove:()=>this.setGallery(ctx.path,ctx.idx,a=>{ a.splice(k,1); return a; })})),
+      onFiles: e=>{ const files=[...(e.target.files||[])].filter(f=>/^image\//.test(f.type)); e.target.value=''; if(!files.length||!ctx) return; this.flash('Uploading '+files.length+' image'+(files.length>1?'s':'')+'…');
+        files.reduce((pr,file)=>pr.then(()=>new Promise(res=>compress(file,res)).then(d=>this.toUrl(d)).then(url=>this.setGallery(ctx.path,ctx.idx,a=>{ a.push(url); return a; }))), Promise.resolve()).then(()=>this.flash('Images added')).catch(err=>this.flash('Upload failed: '+String(err&&err.message||err).slice(0,100))); },
+      options: f.options||[], value: v ?? '', hasValue: !!v, noValue: !v,
+      onInput: e=>set(t==='num' ? (e.target.value===''?'':Number(e.target.value)) : e.target.value),
+      onFile: e=>{ const file=e.target.files&&e.target.files[0]; e.target.value=''; if(!file) return; if(!/^image\//.test(file.type)){ this.flash('Please choose an image file'); return; } compress(file, d=>this.uploadTo(set,d)); },
+      onClear: ()=>set(''),
+    };
+  }
+  renderVals(){
+    const S=this.state, C=S.c, PC=window.PortfolioContent, isRemote=!!(PC&&PC.remote);
+    const lockLeft=Math.max(0, Math.ceil((getLock().until-Date.now())/1000));
+    const locked=!S.authed;
+    const g=GROUPS.find(x=>x.key===S.group)||GROUPS[0];
+    const nav=GROUPS.map(x=>({label:x.label, go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); }, bg:x.key===S.group?'rgba(34,211,238,.12)':'transparent', fg:x.key===S.group?'#22D3EE':'#AEB6CC', hasCount:!!(x.count&&C), count:C&&x.count?(C[x.count]||[]).length:0}));
+    const blocks = !C ? [] : g.blocks.map(b=>{
+      if(b.kind==='object'){
+        const obj=C[b.path]||{};
+        return {title:b.title, desc:b.desc||'', isList:false, empty:false, canCollapse:false, noun:'', add:()=>{}, collapseAll:()=>{},
+          items:[{showHeader:false, open:true, border:'transparent', innerBorder:'transparent', fields:b.fields.map(f=>this.fieldVals(f,obj[f.k],v=>this.setField(b.path,null,f.k,v)))}]};
+      }
+      const arr=C[b.path]||[];
+      return {title:b.title, desc:b.desc||'', isList:true, noun:b.noun, empty:arr.length===0, canCollapse:arr.length>1 && Object.keys(S.open).some(k=>k.startsWith(b.path+':')&&S.open[k]),
+        add:()=>this.listOp(b.path,'add',0,b.blank), collapseAll:()=>this.setState({open:{}}),
+        hasBulk:!!b.bulk, onBulk:e=>{ const files=[...(e.target.files||[])].filter(f=>/^image\//.test(f.type)); e.target.value=''; if(!files.length) return; this.flash('Uploading '+files.length+' photo'+(files.length>1?'s':'')+'…');
+          files.reduce((pr,file)=>pr.then(()=>new Promise(res=>compress(file,res)).then(d=>this.toUrl(d)).then(url=>this.commit(c=>{ (c[b.path]=c[b.path]||[]).push({...JSON.parse(JSON.stringify(b.blank)), [b.bulk]:url, title:file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ')}); }))), Promise.resolve()).then(()=>this.flash('Photos added')).catch(err=>this.flash('Upload failed: '+String(err&&err.message||err).slice(0,100))); },
+        items: arr.map((item,i)=>{ const key=this.keyOf(b.path,i), open=!!S.open[key]; const stop=fn=>e=>{ e.stopPropagation(); fn(); };
+          const thumb=b.thumbKey?(item[b.thumbKey]||(Array.isArray(item.images)&&item.images[0])||''):'';
+          return { showHeader:true, open, num:String(i+1).padStart(2,'0'), title:(item[b.titleKey]||'').toString().trim()||'(untitled)', sub:item[b.subKey]||'', hasSub:!!(b.subKey&&item[b.subKey]),
+            thumb, hasThumb:!!thumb, rot:open?'180deg':'0deg', border:open?'rgba(34,211,238,.35)':'rgba(233,237,247,.08)', innerBorder:'rgba(233,237,247,.08)',
+            toggle:()=>this.setState(s=>({open:{...s.open,[key]:!open}})),
+            up:stop(()=>this.listOp(b.path,'up',i)), down:stop(()=>this.listOp(b.path,'down',i)), dup:stop(()=>this.listOp(b.path,'dup',i)),
+            del:stop(()=>{ if(window.confirm('Delete "'+((item[b.titleKey]||'this item'))+'"?')) this.listOp(b.path,'del',i); }),
+            fields: open ? b.fields.map(f=>this.fieldVals(f,item[f.k],v=>this.setField(b.path,i,f.k,v),{path:b.path,idx:i,item})) : [] };
+        })};
+    });
+    const ago = S.savedAt ? Math.round((Date.now()-S.savedAt)/60000) : null;
+    const statusText = S.status==='saving' ? 'Saving…' : S.status==='error' ? 'Not saved' : S.status==='live' ? (S.savedAt?'Live · saved':'Live · Supabase') : S.status==='published' ? 'Showing published content' : (ago===null||ago<1 ? 'Saved to this browser' : 'Saved '+ago+' min ago');
+    const statusColor = S.status==='saving' ? '#F2C94C' : S.status==='error' ? '#F59E9E' : '#22D3EE';
+    let used=0; try{ used=(localStorage.getItem(window.PortfolioContent?.KEY||'')||'').length*2; }catch(e){}
+    return {
+      locked, unlocked:!locked, pw:S.pw, err: lockLeft>0 ? 'Too many attempts. Try again in '+lockLeft+'s.' : S.err, hasErr: lockLeft>0 || !!S.err,
+      isRemote, isLocal:!isRemote, email:S.email, onEmail:e=>this.setState({email:e.target.value,err:''}),
+      isLocked: lockLeft>0, loginBusy: S.busy || lockLeft>0, loginOpacity: (S.busy||lockLeft>0)?.5:1, loginLabel: S.busy?'Signing in…':'Sign in',
+      loginHint: isRemote ? 'Sign in with your Supabase admin account.' : 'Local mode. First time? The default password is "admin". Change it in Settings.',
+      sessEmail: (PC&&PC.getSession&&PC.getSession()?.email)||'',
+      onPw:e=>this.setState({pw:e.target.value,err:''}),
+      login:e=>this.doLogin(e),
+      logout:()=>{ try{sessionStorage.removeItem(AUTH_KEY);}catch(_){} if(PC&&PC.remote) PC.signOut(); this.setState({authed:false}); },
+      nav, groupLabel:g.label, groupDesc:g.desc, isSettings:g.key==='settings', notSettings:true, blocks,
+      catOptions: C ? [...new Set((C.projects||[]).map(p=>p.cat).filter(Boolean))] : [],
+      statusText, statusColor,
+      downloadJs:()=>{ download('content.js', window.PortfolioContent.buildFile(C), 'text/javascript'); this.flash('content.js downloaded. Upload it to your hosting to go live.'); },
+      exportJson:()=>download('portfolio-content-'+new Date().toISOString().slice(0,10)+'.json', JSON.stringify(C,null,2), 'application/json'),
+      importJson:e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); this.commit(c=>Object.assign(c,d)); this.flash('Backup imported'); }catch(err){ this.flash('That file is not valid JSON'); } }; r.readAsText(f); },
+      newPw:S.newPw, onNewPw:e=>this.setState({newPw:e.target.value}),
+      savePw:async()=>{ if(S.newPw.length<8){ this.flash('Use at least 8 characters'); return; } try{ localStorage.setItem(PASS_KEY, await sha(S.newPw)); localStorage.removeItem(OLD_PASS_KEY); }catch(_){} this.setState({newPw:''}); this.flash('Password updated'); },
+      resetAll:()=>{ if(!window.confirm('Discard all edits in this browser?')) return; window.PortfolioContent.reset(); this.setState({c:window.PortfolioContent.load(),status:'published',open:{}}); this.flash('Reset to published content'); },
+      storageText: (used/1048576).toFixed(2)+' MB of ~5 MB used',
+      storagePct: Math.min(100, used/5242880*100).toFixed(1)+'%',
+      toast:S.toast, hasToast:!!S.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
