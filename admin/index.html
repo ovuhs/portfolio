@@ -16,6 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <script src="./config.js"></script>
 <script src="./content.js"></script>
+<script src="./tracker.js"></script>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <style>
 body{margin:0;background:#0A0F1E;color:#E9EDF7;font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -146,6 +147,13 @@ input,textarea,select,button{font-family:inherit}
                               </div>
                             </div>
                           </sc-if>
+                          <sc-if value="{{ f.isFile }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                              <input value="{{ f.value }}" onChange="{{ f.onInput }}" placeholder="{{ f.placeholder }}" style="flex:1;min-width:200px;padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none" style-focus="border-color:#22D3EE">
+                              <label style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(34,211,238,.12);color:#22D3EE;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Upload CV (PDF)<input type="file" accept=".pdf,.doc,.docx" onChange="{{ f.onDocFile }}" style="display:none"></label>
+                              <sc-if value="{{ f.hasValue }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.onClear }}" style="padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Clear</button></sc-if>
+                            </div>
+                          </sc-if>
                           <sc-if value="{{ f.isGallery }}" hint-placeholder-val="{{ false }}">
                             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch">
                               <sc-for list="{{ f.gallery }}" as="gi" hint-placeholder-count="2">
@@ -174,6 +182,171 @@ input,textarea,select,button{font-family:inherit}
             </div>
           </section>
         </sc-for>
+      </sc-if>
+
+      <sc-if value="{{ isAnalytics }}" hint-placeholder-val="{{ false }}">
+        <section style="padding:20px 24px;border-radius:18px;background:#111830;border:1px solid rgba(34,211,238,.3);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="position:relative;display:flex;width:10px;height:10px">
+              <span style="position:absolute;inset:0;border-radius:50%;background:#22D3EE;opacity:.75;animation:pulse 2s infinite"></span>
+              <span style="position:relative;width:10px;height:10px;border-radius:50%;background:#22D3EE"></span>
+            </span>
+            <div>
+              <div style="font-weight:600;font-size:16px;letter-spacing:-.01em">Visitor Traffic &amp; Activity Monitor</div>
+              <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC;margin-top:2px">{{ analyticsSourceText }}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onClick="{{ onTestVisit }}" title="Generate a simulated test visit" style="display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:10px;border:1px solid rgba(34,211,238,.45);background:rgba(34,211,238,.08);color:#22D3EE;font-weight:600;font-size:13px;cursor:pointer">+ Test visit</button>
+            <button onClick="{{ onRefreshAnalytics }}" title="Refresh metrics" style="display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">↻ Refresh</button>
+            <button onClick="{{ onExportCsv }}" title="Download CSV report" style="padding:9px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#AEB6CC;font-size:13px;cursor:pointer">Export CSV</button>
+            <button onClick="{{ onClearAnalytics }}" title="Reset analytics" style="padding:9px 14px;border-radius:10px;border:1px solid rgba(245,158,158,.3);background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Reset</button>
+          </div>
+        </section>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(34,211,238,.2);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(34,211,238,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
+            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Total Visits</div>
+            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#22D3EE;margin-top:8px">{{ statTotalVisits }}</div>
+            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">All recorded visitor sessions</div>
+          </div>
+          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(122,162,255,.2);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(122,162,255,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
+            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Unique Visitors</div>
+            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#7AA2FF;margin-top:8px">{{ statUnique }}</div>
+            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Distinct devices &amp; browsers</div>
+          </div>
+          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(155,231,160,.2);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(155,231,160,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
+            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Today's Visits</div>
+            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#9BE7A0;margin-top:8px">{{ statToday }}</div>
+            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Visits recorded today</div>
+          </div>
+          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(242,201,76,.2);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(242,201,76,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
+            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Total Events</div>
+            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#F2C94C;margin-top:8px">{{ statEvents }}</div>
+            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Clicks, views, downloads</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px">
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between">
+              <span>Top Visited Sections</span>
+              <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">By page views</span>
+            </h3>
+            <sc-if value="{{ noPages }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;padding:24px;text-align:center;font-size:13px;color:#626C87;border:1px dashed rgba(233,237,247,.1);border-radius:12px">No section views logged yet.</div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:18px">
+              <sc-for list="{{ pagesList }}" as="pg" hint-placeholder-count="4">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span style="font-weight:500;color:#E9EDF7">{{ pg.name }}</span>
+                    <span style="font:400 12px 'IBM Plex Mono',monospace;color:#22D3EE">{{ pg.count }} <span style="color:#7F89A3">({{ pg.pct }})</span></span>
+                  </div>
+                  <div style="height:6px;border-radius:3px;background:rgba(233,237,247,.08);overflow:hidden">
+                    <div style="height:100%;width:{{ pg.width }};background:linear-gradient(90deg,#22D3EE,#7AA2FF);border-radius:3px"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between">
+              <span>Visitor Environment &amp; Tech</span>
+              <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">Hardware &amp; OS</span>
+            </h3>
+            <div style="display:flex;flex-direction:column;gap:16px;margin-top:18px">
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Devices</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ devicesList }}" as="dev" hint-placeholder-count="3">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
+                      <span style="color:#E9EDF7">{{ dev.name }}</span>
+                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#22D3EE">{{ dev.count }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Browsers</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ browsersList }}" as="br" hint-placeholder-count="3">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
+                      <span style="color:#E9EDF7">{{ br.name }}</span>
+                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#7AA2FF">{{ br.count }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Operating Systems</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ osList }}" as="o" hint-placeholder-count="3">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
+                      <span style="color:#E9EDF7">{{ o.name }}</span>
+                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#9BE7A0">{{ o.count }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Traffic Sources</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ referrersList }}" as="rf" hint-placeholder-count="2">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
+                      <span style="color:#E9EDF7">{{ rf.name }}</span>
+                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#F2C94C">{{ rf.count }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+            <div>
+              <h3 style="margin:0;font-weight:600;font-size:18px;letter-spacing:-.01em">Live Activity Stream</h3>
+              <p style="margin:4px 0 0;font-size:13px;color:#7F89A3">Every page view, project opening, certificate click, and download.</p>
+            </div>
+            <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC">
+              {{ activityCountLabel }}
+            </div>
+          </div>
+
+          <sc-if value="{{ noActivities }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:36px 20px;text-align:center;border-radius:14px;border:1px dashed rgba(233,237,247,.14);color:#7F89A3">
+              <div style="font-size:15px;font-weight:500;color:#E9EDF7">No visitor activities yet</div>
+              <p style="margin:8px 0 0;font-size:13px">When visitors browse your portfolio, their actions will stream in here in real-time.</p>
+              <button onClick="{{ onTestVisit }}" style="margin-top:16px;padding:9px 18px;border-radius:10px;border:0;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Send test visitor</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasActivities }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto;padding-right:4px">
+              <sc-for list="{{ activitiesList }}" as="act" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:#0E1428;border:1px solid rgba(233,237,247,.06);font-size:13px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 300px">
+                    <span style="font:500 11px 'IBM Plex Mono',monospace;padding:3px 8px;border-radius:6px;background:{{ act.badgeBg }};color:{{ act.badgeFg }};border:1px solid {{ act.badgeBorder }};flex:none">{{ act.badgeText }}</span>
+                    <span style="color:#E9EDF7;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ act.detail }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex:none">
+                    <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3;display:inline-flex;align-items:center;gap:4px">
+                      <span style="color:#AEB6CC">{{ act.device }}</span> · <span>{{ act.browser }} ({{ act.os }})</span>
+                    </span>
+                    <span style="font:400 11px 'IBM Plex Mono',monospace;color:#626C87;padding-left:6px;border-left:1px solid rgba(233,237,247,.1)">{{ act.timeAgo }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
       </sc-if>
 
       <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
@@ -237,6 +410,7 @@ input,textarea,select,button{font-family:inherit}
 <script type="text/x-dc" data-dc-script>
 const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}];
 const GROUPS = [
+ {key:'analytics', label:'Analytics', desc:'Real-time visitor counters, device insights, and live activity stream.'},
  {key:'intro', label:'Intro', desc:'First page: headline quotes, intro text, photo, counters and the scrolling strip.', blocks:[
   {path:'hero', kind:'object', title:'Hero', desc:'Main intro content and buttons.', fields:[
    {k:'brand',label:'Top-left brand text'},{k:'navCta',label:'Top bar button'},
@@ -244,7 +418,7 @@ const GROUPS = [
    {k:'intro',label:'Intro paragraph',t:'area',rows:4,full:true},
    {k:'photo',label:'Hero photo',t:'image',full:true,hint:'Use a PNG with a transparent background for the cut-out look.'},
    {k:'cta1',label:'Primary button'},{k:'cta2',label:'Secondary button'},
-   {k:'cvUrl',label:'CV file link',hint:'Optional. If set, the secondary button opens this link.',full:true}]},
+   {k:'cvUrl',label:'CV file / link',t:'file',hint:'Upload a PDF directly to Supabase storage, or paste a link.',full:true}]},
   {path:'quotes', kind:'list', noun:'quote', title:'Rotating quotes', desc:'Shown as the big headline, one after another.', titleKey:'a', subKey:'c', blank:{a:'New quote',b:'',c:'',by:''}, fields:[
    {k:'a',label:'Line 1'},{k:'b',label:'Line 2'},{k:'c',label:'Highlighted word (italic)'},{k:'by',label:'Credit'}]},
   {path:'stats', kind:'list', noun:'counter', title:'Counters', desc:'Animated numbers under the intro.', titleKey:'label', blank:{prefix:'',value:0,suffix:'',label:'New counter'}, fields:[
@@ -326,8 +500,50 @@ function compress(file, cb){
 }
 function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
 
+function badgeFor(type){
+  switch(type){
+    case 'page_view': return {text:'PAGE VIEW', bg:'rgba(34,211,238,.12)', fg:'#22D3EE', border:'rgba(34,211,238,.3)'};
+    case 'project_view': return {text:'PROJECT', bg:'rgba(242,201,76,.12)', fg:'#F2C94C', border:'rgba(242,201,76,.3)'};
+    case 'cv_download': return {text:'CV DOWNLOAD', bg:'rgba(155,231,160,.12)', fg:'#9BE7A0', border:'rgba(155,231,160,.3)'};
+    case 'contact_click': return {text:'CONTACT', bg:'rgba(200,162,255,.12)', fg:'#C8A2FF', border:'rgba(200,162,255,.3)'};
+    case 'cert_view': return {text:'CERTIFICATE', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
+    case 'photo_view': return {text:'PHOTO', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
+    case 'theme_toggle': return {text:'THEME', bg:'rgba(233,237,247,.08)', fg:'#AEB6CC', border:'rgba(233,237,247,.15)'};
+    default: return {text:(type||'EVENT').toUpperCase(), bg:'rgba(233,237,247,.08)', fg:'#AEB6CC', border:'rgba(233,237,247,.15)'};
+  }
+}
+function formatTimeAgo(ts){
+  if(!ts) return '';
+  const s=Math.max(0, Math.floor((Date.now()-ts)/1000));
+  if(s<60) return 'Just now';
+  const m=Math.floor(s/60);
+  if(m<60) return m+'m ago';
+  const h=Math.floor(m/60);
+  if(h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+function exportCsv(acts){
+  const rows=[['Timestamp','Visitor ID','Type','Detail','Page','Device','Browser','OS','Screen','Referrer','Timezone']];
+  (acts||[]).forEach(a=>{
+    rows.push([
+      new Date(a.time).toISOString(),
+      a.vid||'',
+      a.type||'',
+      ('"'+(a.detail||'').replace(/"/g,'""')+'"'),
+      a.page||'',
+      a.device||'',
+      a.browser||'',
+      a.os||'',
+      a.screen||'',
+      a.referrer||'',
+      a.tz||''
+    ]);
+  });
+  download('visitor-activities-'+new Date().toISOString().slice(0,10)+'.csv', rows.map(r=>r.join(',')).join('\n'), 'text/csv');
+}
+
 class Component extends DCLogic {
-  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'intro', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'' };
+  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', analyticsStats:null, analyticsLoading:false };
   componentDidMount(){
     const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
       if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
@@ -335,8 +551,21 @@ class Component extends DCLogic {
     this.lockTick=setInterval(()=>{ if(getLock().until>Date.now()-1500) this.setState({now:Date.now()}); },1000);
     this.w=setInterval(init,40); init();
     this.tick=setInterval(()=>this.forceUpdate(),30000);
+    this.loadAnalytics=(silent)=>{
+      if(!window.PortfolioTracker) return;
+      const PC=window.PortfolioContent;
+      const token=(PC&&PC.remote&&PC.getSession&&PC.getSession())?PC.getSession().token:null;
+      if(!silent) this.setState({analyticsLoading:true});
+      window.PortfolioTracker.getStats(token).then(stats=>{
+        this.setState({analyticsStats:stats, analyticsLoading:false});
+      }).catch(()=>{ if(!silent) this.setState({analyticsLoading:false}); });
+    };
+    this.loadAnalytics();
+    this.analyticsTick=setInterval(()=>{ if(this.state.group==='analytics') this.loadAnalytics(true); },8000);
+    this.onAnalyticsUpdate=()=>this.loadAnalytics(true);
+    window.addEventListener('portfolio-analytics-update', this.onAnalyticsUpdate);
   }
-  componentWillUnmount(){ clearInterval(this.lockTick); clearInterval(this.w); clearInterval(this.tick); clearTimeout(this.st); clearTimeout(this.tt); }
+  componentWillUnmount(){ clearInterval(this.lockTick); clearInterval(this.w); clearInterval(this.tick); clearInterval(this.analyticsTick); clearTimeout(this.st); clearTimeout(this.tt); window.removeEventListener('portfolio-analytics-update', this.onAnalyticsUpdate); }
   flash(msg){ clearTimeout(this.tt); this.setState({toast:msg}); this.tt=setTimeout(()=>this.setState({toast:''}),2600); }
   commit(fn){ this.setState(s=>{ const c=JSON.parse(JSON.stringify(s.c)); fn(c); return {c,status:'saving'}; }, ()=>{ clearTimeout(this.st); this.st=setTimeout(()=>this.persist(),450); }); }
   persist(){
@@ -400,7 +629,30 @@ class Component extends DCLogic {
     let v=val; if(t==='tags' && Array.isArray(v)) v=v.join(', '); if(t==='lines' && Array.isArray(v)) v=v.join('\n');
     return { label:f.label, hint:f.hint||'', hasHint:!!f.hint, placeholder:f.placeholder||'', list:f.list||undefined, rows:f.rows||3,
       span: f.full?'1 / -1':'auto',
-      isText: t==='text'||t==='tags', isNum: t==='num', isArea: t==='area'||t==='lines', isSelect: t==='select', isImage: t==='image', isGallery: t==='gallery',
+      isText: t==='text'||t==='tags', isNum: t==='num', isArea: t==='area'||t==='lines', isSelect: t==='select', isImage: t==='image', isGallery: t==='gallery', isFile: t==='file',
+      onDocFile: e => {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if(!file) return;
+        const PC = window.PortfolioContent;
+        if(!PC || !PC.remote){
+          if(file.size > 2500000){
+            this.flash('Local mode file limit is ~2 MB. Connect Supabase to store large files.');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => { set(reader.result); this.flash('File saved (Local mode)'); };
+          reader.readAsDataURL(file);
+          return;
+        }
+        this.flash('Uploading ' + file.name + ' to Supabase Storage…');
+        PC.uploadFile(file).then(url => {
+          set(url);
+          this.flash('Uploaded to Supabase Storage!');
+        }).catch(err => {
+          this.flash('Upload failed: ' + String(err && err.message || err).slice(0, 100));
+        });
+      },
       gallery: gal.map((src,k)=>({src, label: k===0?'Cover':String(k+1), numColor:k===0?'#22D3EE':'#E9EDF7', border:k===0?'rgba(34,211,238,.6)':'rgba(233,237,247,.12)',
         left:()=>this.setGallery(ctx.path,ctx.idx,a=>{ if(k>0){ [a[k-1],a[k]]=[a[k],a[k-1]]; } return a; }),
         right:()=>this.setGallery(ctx.path,ctx.idx,a=>{ if(k<a.length-1){ [a[k+1],a[k]]=[a[k],a[k+1]]; } return a; }),
@@ -418,8 +670,30 @@ class Component extends DCLogic {
     const lockLeft=Math.max(0, Math.ceil((getLock().until-Date.now())/1000));
     const locked=!S.authed;
     const g=GROUPS.find(x=>x.key===S.group)||GROUPS[0];
-    const nav=GROUPS.map(x=>({label:x.label, go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); }, bg:x.key===S.group?'rgba(34,211,238,.12)':'transparent', fg:x.key===S.group?'#22D3EE':'#AEB6CC', hasCount:!!(x.count&&C), count:C&&x.count?(C[x.count]||[]).length:0}));
-    const blocks = !C ? [] : g.blocks.map(b=>{
+    const isAnalytics = g.key==='analytics';
+    const isSettings = g.key==='settings';
+    const notSettings = !isSettings && !isAnalytics;
+
+    const ast = S.analyticsStats || (window.PortfolioTracker ? window.PortfolioTracker.getStats() : null) || {};
+    const totalVisits = ast.totalVisits || 0;
+    const uniqueVisitors = ast.uniqueVisitors || 0;
+    const todayVisits = ast.todayVisits || 0;
+    const totalEvents = ast.totalEvents || 0;
+
+    const nav=GROUPS.map(x=>{
+      const isAn = x.key==='analytics';
+      const countVal = isAn ? totalVisits : (C&&x.count?(C[x.count]||[]).length:0);
+      return {
+        label:x.label,
+        go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); },
+        bg:x.key===S.group?'rgba(34,211,238,.12)':'transparent',
+        fg:x.key===S.group?'#22D3EE':'#AEB6CC',
+        hasCount: isAn ? countVal>0 : !!(x.count&&C),
+        count: countVal
+      };
+    });
+
+    const blocks = (!C || !g.blocks) ? [] : g.blocks.map(b=>{
       if(b.kind==='object'){
         const obj=C[b.path]||{};
         return {title:b.title, desc:b.desc||'', isList:false, empty:false, canCollapse:false, noun:'', add:()=>{}, collapseAll:()=>{},
@@ -440,6 +714,40 @@ class Component extends DCLogic {
             fields: open ? b.fields.map(f=>this.fieldVals(f,item[f.k],v=>this.setField(b.path,i,f.k,v),{path:b.path,idx:i,item})) : [] };
         })};
     });
+
+    const pagesObj = ast.pages || {};
+    const maxPageViews = Math.max(1, ...Object.values(pagesObj));
+    const totalPageViews = Object.values(pagesObj).reduce((a, b) => a + b, 0) || 1;
+    const pageNames = { intro: 'Intro / Hero', projects: 'Projects / Work', skills: 'Skills', certifications: 'Certifications', experience: 'Experience', hobbies: 'Hobbies', contact: 'Contact' };
+    const pagesList = Object.entries(pagesObj).sort((a, b) => b[1] - a[1]).map(([k, cnt]) => ({
+      name: pageNames[k] || k,
+      count: cnt,
+      pct: Math.round((cnt / totalPageViews) * 100) + '%',
+      width: Math.max(8, Math.round((cnt / maxPageViews) * 100)) + '%'
+    }));
+
+    const devicesList = Object.entries(ast.devices || {}).map(([name, count]) => ({ name, count }));
+    const browsersList = Object.entries(ast.browsers || {}).map(([name, count]) => ({ name, count }));
+    const osList = Object.entries(ast.os || {}).map(([name, count]) => ({ name, count }));
+    const referrersList = Object.entries(ast.referrers || {}).map(([name, count]) => ({ name, count }));
+
+    const acts = ast.activities || [];
+    const activitiesList = acts.map(a => {
+      const b = badgeFor(a.type);
+      return {
+        id: a.id,
+        timeAgo: formatTimeAgo(a.time),
+        detail: a.detail || a.type,
+        badgeText: b.text,
+        badgeBg: b.bg,
+        badgeFg: b.fg,
+        badgeBorder: b.border,
+        device: a.device || 'Desktop',
+        browser: a.browser || 'Other',
+        os: a.os || 'Other'
+      };
+    });
+
     const ago = S.savedAt ? Math.round((Date.now()-S.savedAt)/60000) : null;
     const statusText = S.status==='saving' ? 'Saving…' : S.status==='error' ? 'Not saved' : S.status==='live' ? (S.savedAt?'Live · saved':'Live · Supabase') : S.status==='published' ? 'Showing published content' : (ago===null||ago<1 ? 'Saved to this browser' : 'Saved '+ago+' min ago');
     const statusColor = S.status==='saving' ? '#F2C94C' : S.status==='error' ? '#F59E9E' : '#22D3EE';
@@ -453,9 +761,28 @@ class Component extends DCLogic {
       onPw:e=>this.setState({pw:e.target.value,err:''}),
       login:e=>this.doLogin(e),
       logout:()=>{ try{sessionStorage.removeItem(AUTH_KEY);}catch(_){} if(PC&&PC.remote) PC.signOut(); this.setState({authed:false}); },
-      nav, groupLabel:g.label, groupDesc:g.desc, isSettings:g.key==='settings', notSettings:true, blocks,
+      nav, groupLabel:g.label, groupDesc:g.desc, isSettings, notSettings, isAnalytics, blocks,
       catOptions: C ? [...new Set((C.projects||[]).map(p=>p.cat).filter(Boolean))] : [],
       statusText, statusColor,
+      statTotalVisits: totalVisits.toLocaleString(),
+      statUnique: uniqueVisitors.toLocaleString(),
+      statToday: todayVisits.toLocaleString(),
+      statEvents: totalEvents.toLocaleString(),
+      analyticsSourceText: ast.isRemote ? 'Live Cloud Sync (Supabase)' : 'Browser Local Storage',
+      onTestVisit: () => { window.PortfolioTracker?.recordTestVisit(); this.flash('Test visitor recorded!'); this.loadAnalytics(true); },
+      onRefreshAnalytics: () => { this.loadAnalytics(false); this.flash('Analytics refreshed'); },
+      onExportCsv: () => { exportCsv(acts); },
+      onClearAnalytics: () => { if(window.confirm('Reset all visitor counters and activity history?')){ window.PortfolioTracker?.clearData(); this.loadAnalytics(false); this.flash('Analytics reset'); } },
+      noPages: pagesList.length === 0,
+      pagesList,
+      devicesList: devicesList.length ? devicesList : [{ name: 'Desktop', count: 0 }],
+      browsersList: browsersList.length ? browsersList : [{ name: 'Chrome', count: 0 }],
+      osList: osList.length ? osList : [{ name: 'Windows', count: 0 }],
+      referrersList: referrersList.length ? referrersList : [{ name: 'Direct', count: 0 }],
+      noActivities: activitiesList.length === 0,
+      hasActivities: activitiesList.length > 0,
+      activityCountLabel: activitiesList.length ? (activitiesList.length + ' event' + (activitiesList.length > 1 ? 's' : '') + ' recorded') : 'No events',
+      activitiesList,
       downloadJs:()=>{ download('content.js', window.PortfolioContent.buildFile(C), 'text/javascript'); this.flash('content.js downloaded. Upload it to your hosting to go live.'); },
       exportJson:()=>download('portfolio-content-'+new Date().toISOString().slice(0,10)+'.json', JSON.stringify(C,null,2), 'application/json'),
       importJson:e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); this.commit(c=>Object.assign(c,d)); this.flash('Backup imported'); }catch(err){ this.flash('That file is not valid JSON'); } }; r.readAsText(f); },
