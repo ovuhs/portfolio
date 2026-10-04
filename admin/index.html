@@ -408,7 +408,10 @@ input,textarea,select,button{font-family:inherit}
 </sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
-const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}];
+const HEAD_STYLE = [
+  {k:'headSize',label:'Heading size',t:'select',options:[{value:'m',label:'Medium (default)'},{value:'xs',label:'Extra small'},{value:'s',label:'Small'},{value:'l',label:'Large'},{value:'xl',label:'Extra large'}]},
+  {k:'headShow',label:'Show heading',t:'select',options:[{value:'all',label:'Small label + heading'},{value:'title',label:'Heading only'},{value:'label',label:'Small label only'},{value:'none',label:'Hide both'}]}];
+const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}, ...HEAD_STYLE];
 const GROUPS = [
  {key:'analytics', label:'Analytics', desc:'Real-time visitor counters, device insights, and live activity stream.'},
  {key:'intro', label:'Intro', desc:'First page: headline quotes, intro text, photo, counters and the scrolling strip.', blocks:[
@@ -477,7 +480,8 @@ const GROUPS = [
   {path:'contact', kind:'object', title:'Contact page', fields:[
    {k:'label',label:'Small label'},{k:'email',label:'Email (headline link)'},
    {k:'head1',label:'Headline line 1'},{k:'head2',label:'Headline line 2'},
-   {k:'footer',label:'Footer text'},{k:'location',label:'Location'}]},
+   {k:'footer',label:'Footer text'},{k:'location',label:'Location'},
+   ...HEAD_STYLE.map(f=>({...f, hint:f.k==='headSize'?'Size of the big headline.':'"Heading" here is the big email headline.'}))]},
   {path:'links', kind:'list', noun:'link', title:'Contact links', titleKey:'label', subKey:'value', blank:{label:'New link',value:'',href:''}, fields:[
    {k:'label',label:'Label'},{k:'value',label:'Shown text'},{k:'href',label:'Link',placeholder:'https://… / mailto: / tel:',full:true}]},
  ]},
