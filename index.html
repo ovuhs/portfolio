@@ -107,6 +107,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
 html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 @media (max-width:1100px){[data-hero-glass]{display:none!important}}
+@media (min-width:1100px) and (min-height:560px){[data-intro]{height:calc(100svh - var(--navh,70px));min-height:0!important;overflow:hidden}}
 @media (max-width:760px){
   [data-topnav]{padding:12px 16px!important}
   [data-hero-grid]{gap:20px!important;min-width:0;width:100%}
@@ -202,10 +203,10 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   </div>
 </sc-if>
 
-<main ref="{{ mainRef }}" id="top" style="position:relative;z-index:1;min-height:calc(100vh - 70px)">
+<main ref="{{ mainRef }}" id="top" style="position:relative;z-index:1;min-height:calc(100svh - var(--navh,70px))">
 
 <sc-if value="{{ pg.intro }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;flex-direction:column;min-height:calc(100svh - 70px)">
+<div data-intro="1" style="display:flex;flex-direction:column;min-height:calc(100svh - var(--navh,70px))">
 <!-- HERO -->
 <section style="position:relative;flex:1;display:flex;align-items:center;padding:clamp(20px,4svh,48px) clamp(20px,5vw,64px) clamp(16px,3svh,32px);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(var(--tint),.045) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--tint),.045) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%);pointer-events:none"></div>
@@ -979,6 +980,24 @@ class Component extends DCLogic {
     im.style.webkitMaskImage=m; im.style.maskImage=m;
   }
   layoutHero(){
+    const nav = document.querySelector('[data-topnav]');
+    if(nav) document.documentElement.style.setProperty('--navh', nav.offsetHeight+'px');
+    const ph = document.querySelector('[data-hero-photo]');
+    if(ph){ if(ph.dataset.w0 == null) ph.dataset.w0 = ph.style.width; ph.style.width = ph.dataset.w0; }
+    this.layoutHeroCore();
+    this.fitIntro();
+  }
+  // Desktop intro must fit one screen: step the photo down (it drives the text offset) until nothing spills.
+  fitIntro(){
+    const wrap = document.querySelector('[data-intro]'), ph = document.querySelector('[data-hero-photo]'), col = document.querySelector('[data-hero-col]');
+    if(!wrap || !ph || !col || innerWidth < 1100 || innerHeight < 560) return;
+    const hero = wrap.firstElementChild;
+    const limit = () => hero.getBoundingClientRect().bottom - (parseFloat(getComputedStyle(hero).paddingBottom) || 0);
+    const over = () => { const pr = ph.getBoundingClientRect(); return Math.max(col.getBoundingClientRect().bottom, pr.bottom - pr.height*0.18) - limit(); };
+    let w = ph.getBoundingClientRect().width, n = 0;
+    while(over() > 1 && w > 240 && n++ < 40){ w -= 12; ph.style.width = w+'px'; this.layoutHeroCore(); }
+  }
+  layoutHeroCore(){
     this.fitQuote(); setTimeout(()=>this.fadeImg(),0);
     const col=document.querySelector('[data-hero-col]'), p=document.querySelector('[data-hero-p]'), ph=document.querySelector('[data-hero-photo]'), g=document.querySelector('[data-hero-glass]');
     if(!col||!p||!ph||!g) return;
