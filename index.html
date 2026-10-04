@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0A0F1E">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -103,13 +103,46 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .rec-person[data-active="1"]{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.3)}
 .rec-person[data-active="1"]::before{transform:scaleY(1)}
 @media (prefers-reduced-motion: reduce){.tl-meta,.tl-card{opacity:1!important;transform:none!important}}
+/* Mobile */
+.m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
+html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
+@media (max-width:1100px){[data-hero-glass]{display:none!important}}
+@media (max-width:760px){
+  [data-topnav]{padding:12px 16px!important}
+  [data-hero-grid]{gap:20px!important;min-width:0;width:100%}
+  [data-hero-stats]{grid-auto-flow:row!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px!important}
+  [data-hero-stats]>div>div:last-child{overflow-wrap:anywhere}
+  [data-hero-photo]{justify-self:center!important}
+  [data-hero-photo]{width:min(72vw,300px,calc((100svh - 70px) * .42))!important}
+  [data-hero-col]{padding-top:0!important}
+  [data-hero-p]{margin-top:22px!important;font-size:16px!important}
+  main section h2{font-size:clamp(34px,10.5vw,48px)!important;line-height:1!important}
+  [data-filters]{flex-wrap:nowrap!important;overflow-x:auto;max-width:100%;border-radius:999px}
+  [data-filters] button{flex:none}
+  #work,#skills,#certifications,#hobbies{padding-top:44px!important}
+  #experience{padding-top:40px!important}
+  #contact{padding-top:56px!important}
+  .tl-stat{min-width:0;flex:1 1 0;padding:12px 14px}
+  .rec-stage{min-height:0;border-radius:22px}
+  .rec-rail{border-radius:22px;padding:14px 10px}
+}
+@media (hover:none){.tl-item[data-in] .tl-card:hover{transform:none}.tl-pt:hover{transform:none}}
 </style>
 </helmet>
 
 <div ref="{{ progressRef }}" style="position:fixed;top:0;left:0;height:2px;width:100%;background:#22D3EE;transform-origin:0 50%;transform:scaleX(0);z-index:60"></div>
 <div ref="{{ glowRef }}" style="position:fixed;top:0;left:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.10),rgba(34,211,238,0) 65%);pointer-events:none;z-index:0;transition:opacity .4s"></div>
 
-<nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,48px);background:rgba(var(--base),.78);backdrop-filter:blur(16px);border-bottom:1px solid rgba(var(--tint),.08)">
+<nav data-topnav="1" style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,48px);background:rgba(var(--base),.78);backdrop-filter:blur(16px);border-bottom:1px solid rgba(var(--tint),.08)">
+  <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ goIntro }}" aria-label="Home" style="display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:none;color:var(--fg);cursor:pointer;text-align:left;font-family:inherit">
+      <span style="display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:12px;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;font:700 14px 'IBM Plex Mono',monospace;box-shadow:0 8px 20px -8px rgba(34,211,238,.6)">{{ brandInitials }}</span>
+      <span style="display:flex;flex-direction:column;min-width:0;line-height:1.15">
+        <span style="font-weight:700;font-size:16px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ brandName }}</span>
+        <span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--accent-ink);white-space:nowrap">{{ pageLabel }}</span>
+      </span>
+    </button>
+  </sc-if>
   <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
   <div ref="{{ navRef }}" style="position:relative;flex:0 1 auto;min-width:0;display:flex;gap:2px;padding:5px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1);box-shadow:inset 0 1px 0 rgba(var(--tint),.06);overflow-x:auto;max-width:100%;scrollbar-width:none">
     <span style="position:absolute;top:5px;bottom:5px;left:{{ indLeft }};width:{{ indWidth }};border-radius:999px;background:#22D3EE;box-shadow:0 6px 20px -6px rgba(34,211,238,.7);opacity:{{ indOpacity }};transition:left .5s cubic-bezier(.3,1.3,.5,1), width .5s cubic-bezier(.3,1.3,.5,1), opacity .3s"></span>
@@ -147,12 +180,13 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 </nav>
 
 <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:72px 0 0;z-index:49;display:flex;flex-direction:column;gap:28px;padding:28px 24px 36px;background:var(--bg);overflow:auto;animation:menuIn .35s cubic-bezier(.2,.8,.2,1) both">
+  <div class="no-scrollbar" style="position:fixed;inset:72px 0 0;z-index:49;display:flex;flex-direction:column;gap:24px;padding:16px 20px calc(28px + env(safe-area-inset-bottom));background:var(--bg);overflow:auto;animation:menuIn .35s cubic-bezier(.2,.8,.2,1) both">
     <div style="display:flex;flex-direction:column">
       <sc-for list="{{ sheetItems }}" as="si" hint-placeholder-count="6">
-        <button onClick="{{ si.go }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 4px;border:0;border-bottom:1px solid rgba(var(--tint),.08);background:transparent;color:{{ si.fg }};font:600 32px 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;text-align:left;cursor:pointer">{{ si.label }}<span style="font-size:20px;opacity:.5">→</span></button>
+        <button onClick="{{ si.go }}" style="display:flex;align-items:center;gap:16px;padding:14px 4px;border:0;border-bottom:1px solid rgba(var(--tint),.08);background:transparent;color:{{ si.fg }};font:600 clamp(24px,7vw,32px) 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;text-align:left;cursor:pointer;animation:menuIn .45s {{ si.delay }} cubic-bezier(.2,.8,.2,1) both"><span style="min-width:28px;font:500 12px 'IBM Plex Mono',monospace;letter-spacing:0;color:var(--muted)">{{ si.num }}</span><span style="flex:1">{{ si.label }}</span><span style="font-size:20px;opacity:{{ si.arrowOp }};color:var(--accent-ink)">→</span></button>
       </sc-for>
     </div>
+    <button onClick="{{ goContact }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;border:0;border-radius:999px;background:#22D3EE;color:#0A0F1E;font:600 16px 'Bricolage Grotesque',sans-serif;cursor:pointer">{{ c.hero.navCta }} <span>→</span></button>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
       <span style="display:flex;align-items:center;gap:8px;font:500 13px 'IBM Plex Mono',monospace;color:var(--fg)"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</span>
       <div style="display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1)">
@@ -175,7 +209,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 <!-- HERO -->
 <section style="position:relative;flex:1;display:flex;align-items:center;padding:clamp(20px,4svh,48px) clamp(20px,5vw,64px) clamp(16px,3svh,32px);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(var(--tint),.045) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--tint),.045) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%);pointer-events:none"></div>
-  <div style="position:relative;flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:56px;align-items:center;max-width:1320px;margin:0 auto">
+  <div data-hero-grid="1" style="position:relative;flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:56px;align-items:center;max-width:1320px;margin:0 auto">
     <div data-hero-col="1" style="position:relative;z-index:2;align-self:start">
       <h1 data-hero-q="1" style="position:relative;margin:0;min-height:2.1em;font-weight:700;font-size:clamp(34px,min(4.4vw,7.2svh),72px);line-height:1;letter-spacing:-.04em;text-wrap:balance">
         <span style="display:block;overflow:hidden;padding-bottom:.08em"><span ref="{{ qRef1 }}" style="display:block;animation:rise .9s .2s both">{{ q.a }}</span></span>
@@ -194,7 +228,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
         <a href="#work" onClick="{{ goWork }}" style="display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:15px;transition:transform .25s" style-hover="transform:translateY(-2px);color:#0A0F1E">{{ c.hero.cta1 }} <span>→</span></a>
         <a href="{{ cvHref }}" target="{{ cvTarget }}" rel="noopener noreferrer" onClick="{{ onCv }}" style="display:inline-flex;align-items:center;padding:16px 26px;border-radius:999px;border:1px solid rgba(var(--tint),.2);font-weight:500;font-size:15px;transition:border-color .25s" style-hover="border-color:var(--fg);color:var(--fg)">{{ c.hero.cta2 }}</a>
       </div>
-      <div style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;justify-content:start;gap:clamp(24px,4vw,56px);margin-top:clamp(20px,4svh,40px);animation:rise .9s .65s both">
+      <div data-hero-stats="1" style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;justify-content:start;gap:clamp(24px,4vw,56px);margin-top:clamp(20px,4svh,40px);animation:rise .9s .65s both">
         <sc-for list="{{ stats }}" as="st" hint-placeholder-count="3">
           <div><div style="font-weight:600;font-size:clamp(26px,4svh,36px);letter-spacing:-.03em">{{ st.text }}</div><div style="font:400 12px 'IBM Plex Mono',monospace;color:var(--muted);margin-top:4px">{{ st.label }}</div></div>
         </sc-for>
@@ -232,7 +266,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
       <div style="font:400 13px 'IBM Plex Mono',monospace;color:var(--accent-ink)">{{ c.work.label }}</div>
       <h2 style="margin:14px 0 0;font-weight:600;font-size:clamp(40px,5.6vw,80px);line-height:.95;letter-spacing:-.04em">{{ c.work.title }}<br><span style="font-weight:300;font-style:italic;color:var(--muted)">{{ c.work.italic }}</span></h2>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;padding:5px;border-radius:999px;border:1px solid rgba(var(--tint),.1)">
+    <div data-filters="1" class="no-scrollbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:5px;border-radius:999px;border:1px solid rgba(var(--tint),.1)">
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
         <button onClick="{{ f.onClick }}" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;cursor:pointer;font:500 13px 'IBM Plex Mono',monospace;background:{{ f.bg }};color:{{ f.fg }};transition:all .25s">{{ f.label }}<span style="opacity:.55">{{ f.count }}</span></button>
       </sc-for>
@@ -338,7 +372,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 </sc-if>
 <sc-if value="{{ pg.experience }}" hint-placeholder-val="{{ false }}">
 <!-- EXPERIENCE (SCROLL-DRIVEN ANIMATED TIMELINE) -->
-<section id="experience" style="position:relative;padding:clamp(60px,8vw,120px) clamp(20px,5vw,64px) clamp(72px,9vw,140px);max-width:1320px;margin:0 auto;scroll-margin-top:70px">
+<section id="experience" style="position:relative;overflow-x:clip;padding:clamp(60px,8vw,120px) clamp(20px,5vw,64px) clamp(72px,9vw,140px);max-width:1320px;margin:0 auto;scroll-margin-top:70px">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap">
     <div>
       <div data-reveal="0" style="font:500 13px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ c.expHead.label }}</div>
@@ -600,7 +634,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
       <sc-if value="{{ hasHobbyIntro }}" hint-placeholder-val="{{ false }}"><p data-reveal="100" style="margin:20px 0 0;font-size:18px;line-height:1.55;color:var(--fg3);text-wrap:pretty">{{ c.hobbiesHead.intro }}</p></sc-if>
     </div>
     <sc-if value="{{ hasPhotoCats }}" hint-placeholder-val="{{ false }}">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;padding:5px;border-radius:999px;border:1px solid rgba(var(--tint),.1)">
+      <div data-filters="1" class="no-scrollbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:5px;border-radius:999px;border:1px solid rgba(var(--tint),.1)">
         <sc-for list="{{ photoFilters }}" as="pf" hint-placeholder-count="3">
           <button onClick="{{ pf.onClick }}" style="padding:10px 16px;border:0;border-radius:999px;cursor:pointer;font:500 13px 'IBM Plex Mono',monospace;background:{{ pf.bg }};color:{{ pf.fg }};transition:all .25s">{{ pf.label }}</button>
         </sc-for>
@@ -642,6 +676,17 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
   </div>
 </section>
 </sc-if>
+<sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
+<div data-pager="1" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 20px calc(28px + env(safe-area-inset-bottom));max-width:1320px;margin:0 auto">
+  <sc-if value="{{ pagerPrev.has }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ pagerPrev.go }}" class="m-pager" style="text-align:left"><span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--muted)">← PREVIOUS</span><span style="font-weight:600;font-size:17px;letter-spacing:-.02em">{{ pagerPrev.label }}</span></button>
+  </sc-if>
+  <sc-if value="{{ pagerPrev.none }}" hint-placeholder-val="{{ false }}"><span></span></sc-if>
+  <sc-if value="{{ pagerNext.has }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ pagerNext.go }}" class="m-pager" style="text-align:right;align-items:flex-end;border-color:rgba(34,211,238,.3)"><span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--accent-ink)">NEXT →</span><span style="font-weight:600;font-size:17px;letter-spacing:-.02em">{{ pagerNext.label }}</span></button>
+  </sc-if>
+</div>
+</sc-if>
 </main>
 
 <!-- MODAL -->
@@ -678,7 +723,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
             <span style="padding:5px 10px;border-radius:6px;background:rgba(var(--tint),.06);font:400 11px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ t }}</span>
           </sc-for>
         </div>
-        <p style="flex:1;min-height:0;margin:4px 0 0;overflow:hidden;font-size:15px;line-height:1.65;color:var(--fg2);text-wrap:pretty">{{ op.desc }}</p>
+        <p class="no-scrollbar" style="flex:1;min-height:0;margin:4px 0 0;overflow:auto;font-size:15px;line-height:1.65;color:var(--fg2);text-wrap:pretty">{{ op.desc }}</p>
         <sc-if value="{{ op.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ op.link }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:14px" style-hover="color:#0A0F1E">Open project ↗</a></sc-if>
       </div>
       <button onClick="{{ close }}" aria-label="Close" style="position:absolute;top:14px;right:14px;z-index:2;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(var(--tint),.14);background:rgba(var(--base),.85);color:var(--fg);font-size:16px;cursor:pointer" style-hover="background:#22D3EE;color:#0A0F1E">✕</button>
@@ -785,7 +830,7 @@ class Component extends DCLogic {
     this.qiv = setInterval(()=>this.nextQuote(), 4800);
     this.setState({sunTheme:this.sunTheme()}); this.applyTheme();
     this.sunIv = setInterval(()=>{ const t=this.sunTheme(); if(t!==this.state.sunTheme) this.setState({sunTheme:t}); }, 60000);
-    this.onResize = () => { if(Math.abs(innerWidth-this.state.vw)>0) this.setState({vw:innerWidth, menu: innerWidth<1280 ? this.state.menu : false}, ()=>setTimeout(()=>this.measureNav(),30)); this.layoutHero(); this.measureNav(); };
+    this.onResize = () => { if(Math.abs(innerWidth-this.state.vw)>0) this.setState({vw:innerWidth, menu: innerWidth<1100 ? this.state.menu : false}, ()=>setTimeout(()=>this.measureNav(),30)); this.layoutHero(); this.measureNav(); };
     setTimeout(()=>this.measureNav(), 60); document.fonts?.ready.then(()=>this.measureNav());
     window.addEventListener('resize', this.onResize);
     document.fonts?.ready.then(()=>this.layoutHero());
@@ -853,6 +898,8 @@ class Component extends DCLogic {
   content(){ if(!this._c && window.PortfolioContent) this._c = window.PortfolioContent.load(); return this._c; }
   qLen(){ return Math.max(1, (this.content()?.quotes||[]).length); }
   componentDidUpdate(){
+    const lock = this.state.menu && this.state.vw < 1100 ? 'hidden' : '';
+    if(document.body.style.overflow !== lock) document.body.style.overflow = lock;
     this.scan(); this.applyTheme(); this.tlUpdate();
     clearTimeout(this._tlT); this._tlT = setTimeout(()=>this.tlUpdate(), 620);
     const key = this.state.page + '|' + this.recList().length;
@@ -987,7 +1034,7 @@ class Component extends DCLogic {
     const qi = this.state.qi % quotes.length;
     const mail = C.contact.email ? 'mailto:'+C.contact.email : '#contact';
     const cv = C.hero.cvUrl;
-    const vw=this.state.vw, wide=true, wideModal=vw>=860;
+    const vw=this.state.vw, wide=vw>=1100, wideModal=vw>=860, phone=vw<760, touch=typeof matchMedia==='function' && matchMedia('(hover: none)').matches;
     const nS = op ? Math.max(1, op.imgs.length) : 1; this._nSlides = nS; const si = Math.min(this.state.si, nS-1);
     const opV = op ? {...op, multi: op.imgs.length>1,
       slides: op.imgs.length ? op.imgs.map((src,k)=>({src, has:true, none:false, alt:op.title+' screenshot '+(k+1)})) : [{has:false, none:true}],
@@ -1017,6 +1064,8 @@ class Component extends DCLogic {
       firstStart ? {value: firstStart.y, label: 'Since'} : null
     ].filter(Boolean);
     const allJobsOpen = C.jobs.length > 0 && C.jobs.every((_,i)=>jobsOpen[i]);
+    const pIdx = PAGES.indexOf(this.state.page);
+    const pagerOf = d => { const k = PAGES[pIdx+d]; return k ? {has:true, none:false, label:LABELS[k], go:e=>this.go(k,e)} : {has:false, none:true}; };
     const avail=(C.hero.available||'').trim() && C.hero.availableOn!=='hide';
     const certsAll=(C.certifications||[]).filter(x=>x&&x.title);
     const certImgs=certsAll.map((x,i)=>x.image?i:-1).filter(i=>i>=0); this._certImgs=certImgs;
@@ -1033,7 +1082,7 @@ class Component extends DCLogic {
       c: C,
       hasHobbyIntro: !!C.hobbiesHead.intro, noPhotos: phAll.length===0, hasPhotoCats: phCats.length>1,
       photoFilters: ['All',...phCats].map(k=>({label:k, bg:k===phCat?'var(--fg)':'transparent', fg:k===phCat?'var(--bg)':'var(--fg2)', onClick:()=>this.setState({phCat:k})})),
-      photos: phShown.map((x,k)=>{ const hov=this.state.phHover===x._i; return {...x, delay:(k%3)*80, alt:x.title||'Photo by Shuvo', meta:phMeta(x), hasCap:!!(x.title||phMeta(x)||x.category), hasCat:!!x.category, scale:hov?1.05:1, capOp:hov?1:.0, capY:hov?'0':'12px', enter:()=>this.setState({phHover:x._i}), leave:()=>this.setState({phHover:-1}), open:()=>{ this.setState({ph:x._i}); window.PortfolioTracker?.trackEvent('photo_view', 'Viewed photo: ' + (x.title||x.category||'Photo')); }}; }),
+      photos: phShown.map((x,k)=>{ const hov=this.state.phHover===x._i; return {...x, delay:(k%3)*80, alt:x.title||'Photo by Shuvo', meta:phMeta(x), hasCap:!!(x.title||phMeta(x)||x.category), hasCat:!!x.category, scale:hov?1.05:1, capOp:(hov||touch)?1:.0, capY:(hov||touch)?'0':'12px', enter:()=>this.setState({phHover:x._i}), leave:()=>this.setState({phHover:-1}), open:()=>{ this.setState({ph:x._i}); window.PortfolioTracker?.trackEvent('photo_view', 'Viewed photo: ' + (x.title||x.category||'Photo')); }}; }),
       phLb: !!pOpen, pl: pOpen ? {...pOpen, alt:pOpen.title||'Photo', metaPos:[phMeta(pOpen), pad2(Math.max(1,this._phList.indexOf(pOpen._i)+1))+' / '+pad2(this._phList.length)].filter(Boolean).join(' · ')} : {},
       phClose: ()=>this.setState({ph:-1}), phPrev: e=>{ e.stopPropagation(); this.phStep(-1); }, phNext: e=>{ e.stopPropagation(); this.phStep(1); },
       phTStart: e=>{ this._ptx=e.touches[0].clientX; }, phTEnd: e=>{ const dx=e.changedTouches[0].clientX-(this._ptx??0); if(Math.abs(dx)>40) this.phStep(dx<0?1:-1); },
@@ -1043,7 +1092,9 @@ class Component extends DCLogic {
       certClose: ()=>this.setState({cert:-1}), certPrev: e=>{ e.stopPropagation(); this.certStep(-1); }, certNext: e=>{ e.stopPropagation(); this.certStep(1); },
       wide, narrow:!wide, showBadge: !!avail && vw>=1420, showCta: vw>=1100, menuOpen: !wide && this.state.menu, menuClosed: !(!wide && this.state.menu),
       toggleMenu: ()=>this.setState(s=>({menu:!s.menu})),
-      sheetItems: PAGES.map(k=>({label:LABELS[k], fg:this.state.page===k?'var(--accent-ink)':'var(--fg)', go:e=>this.go(k,e)})),
+      sheetItems: PAGES.map((k,i)=>({label:LABELS[k], num:pad2(i+1), delay:(i*35)+'ms', arrowOp:this.state.page===k?1:.35, fg:this.state.page===k?'var(--accent-ink)':'var(--fg)', go:e=>this.go(k,e)})),
+      brandName: C.hero.brand || 'Shuvo Ibn Alam', brandInitials: (C.hero.brand || 'Shuvo Ibn Alam').split(/\s+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join(''), pageLabel: LABELS[this.state.page],
+      showPager: phone, pagerPrev: pagerOf(-1), pagerNext: pagerOf(1),
       hasRecs: recCount > 0, noRecs: recCount === 0, hasRecsLink: !!C.recsHead.linkedin,
       recCount, recCountLabel: recCount === 1 ? 'Recommendation' : 'Recommendations',
       recFaces: recsAll.slice(0, 4).map(recV),
