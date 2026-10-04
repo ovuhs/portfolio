@@ -52,6 +52,57 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .no-scrollbar::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}html{scroll-behavior:auto}}
 @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+/* Experience timeline */
+@keyframes tlPt{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes tlRadar{0%{box-shadow:0 0 0 0 rgba(34,211,238,.55),0 0 22px rgba(34,211,238,.6)}70%{box-shadow:0 0 0 14px rgba(34,211,238,0),0 0 22px rgba(34,211,238,.6)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0),0 0 22px rgba(34,211,238,.6)}}
+.tl-stat{min-width:104px;padding:14px 18px;border-radius:16px;background:var(--surface);border:1px solid rgba(var(--tint),.08)}
+.tl-btn{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;border:1px solid rgba(var(--tint),.16);background:rgba(var(--tint),.04);color:var(--fg);font:600 13px 'Bricolage Grotesque',sans-serif;cursor:pointer;transition:background .25s,border-color .25s}
+.tl-btn:hover{border-color:#22D3EE;background:rgba(34,211,238,.08)}
+.tl-node{position:relative;z-index:2;justify-self:center;margin-top:30px;width:22px;height:22px;border-radius:50%;box-sizing:border-box;background:var(--bg);border:2px solid rgba(var(--tint),.22);display:grid;place-items:center;transition:border-color .5s,box-shadow .5s,transform .5s cubic-bezier(.3,1.5,.5,1)}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:rgba(var(--tint),.28);transition:background .5s}
+.tl-node[data-lit]{border-color:#22D3EE;transform:scale(1.15);box-shadow:0 0 0 5px rgba(34,211,238,.12),0 0 22px rgba(34,211,238,.6)}
+.tl-node[data-lit] .tl-dot{background:#22D3EE}
+.tl-item[data-current="1"] .tl-node[data-lit]{animation:tlRadar 2.2s infinite}
+.tl-meta,.tl-card{opacity:0;transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s}
+.tl-card{position:relative;min-width:0;border-radius:22px;background:var(--surface);border:1px solid rgba(var(--tint),.08);box-shadow:0 18px 40px -26px rgba(0,0,0,.55);overflow:hidden;transform:translateX(48px)}
+.tl-item[data-side=l] .tl-card{transform:translateX(-48px)}
+.tl-meta{min-width:0;transform:translateX(-24px)}
+.tl-item[data-side=l] .tl-meta{transform:translateX(24px)}
+.tl-item[data-in] .tl-card,.tl-item[data-in] .tl-meta{opacity:1;transform:none}
+.tl-item[data-in] .tl-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.35);box-shadow:0 26px 50px -24px rgba(0,0,0,.6),0 0 0 1px rgba(34,211,238,.08)}
+.tl-card[data-open="1"]{border-color:rgba(34,211,238,.4);box-shadow:0 26px 60px -24px rgba(0,0,0,.6),0 0 40px -12px rgba(34,211,238,.25)}
+.tl-card-bar{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#22D3EE,#7AA2FF,transparent);opacity:0;transition:opacity .4s}
+.tl-card[data-open="1"] .tl-card-bar,.tl-card:hover .tl-card-bar{opacity:1}
+.tl-chev{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;border:1px solid;transition:transform .45s cubic-bezier(.3,1.4,.5,1),background .3s,color .3s}
+.tl-pt{display:flex;gap:12px;padding:12px 14px;border-radius:12px;background:rgba(var(--tint),.025);border:1px solid rgba(var(--tint),.05);transition:background .25s,border-color .25s,transform .25s}
+.tl-pt:hover{background:rgba(34,211,238,.05);border-color:rgba(34,211,238,.22);transform:translateX(3px)}
+.tl-year{font-weight:800;line-height:.85;letter-spacing:-.05em;background:linear-gradient(180deg,rgba(var(--tint),.32),rgba(var(--tint),.04));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tl-item[data-current="1"] .tl-year{background-image:linear-gradient(180deg,var(--accent-ink),rgba(34,211,238,.08))}
+.tl-edu{padding:28px;border-radius:22px;background:var(--surface);border:1px solid rgba(var(--tint),.08);transition:border-color .3s,transform .3s}
+.tl-edu[data-latest="1"]{border-color:rgba(34,211,238,.28);box-shadow:0 16px 40px -18px rgba(34,211,238,.2)}
+.tl-edu:hover{border-color:rgba(122,162,255,.45)}
+/* Recommendations */
+@keyframes orbDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-36px,24px) scale(1.12)}}
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+.rec-stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:clamp(340px,52vh,520px);padding:clamp(22px,3vw,44px);border-radius:28px;overflow:hidden;background:linear-gradient(150deg,rgba(var(--glass),.95),var(--surface));border:1px solid rgba(34,211,238,.22);box-shadow:0 30px 70px -30px rgba(0,0,0,.6),0 0 50px -20px rgba(34,211,238,.18);box-sizing:border-box}
+.rec-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbDrift 14s ease-in-out infinite}
+.rec-arrow{display:grid;place-items:center;width:40px;height:40px;padding:0;border-radius:50%;border:1px solid rgba(var(--tint),.18);background:rgba(var(--tint),.04);color:var(--fg);font-size:15px;cursor:pointer;transition:background .25s,color .25s,border-color .25s,transform .25s}
+.rec-arrow:hover{background:#22D3EE;color:#0A0F1E;border-color:#22D3EE;transform:scale(1.06)}
+.rec-more{position:relative;z-index:1;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:0;border:0;background:none;color:var(--accent-ink);font:600 14px 'Bricolage Grotesque',sans-serif;cursor:pointer}
+.rec-more span{transition:transform .25s}.rec-more:hover span{transform:translateX(4px)}
+.rec-ava{position:relative;display:grid;place-items:center;flex:none;border-radius:50%;padding:3px;box-sizing:border-box}
+.rec-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#22D3EE,#7AA2FF,#C8A2FF,#22D3EE);animation:ringSpin 6s linear infinite}
+.rec-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid rgba(var(--tint),.18);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2);transition:all .25s}
+.rec-chip:hover{border-color:#22D3EE;color:var(--accent-ink)}
+.rec-li{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:var(--accent-ink);font-weight:600;font-size:13px;transition:all .25s}
+.rec-li:hover{background:rgba(34,211,238,.18);border-color:#22D3EE;color:var(--accent-ink)}
+.rec-rail{display:flex;flex-direction:column;min-width:0;min-height:0;padding:18px 14px;border-radius:28px;background:var(--surface);border:1px solid rgba(var(--tint),.08);box-sizing:border-box}
+.rec-person{position:relative;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid transparent;background:transparent;color:var(--fg);font-family:inherit;cursor:pointer;transition:background .3s,border-color .3s,transform .3s;min-width:0}
+.rec-person::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:#22D3EE;transform:scaleY(0);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.rec-person:hover{background:rgba(var(--tint),.04)}
+.rec-person[data-active="1"]{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.3)}
+.rec-person[data-active="1"]::before{transform:scaleY(1)}
+@media (prefers-reduced-motion: reduce){.tl-meta,.tl-card{opacity:1!important;transform:none!important}}
 </style>
 </helmet>
 
@@ -286,239 +337,256 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 </section>
 </sc-if>
 <sc-if value="{{ pg.experience }}" hint-placeholder-val="{{ false }}">
-<!-- EXPERIENCE (HIGH-END ANIMATED TIMELINE) -->
-<section id="experience" style="padding:clamp(60px,8vw,120px) clamp(20px,5vw,64px);max-width:1320px;margin:0 auto;scroll-margin-top:70px">
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+<!-- EXPERIENCE (SCROLL-DRIVEN ANIMATED TIMELINE) -->
+<section id="experience" style="position:relative;padding:clamp(60px,8vw,120px) clamp(20px,5vw,64px) clamp(72px,9vw,140px);max-width:1320px;margin:0 auto;scroll-margin-top:70px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap">
     <div>
       <div data-reveal="0" style="font:500 13px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ c.expHead.label }}</div>
       <h2 data-reveal="60" style="margin:14px 0 0;font-weight:700;font-size:clamp(40px,5.6vw,80px);line-height:.95;letter-spacing:-.04em">{{ c.expHead.title }} <span style="font-weight:300;font-style:italic;color:var(--muted)">{{ c.expHead.italic }}</span></h2>
     </div>
-    <div data-reveal="80" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);font:600 12px 'IBM Plex Mono',monospace;color:#22D3EE">
-        <span style="width:6px;height:6px;border-radius:50%;background:#22D3EE;box-shadow:0 0 8px #22D3EE;animation:pulse 1.8s infinite"></span>
-        8+ YRS TRACK RECORD
-      </span>
-      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(var(--tint),.04);border:1px solid rgba(var(--tint),.1);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg3)">
-        MNC ENTERPRISE · OPERATIONS & SALES
-      </span>
+    <div data-reveal="100" style="display:flex;align-items:stretch;gap:10px;flex-wrap:wrap">
+      <sc-for list="{{ expStats }}" as="es" hint-placeholder-count="3">
+        <div class="tl-stat">
+          <div style="font-weight:700;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.03em;line-height:1;color:var(--fg)">{{ es.value }}</div>
+          <div style="margin-top:6px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">{{ es.label }}</div>
+        </div>
+      </sc-for>
     </div>
   </div>
 
-  <!-- TIMELINE CONTAINER -->
-  <div style="position:relative;margin-top:clamp(48px,6vw,72px);padding-left:clamp(36px,5vw,72px)">
-    <!-- Vertical glowing animated spine -->
-    <div style="position:absolute;left:clamp(14px,2.2vw,30px);top:24px;bottom:40px;width:3px;border-radius:999px;background:linear-gradient(180deg,#22D3EE,#7AA2FF 50%,#22D3EE);background-size:100% 400px;animation:streamLine 6s linear infinite;box-shadow:0 0 16px rgba(34,211,238,.45);pointer-events:none">
-      <div style="position:absolute;top:0;left:-3px;width:9px;height:48px;border-radius:999px;background:linear-gradient(180deg,transparent,#22D3EE,transparent);animation:beamTravel 4s ease-in-out infinite"></div>
+  <div data-reveal="140" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:clamp(36px,5vw,56px);padding-bottom:18px;border-bottom:1px solid rgba(var(--tint),.08)">
+    <span style="display:inline-flex;align-items:center;gap:10px;font:500 12px 'IBM Plex Mono',monospace;color:var(--fg3)">
+      <span style="width:7px;height:7px;border-radius:50%;background:#22D3EE;box-shadow:0 0 10px #22D3EE;animation:pulse 1.8s infinite"></span>
+      Scroll to travel the timeline · tap a role to expand
+    </span>
+    <button onClick="{{ toggleAllJobs }}" class="tl-btn">{{ allJobsLabel }}<span style="display:inline-block;transform:rotate({{ allJobsRot }});transition:transform .4s">⌄</span></button>
+  </div>
+
+  <!-- TIMELINE -->
+  <div data-tl="1" style="position:relative;margin-top:clamp(40px,5vw,64px)">
+    <!-- Spine: static track + scroll-driven fill + glowing head -->
+    <div style="position:absolute;top:0;bottom:0;left:{{ tlSpineLeft }};width:2px;margin-left:-1px;border-radius:2px;background:rgba(var(--tint),.1);pointer-events:none">
+      <div data-tl-fill="1" style="position:absolute;inset:0;border-radius:2px;background:linear-gradient(180deg,#22D3EE,#7AA2FF 60%,#22D3EE);box-shadow:0 0 14px rgba(34,211,238,.55);transform-origin:50% 0;transform:scaleY(0)"></div>
+      <div data-tl-head="1" style="position:absolute;left:50%;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#22D3EE;box-shadow:0 0 0 5px rgba(34,211,238,.18),0 0 26px 4px rgba(34,211,238,.75);opacity:0;transition:opacity .3s"></div>
     </div>
 
-    <!-- JOBS TIMELINE NODES -->
-    <div style="display:flex;flex-direction:column;gap:36px">
+    <div style="display:flex;flex-direction:column;gap:clamp(28px,4vw,56px)">
       <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="3">
-        <div data-reveal="{{ j.delay }}" style="position:relative">
-          <!-- Timeline pin node with radar animation -->
-          <div style="position:absolute;left:clamp(-36px,-5vw,-72px);top:32px;transform:translateX(calc(clamp(14px,2.2vw,30px) - 50% + 1.5px));width:28px;height:28px;border-radius:50%;background:#0A0F1E;border:2.5px solid {{ j.pinColor }};box-shadow:0 0 16px {{ j.glowColor }};display:grid;place-items:center;z-index:3;transition:all .35s">
-            <span style="width:8px;height:8px;border-radius:50%;background:{{ j.pinColor }};box-shadow:0 0 8px {{ j.pinColor }}"></span>
+        <div class="tl-item" data-tl-item="1" data-side="{{ j.side }}" data-current="{{ j.curAttr }}" style="display:grid;grid-template-columns:{{ tlCols }};column-gap:0;row-gap:12px;align-items:start">
+          <!-- Node -->
+          <div class="tl-node" data-tl-node="1" style="grid-column:{{ j.nodeCol }};grid-row:{{ j.nodeRow }}"><span class="tl-dot"></span></div>
+
+          <!-- Meta: big year + period -->
+          <div class="tl-meta" style="grid-column:{{ j.metaCol }};grid-row:1;text-align:{{ j.metaAlign }};padding:{{ j.metaPad }}">
+            <div class="tl-year" style="font-size:{{ tlYearSize }}">{{ j.startYear }}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:{{ j.metaJustify }};margin-top:10px">
+              <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ j.dates }}</span>
+              <sc-if value="{{ j.hasDur }}" hint-placeholder-val="{{ true }}"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">· {{ j.dur }}</span></sc-if>
+            </div>
           </div>
 
-          <!-- Glassmorphic Job Card -->
-          <div style="border-radius:24px;background:linear-gradient(145deg,rgba(17,24,48,.82),rgba(10,15,30,.94));border:1px solid {{ j.cardBorder }};box-shadow:{{ j.cardShadow }};backdrop-filter:blur(12px);overflow:hidden;transition:all .35s cubic-bezier(.2,.8,.2,1);position:relative">
-            <!-- Top glowing accent bar -->
-            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:{{ j.topBarGradient }};pointer-events:none"></div>
-
-            <button onClick="{{ j.toggle }}" style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:clamp(16px,2.5vw,28px);width:100%;padding:clamp(22px,2.8vw,32px);border:0;background:none;color:var(--fg);text-align:left;cursor:pointer;font-family:inherit">
-              <!-- Company Logo Tile -->
-              <span style="display:grid;place-items:center;width:clamp(54px,5.5vw,68px);height:clamp(54px,5.5vw,68px);border-radius:20px;overflow:hidden;flex:none;background:{{ j.logoBg }};border:1.5px solid rgba(var(--tint),.12);box-shadow:0 12px 28px -10px rgba(0,0,0,.6);transform:scale({{ j.logoScale }});transition:transform .35s cubic-bezier(.3,1.4,.5,1)">
+          <!-- Card -->
+          <article class="tl-card" data-open="{{ j.openAttr }}" style="grid-column:{{ j.cardCol }};grid-row:{{ j.cardRow }};margin-left:{{ j.cardMl }}">
+            <div class="tl-card-bar"></div>
+            <button onClick="{{ j.toggle }}" aria-expanded="{{ j.isOpen }}" style="display:flex;align-items:flex-start;gap:clamp(14px,2vw,20px);width:100%;padding:clamp(20px,2.4vw,28px);border:0;background:none;color:var(--fg);text-align:left;cursor:pointer;font-family:inherit">
+              <span style="display:grid;place-items:center;width:{{ tlLogo }};height:{{ tlLogo }};border-radius:16px;overflow:hidden;flex:none;background:{{ j.logoBg }};border:1px solid rgba(var(--tint),.12);box-shadow:0 12px 28px -12px rgba(0,0,0,.55)">
                 <sc-if value="{{ j.hasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ j.logo }}" alt="{{ j.company }} logo" style="width:76%;height:76%;object-fit:contain;display:block"></sc-if>
-                <sc-if value="{{ j.noLogo }}" hint-placeholder-val="{{ true }}"><span style="font:700 18px 'IBM Plex Mono',monospace;color:#0A0F1E">{{ j.initials }}</span></sc-if>
+                <sc-if value="{{ j.noLogo }}" hint-placeholder-val="{{ true }}"><span style="font:700 17px 'IBM Plex Mono',monospace;color:#0A0F1E">{{ j.initials }}</span></sc-if>
               </span>
-
-              <!-- Job Info & Badges -->
-              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1);font:500 12px 'IBM Plex Mono',monospace;color:{{ j.dateColor }}">{{ j.dates }}</span>
+              <span style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
+                <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                   <sc-if value="{{ j.isCurrent }}" hint-placeholder-val="{{ false }}">
-                    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(34,211,238,.12);border:1px solid #22D3EE;font:600 11px 'IBM Plex Mono',monospace;color:#22D3EE;box-shadow:0 0 12px rgba(34,211,238,.3)">
-                      <span style="width:6px;height:6px;border-radius:50%;background:#22D3EE;box-shadow:0 0 6px #22D3EE;animation:pulse 1.8s infinite"></span>PRESENT
-                    </span>
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.45);font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:var(--accent-ink)"><span style="width:6px;height:6px;border-radius:50%;background:#22D3EE;animation:pulse 1.8s infinite"></span>CURRENT ROLE</span>
                   </sc-if>
-                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(122,162,255,.08);border:1px solid rgba(122,162,255,.2);font:500 11px 'IBM Plex Mono',monospace;color:var(--blue-ink)">{{ j.roleTag }}</span>
-                </div>
-                <div style="font-weight:700;font-size:clamp(22px,2.5vw,30px);letter-spacing:-.025em;line-height:1.2;color:var(--fg);margin-top:2px">{{ j.role }}</div>
-                <div style="font-size:16px;color:var(--fg3);font-weight:400">{{ j.company }}</div>
-              </div>
-
-              <!-- Interactive Toggle Button -->
-              <span style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;border:1px solid rgba(var(--tint),.16);background:{{ j.toggleBg }};color:{{ j.toggleFg }};font:600 13px 'Bricolage Grotesque',sans-serif;white-space:nowrap;transition:all .35s;flex:none">
-                {{ j.toggleLabel }}
-                <span style="display:inline-block;font-size:16px;transform:rotate({{ j.rot }});transition:transform .35s">+</span>
+                  <span style="padding:3px 10px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1);font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:var(--fg3)">{{ j.num }} / {{ j.total }}</span>
+                </span>
+                <span style="font-weight:700;font-size:clamp(20px,2vw,26px);letter-spacing:-.025em;line-height:1.18;color:var(--fg);text-wrap:balance">{{ j.role }}</span>
+                <span style="font-size:15px;line-height:1.4;color:var(--fg3)">{{ j.company }}</span>
+              </span>
+              <span class="tl-chev" style="transform:rotate({{ j.rot }});background:{{ j.chevBg }};color:{{ j.chevFg }};border-color:{{ j.chevBorder }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
               </span>
             </button>
 
-            <!-- Collapsible Responsibilities Drawer -->
-            <div style="display:grid;grid-template-rows:{{ j.rows }};transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1)">
+            <!-- Collapsed teaser -->
+            <div style="display:grid;grid-template-rows:{{ j.teaserRows }};transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1)">
               <div style="overflow:hidden">
-                <div style="border-top:1px solid rgba(var(--tint),.08);margin:0 clamp(22px,2.8vw,32px);padding:24px 0 clamp(24px,3vw,36px)">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px">
-                    <span style="font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--accent-ink);text-transform:uppercase">Key Responsibilities & Deliverables</span>
-                    <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">Analytical Impact · Operations</span>
-                  </div>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px">
-                    <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="4">
-                      <div style="display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:14px;background:rgba(var(--tint),.025);border:1px solid rgba(var(--tint),.06);transition:all .25s" style-hover="background:rgba(34,211,238,.05);border-color:rgba(34,211,238,.25);transform:translateX(4px)">
-                        <span style="display:grid;place-items:center;width:22px;height:22px;border-radius:6px;background:rgba(34,211,238,.12);color:#22D3EE;font:600 11px 'IBM Plex Mono',monospace;flex:none;margin-top:2px">✦</span>
-                        <span style="font-size:14.5px;line-height:1.6;color:var(--fg2);text-wrap:pretty">{{ pt }}</span>
-                      </div>
-                    </sc-for>
-                  </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 clamp(20px,2.4vw,28px) clamp(18px,2.2vw,24px)">
+                  <span style="font-size:14px;line-height:1.5;color:var(--fg3);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden">{{ j.teaser }}</span>
+                  <span style="flex:none;font:500 11px 'IBM Plex Mono',monospace;color:var(--accent-ink);white-space:nowrap">{{ j.pointCount }} highlights ↓</span>
                 </div>
               </div>
             </div>
-          </div>
+
+            <!-- Expandable responsibilities -->
+            <div style="display:grid;grid-template-rows:{{ j.rows }};transition:grid-template-rows .55s cubic-bezier(.2,.7,.2,1)">
+              <div style="overflow:hidden">
+                <div style="margin:0 clamp(20px,2.4vw,28px);padding:20px 0 clamp(22px,2.6vw,30px);border-top:1px solid rgba(var(--tint),.08)">
+                  <div style="margin-bottom:14px;font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--accent-ink);text-transform:uppercase">Key responsibilities & impact</div>
+                  <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="4">
+                      <li class="tl-pt" style="padding:{{ tlPtPad }};animation:{{ pt.anim }}">
+                        <span style="flex:none;min-width:24px;font:600 11px 'IBM Plex Mono',monospace;color:var(--accent-ink);padding-top:3px">{{ pt.n }}</span>
+                        <span style="font-size:14.5px;line-height:1.6;color:var(--fg2);text-wrap:pretty">{{ pt.text }}</span>
+                      </li>
+                    </sc-for>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </sc-for>
     </div>
 
-    <!-- EDUCATION SECTION AS CONTINUING TIMELINE MILESTONE -->
-    <div style="position:relative;margin-top:72px">
-      <!-- Graduation milestone node -->
-      <div style="position:absolute;left:clamp(-36px,-5vw,-72px);top:0;transform:translateX(calc(clamp(14px,2.2vw,30px) - 50% + 1.5px));width:28px;height:28px;border-radius:50%;background:#7AA2FF;color:#0A0F1E;font-size:13px;box-shadow:0 0 16px rgba(122,162,255,.6);display:grid;place-items:center;z-index:3">🎓</div>
-      
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px">
-        <span style="font:600 13px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--blue-ink);text-transform:uppercase">Education & Academic Milestones</span>
-        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(122,162,255,.3),transparent)"></div>
+    <!-- Career start cap -->
+    <sc-if value="{{ hasCareerStart }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:{{ tlCols }};margin-top:clamp(28px,4vw,48px)">
+        <div style="grid-column:{{ tlCapCol }};justify-self:{{ tlCapJustify }};display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:var(--bg);border:1px solid rgba(var(--tint),.14);font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:var(--fg3);white-space:nowrap;position:relative;z-index:2;transform:{{ tlCapTransform }}">
+          <span style="width:6px;height:6px;border-radius:50%;background:#7AA2FF"></span>CAREER STARTED · {{ careerStart }}
+        </div>
       </div>
+    </sc-if>
+  </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px">
-        <sc-for list="{{ education }}" as="ed" hint-placeholder-count="2">
-          <div data-reveal="{{ ed.delay }}" style="padding:28px;border-radius:22px;background:linear-gradient(145deg,rgba(17,24,48,.8),rgba(10,15,30,.92));border:1px solid {{ ed.cardBorder }};box-shadow:{{ ed.cardGlow }};transition:border-color .3s, transform .3s" style-hover="border-color:rgba(122,162,255,.45);transform:translateY(-3px)">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <span style="font:600 11px 'IBM Plex Mono',monospace;color:{{ ed.badgeColor }};letter-spacing:.06em">{{ ed.statusBadge }}</span>
-              <span style="font:400 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ ed.period }}</span>
-            </div>
-            <div style="margin-top:14px;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.25;color:var(--fg)">{{ ed.degree }}</div>
-            <div style="margin-top:6px;font-size:15px;color:var(--fg3)">{{ ed.school }}</div>
+  <!-- EDUCATION -->
+  <sc-if value="{{ hasEducation }}" hint-placeholder-val="{{ true }}">
+  <div style="margin-top:clamp(64px,8vw,104px)">
+    <div data-reveal="0" style="display:flex;align-items:center;gap:16px;margin-bottom:28px">
+      <span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(122,162,255,.12);border:1px solid rgba(122,162,255,.3);color:var(--blue-ink)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg>
+      </span>
+      <span style="font:600 13px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--blue-ink);text-transform:uppercase">Education</span>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(122,162,255,.35),transparent)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px">
+      <sc-for list="{{ education }}" as="ed" hint-placeholder-count="2">
+        <div data-reveal="{{ ed.delay }}" class="tl-edu" data-latest="{{ ed.latestAttr }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span style="font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:{{ ed.badgeColor }}">{{ ed.statusBadge }}</span>
+            <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ ed.period }}</span>
           </div>
-        </sc-for>
-      </div>
+          <div style="margin-top:16px;font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1.25;color:var(--fg)">{{ ed.degree }}</div>
+          <div style="margin-top:6px;font-size:15px;line-height:1.45;color:var(--fg3)">{{ ed.school }}</div>
+          <sc-if value="{{ ed.hasProgress }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px;height:4px;border-radius:4px;background:rgba(var(--tint),.08);overflow:hidden"><div style="height:100%;width:{{ ed.progress }};border-radius:4px;background:linear-gradient(90deg,#7AA2FF,#22D3EE)"></div></div>
+          </sc-if>
+        </div>
+      </sc-for>
     </div>
   </div>
+  </sc-if>
 </section>
 </sc-if>
 
 <sc-if value="{{ pg.recommendations }}" hint-placeholder-val="{{ false }}">
-<!-- RECOMMENDATIONS (VIEWPORT-FITTED · ZERO SCROLLBARS) -->
-<section id="recommendations" class="no-scrollbar" style="height:calc(100svh - 70px);max-height:calc(100svh - 70px);min-height:520px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(14px,2vh,24px) clamp(20px,4vw,64px);max-width:1380px;margin:0 auto">
-  <!-- Top compact header -->
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex:none;flex-wrap:wrap">
+<!-- RECOMMENDATIONS (SPOTLIGHT STAGE + PEOPLE RAIL) -->
+<section id="recommendations" class="no-scrollbar" style="position:relative;min-height:calc(100svh - 70px);box-sizing:border-box;display:flex;flex-direction:column;gap:clamp(20px,3vh,32px);padding:clamp(28px,5vh,64px) clamp(20px,4vw,64px) clamp(28px,5vh,56px);max-width:1380px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
     <div>
-      <div style="font:500 12px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ c.recsHead.label }}</div>
-      <h2 style="margin:4px 0 0;font-weight:700;font-size:clamp(26px,3.4vw,44px);line-height:1;letter-spacing:-.03em">{{ c.recsHead.title }} <span style="font-weight:300;font-style:italic;color:var(--muted)">{{ c.recsHead.italic }}</span></h2>
+      <div data-reveal="0" style="font:500 12px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ c.recsHead.label }}</div>
+      <h2 data-reveal="60" style="margin:12px 0 0;font-weight:700;font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.04em">{{ c.recsHead.title }} <span style="font-weight:300;font-style:italic;color:var(--muted)">{{ c.recsHead.italic }}</span></h2>
     </div>
-    <sc-if value="{{ hasRecsLink }}" hint-placeholder-val="{{ false }}">
-      <a href="{{ c.recsHead.linkedin }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:var(--accent-ink);font-weight:600;font-size:13px;box-shadow:0 4px 16px -4px rgba(34,211,238,.2);transition:all .25s" style-hover="background:rgba(34,211,238,.18);border-color:#22D3EE;box-shadow:0 8px 24px -4px rgba(34,211,238,.35)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z"/></svg>
-        See all on LinkedIn ↗
-      </a>
-    </sc-if>
+    <div data-reveal="100" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <sc-if value="{{ hasRecs }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="display:flex">
+            <sc-for list="{{ recFaces }}" as="rf" hint-placeholder-count="3">
+              <span style="display:grid;place-items:center;width:34px;height:34px;margin-left:-8px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:{{ rf.grad }};color:#0A0F1E;font:700 11px 'IBM Plex Mono',monospace">
+                <sc-if value="{{ rf.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ rf.photo }}" alt="" style="width:100%;height:100%;object-fit:cover"></sc-if>
+                <sc-if value="{{ rf.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rf.initials }}</sc-if>
+              </span>
+            </sc-for>
+          </div>
+          <div style="line-height:1.2"><div style="font-weight:700;font-size:18px;letter-spacing:-.02em">{{ recCount }}</div><div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:var(--muted);text-transform:uppercase">{{ recCountLabel }}</div></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasRecsLink }}" hint-placeholder-val="{{ false }}">
+        <a href="{{ c.recsHead.linkedin }}" target="_blank" rel="noopener noreferrer" class="rec-li">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z"/></svg>
+          See all on LinkedIn ↗
+        </a>
+      </sc-if>
+    </div>
   </div>
 
   <sc-if value="{{ noRecs }}" hint-placeholder-val="{{ false }}">
-    <div style="flex:1;display:grid;place-items:center;padding:32px;border-radius:24px;border:1px dashed rgba(var(--tint),.16);text-align:center;color:var(--muted);font-size:16px">Recommendations coming soon.</div>
+    <div style="flex:1;display:grid;place-items:center;padding:48px 24px;border-radius:24px;border:1px dashed rgba(var(--tint),.16);text-align:center;color:var(--muted);font-size:16px">Recommendations coming soon.</div>
   </sc-if>
 
   <sc-if value="{{ hasRecs }}" hint-placeholder-val="{{ true }}">
-    <!-- SPOTLIGHT HERO CARD (FLEXIBLE HEIGHT) -->
-    <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:space-between;margin:clamp(8px,1.4vh,16px) 0;border-radius:22px;background:linear-gradient(145deg,rgba(17,24,48,.88),rgba(10,15,30,.96));border:1px solid rgba(34,211,238,.28);box-shadow:0 24px 60px -20px rgba(0,0,0,.7),0 0 35px -10px rgba(34,211,238,.16);padding:clamp(16px,2.2vh,28px) clamp(22px,3vw,40px);position:relative;overflow:hidden">
-      <!-- Ambient background blur orb -->
-      <div style="position:absolute;top:-40px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.14),transparent 70%);pointer-events:none"></div>
-      
-      <!-- Top meta row: Quote mark, counter, navigation buttons -->
-      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;flex:none">
-        <div style="display:flex;align-items:center;gap:14px">
-          <svg width="32" height="24" viewBox="0 0 34 26" fill="#22D3EE" style="opacity:.9;filter:drop-shadow(0 2px 8px rgba(34,211,238,.4))"><path d="M0 26V15C0 6.7 4.4 1.6 13 0l1.5 3.6C9.6 5 7.3 8 7 12h6v14zm19 0V15c0-8.3 4.4-13.4 13-15l1.5 3.6C28.6 5 26.3 8 26 12h6v14z"></path></svg>
-          <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);font:600 11px 'IBM Plex Mono',monospace;color:#22D3EE">
-            <span style="width:6px;height:6px;border-radius:50%;background:#22D3EE;box-shadow:0 0 8px #22D3EE"></span>
-            SPOTLIGHT {{ spotRecPos }}
-          </span>
+  <div data-reveal="140" style="flex:1;display:grid;grid-template-columns:{{ recCols }};gap:20px;min-height:0">
+    <!-- SPOTLIGHT -->
+    <div class="rec-stage" onMouseEnter="{{ recHoverOn }}" onMouseLeave="{{ recHoverOff }}">
+      <div class="rec-orb" style="top:-120px;right:-80px;width:380px;height:380px;background:radial-gradient(circle,rgba(34,211,238,.20),transparent 68%)"></div>
+      <div class="rec-orb" style="bottom:-160px;left:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(122,162,255,.16),transparent 68%);animation-delay:-6s"></div>
+      <svg viewBox="0 0 34 26" aria-hidden="true" style="position:absolute;top:clamp(18px,3vw,34px);right:clamp(22px,3vw,40px);width:clamp(90px,11vw,150px);height:auto;fill:rgba(var(--tint),.05);pointer-events:none"><path d="M0 26V15C0 6.7 4.4 1.6 13 0l1.5 3.6C9.6 5 7.3 8 7 12h6v14zm19 0V15c0-8.3 4.4-13.4 13-15l1.5 3.6C28.6 5 26.3 8 26 12h6v14z"></path></svg>
+
+      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:12px">
+          <svg width="30" height="23" viewBox="0 0 34 26" fill="#22D3EE" style="filter:drop-shadow(0 2px 10px rgba(34,211,238,.45))"><path d="M0 26V15C0 6.7 4.4 1.6 13 0l1.5 3.6C9.6 5 7.3 8 7 12h6v14zm19 0V15c0-8.3 4.4-13.4 13-15l1.5 3.6C28.6 5 26.3 8 26 12h6v14z"></path></svg>
+          <sc-if value="{{ spotRec.hasRelation }}" hint-placeholder-val="{{ false }}">
+            <span data-rec-anim="1" style="padding:5px 12px;border-radius:999px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.28);font:500 11.5px 'IBM Plex Mono',monospace;color:var(--accent-ink);max-width:min(440px,52vw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ spotRec.relation }}</span>
+          </sc-if>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <button onClick="{{ prevRec }}" aria-label="Previous recommendation" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid rgba(var(--tint),.2);background:rgba(var(--tint),.05);color:var(--fg);cursor:pointer;font-size:15px;transition:all .25s" style-hover="background:#22D3EE;color:#0A0F1E;border-color:#22D3EE">←</button>
-          <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted);min-width:48px;text-align:center">{{ spotRecPos }}</span>
-          <button onClick="{{ nextRec }}" aria-label="Next recommendation" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid rgba(var(--tint),.2);background:rgba(var(--tint),.05);color:var(--fg);cursor:pointer;font-size:15px;transition:all .25s" style-hover="background:#22D3EE;color:#0A0F1E;border-color:#22D3EE">→</button>
+          <button onClick="{{ prevRec }}" aria-label="Previous recommendation" class="rec-arrow">←</button>
+          <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted);min-width:56px;text-align:center"><b style="color:var(--fg);font-weight:600">{{ spotRecNum }}</b> / {{ spotRecTotal }}</span>
+          <button onClick="{{ nextRec }}" aria-label="Next recommendation" class="rec-arrow">→</button>
         </div>
       </div>
 
-      <!-- Spotlight Quotation Text (Clamped to fit comfortably without scrollbars) -->
-      <blockquote style="position:relative;z-index:1;margin:clamp(8px,1.4vh,18px) 0 0;font-size:clamp(15px,min(1.85vw,2.3vh),23px);line-height:1.55;font-weight:400;color:var(--fg);letter-spacing:-.015em;text-wrap:pretty;max-width:1100px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden">
-        "{{ spotRec.text }}"
-      </blockquote>
+      <blockquote data-rec-anim="1" style="position:relative;z-index:1;margin:clamp(20px,3.5vh,40px) 0 0;font-size:{{ recQuoteSize }};line-height:1.5;font-weight:400;color:var(--fg);letter-spacing:-.015em;text-wrap:pretty;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:{{ recClamp }};overflow:hidden">{{ spotRec.text }}</blockquote>
+      <sc-if value="{{ spotRec.isLong }}" hint-placeholder-val="{{ false }}">
+        <button data-rec-anim="1" onClick="{{ openRec }}" class="rec-more">Read full recommendation <span>→</span></button>
+      </sc-if>
 
-      <!-- Author Footer -->
-      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:clamp(10px,1.4vh,18px);border-top:1px solid rgba(var(--tint),.1);margin-top:clamp(8px,1.2vh,16px);flex:none">
-        <div style="display:flex;align-items:center;gap:14px">
-          <sc-if value="{{ spotRec.hasPhoto }}" hint-placeholder-val="{{ false }}">
-            <img src="{{ spotRec.photo }}" alt="{{ spotRec.name }}" style="width:clamp(46px,5vh,56px);height:clamp(46px,5vh,56px);border-radius:50%;object-fit:cover;flex:none;border:2px solid #22D3EE;box-shadow:0 4px 16px rgba(34,211,238,.35)">
-          </sc-if>
-          <sc-if value="{{ spotRec.noPhoto }}" hint-placeholder-val="{{ true }}">
-            <span style="display:grid;place-items:center;width:clamp(46px,5vh,56px);height:clamp(46px,5vh,56px);border-radius:50%;flex:none;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;font:700 18px 'IBM Plex Mono',monospace;box-shadow:0 4px 16px rgba(34,211,238,.35)">{{ spotRec.initials }}</span>
-          </sc-if>
-          <div>
-            <div style="font-weight:700;font-size:clamp(16px,1.8vh,20px);letter-spacing:-.02em;color:var(--fg)">{{ spotRec.name }}</div>
-            <div style="margin-top:2px;font-size:clamp(12px,1.4vh,14px);color:var(--fg3)">{{ spotRec.role }}</div>
-            <sc-if value="{{ spotRec.hasRelation }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:3px;display:inline-flex;align-items:center;gap:6px;font:400 11px 'IBM Plex Mono',monospace;color:var(--accent-ink)">
-                <span>•</span><span>{{ spotRec.relation }}</span>
-              </div>
-            </sc-if>
+      <div data-rec-anim="1" style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:clamp(20px,3vh,32px)">
+        <div style="display:flex;align-items:center;gap:16px;min-width:0">
+          <span class="rec-ava" style="width:60px;height:60px">
+            <span class="rec-ring"></span>
+            <sc-if value="{{ spotRec.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ spotRec.photo }}" alt="{{ spotRec.name }}" style="position:relative;width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--surface);box-sizing:border-box"></sc-if>
+            <sc-if value="{{ spotRec.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--surface);box-sizing:border-box;background:{{ spotRec.grad }};color:#0A0F1E;font:700 18px 'IBM Plex Mono',monospace">{{ spotRec.initials }}</span></sc-if>
+          </span>
+          <div style="min-width:0">
+            <div style="font-weight:700;font-size:20px;letter-spacing:-.02em;color:var(--fg)">{{ spotRec.name }}</div>
+            <div style="margin-top:3px;font-size:14px;color:var(--fg3)">{{ spotRec.role }}</div>
           </div>
         </div>
         <sc-if value="{{ spotRec.hasLink }}" hint-placeholder-val="{{ false }}">
-          <a href="{{ spotRec.link }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;border:1px solid rgba(var(--tint),.18);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2);transition:all .25s" style-hover="border-color:#22D3EE;color:#22D3EE">
-            LinkedIn profile ↗
-          </a>
+          <a href="{{ spotRec.link }}" target="_blank" rel="noopener noreferrer" class="rec-chip">View profile ↗</a>
         </sc-if>
+      </div>
+
+      <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(var(--tint),.06)">
+        <div ref="{{ recBarRef }}" style="height:100%;background:linear-gradient(90deg,#22D3EE,#7AA2FF);transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 12px rgba(34,211,238,.6)"></div>
       </div>
     </div>
 
-    <!-- DOWNSIDE SIDE-SCROLLING RAIL (ZERO SCROLLBARS) -->
-    <div style="flex:none;display:flex;flex-direction:column;gap:6px;margin-bottom:2px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font:600 11px 'IBM Plex Mono',monospace;color:var(--fg);letter-spacing:.04em;text-transform:uppercase">All Recommendations ({{ recCount }})</span>
-          <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">· Click card to highlight</span>
-        </div>
-        <div style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">← Swipe / Scroll sideways →</div>
+    <!-- PEOPLE RAIL -->
+    <div class="rec-rail" style="contain:{{ recRailContain }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px 12px">
+        <span style="font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--fg3);text-transform:uppercase">Recommended by</span>
+        <span style="font:500 10.5px 'IBM Plex Mono',monospace;color:var(--muted)">{{ recAutoLabel }}</span>
       </div>
-
-      <!-- Horizontal scrolling track without visible scrollbar -->
-      <div id="rec-strip" class="no-scrollbar" style="display:flex;gap:14px;overflow-x:auto;padding:4px 2px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none">
+      <div data-rec-list="1" class="no-scrollbar" style="position:relative;flex:1;min-height:0;display:flex;flex-direction:{{ recListDir }};gap:8px;overflow:auto;-webkit-mask-image:{{ recMask }};mask-image:{{ recMask }}">
         <sc-for list="{{ recThumbs }}" as="rt" hint-placeholder-count="3">
-          <div data-rec-thumb="{{ rt.idx }}" onClick="{{ rt.onClick }}" style="flex:0 0 clamp(250px,22vw,300px);scroll-snap-align:start;cursor:pointer;border-radius:16px;padding:clamp(10px,1.3vh,14px) clamp(12px,1.2vw,16px);background:{{ rt.cardBg }};border:1.5px solid {{ rt.cardBorder }};box-shadow:{{ rt.cardShadow }};transform:{{ rt.cardTransform }};transition:all .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <span style="font:600 10px 'IBM Plex Mono',monospace;color:{{ rt.statusColor }}">{{ rt.statusText }}</span>
-              <sc-if value="{{ rt.isActive }}" hint-placeholder-val="{{ false }}">
-                <span style="width:6px;height:6px;border-radius:50%;background:#22D3EE;box-shadow:0 0 6px #22D3EE"></span>
-              </sc-if>
-            </div>
-            <p style="margin:0;font-size:13px;line-height:1.45;color:var(--fg2);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-wrap:pretty">
-              "{{ rt.text }}"
-            </p>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:8px;border-top:1px solid rgba(var(--tint),.07)">
-              <sc-if value="{{ rt.hasPhoto }}" hint-placeholder-val="{{ false }}">
-                <img src="{{ rt.photo }}" alt="{{ rt.name }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none">
-              </sc-if>
-              <sc-if value="{{ rt.noPhoto }}" hint-placeholder-val="{{ true }}">
-                <span style="display:grid;place-items:center;width:30px;height:30px;border-radius:50%;flex:none;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;font:600 12px 'IBM Plex Mono',monospace">{{ rt.initials }}</span>
-              </sc-if>
-              <div style="min-width:0;flex:1">
-                <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg)">{{ rt.name }}</div>
-                <div style="font-size:11px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.role }}</div>
-              </div>
-            </div>
-          </div>
+          <button data-rec-thumb="{{ rt.idx }}" onClick="{{ rt.onClick }}" class="rec-person" data-active="{{ rt.activeAttr }}" style="flex:{{ recItemFlex }}">
+            <span style="position:relative;display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:50%;overflow:hidden;background:{{ rt.grad }};color:#0A0F1E;font:700 13px 'IBM Plex Mono',monospace">
+              <sc-if value="{{ rt.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ rt.photo }}" alt="{{ rt.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+              <sc-if value="{{ rt.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rt.initials }}</sc-if>
+            </span>
+            <span style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;text-align:left">
+              <span style="font-weight:600;font-size:15px;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.name }}</span>
+              <span style="font-size:12.5px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.role }}</span>
+              <sc-if value="{{ rt.hasRelation }}" hint-placeholder-val="{{ false }}"><span style="font:500 10.5px 'IBM Plex Mono',monospace;color:var(--accent-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.relation }}</span></sc-if>
+            </span>
+            <span style="flex:none;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ rt.num }}</span>
+          </button>
         </sc-for>
       </div>
     </div>
+  </div>
   </sc-if>
 </section>
 </sc-if>
@@ -639,6 +707,36 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
     <button onClick="{{ phClose }}" aria-label="Close" style="position:absolute;top:18px;right:18px;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgba(233,237,247,.2);background:rgba(10,15,30,.8);color:#E9EDF7;font-size:16px;cursor:pointer">✕</button>
   </div>
 </sc-if>
+<sc-if value="{{ recModal }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeRec }}" style="position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(12px,3vw,40px);background:rgba(4,7,16,.82);backdrop-filter:blur(10px);animation:rise .4s cubic-bezier(.2,.7,.2,1) both">
+    <div onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="Recommendation from {{ rm.name }}" style="position:relative;display:flex;flex-direction:column;width:min(820px,100%);max-height:calc(100svh - 48px);border-radius:26px;background:var(--surface);border:1px solid rgba(34,211,238,.25);box-shadow:0 40px 100px -30px rgba(0,0,0,.8);overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#22D3EE,#7AA2FF,transparent)"></div>
+      <div style="display:flex;align-items:center;gap:16px;padding:clamp(22px,3vw,32px) clamp(22px,3vw,40px) 18px;padding-right:72px;border-bottom:1px solid rgba(var(--tint),.08)">
+        <span style="display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:50%;overflow:hidden;background:{{ rm.grad }};color:#0A0F1E;font:700 16px 'IBM Plex Mono',monospace">
+          <sc-if value="{{ rm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ rm.photo }}" alt="{{ rm.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+          <sc-if value="{{ rm.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rm.initials }}</sc-if>
+        </span>
+        <div style="min-width:0">
+          <div style="font-weight:700;font-size:20px;letter-spacing:-.02em">{{ rm.name }}</div>
+          <div style="margin-top:2px;font-size:14px;color:var(--fg3)">{{ rm.role }}</div>
+          <sc-if value="{{ rm.hasRelation }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font:500 11px 'IBM Plex Mono',monospace;color:var(--accent-ink)">{{ rm.relation }}</div></sc-if>
+        </div>
+      </div>
+      <div class="no-scrollbar" style="overflow:auto;padding:clamp(22px,3vw,36px) clamp(22px,3vw,40px)">
+        <p style="margin:0;font-size:clamp(16px,1.6vw,19px);line-height:1.7;color:var(--fg);white-space:pre-line;text-wrap:pretty">{{ rm.text }}</p>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(22px,3vw,40px);border-top:1px solid rgba(var(--tint),.08)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onClick="{{ recModalPrev }}" aria-label="Previous recommendation" class="rec-arrow">←</button>
+          <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ rm.pos }}</span>
+          <button onClick="{{ recModalNext }}" aria-label="Next recommendation" class="rec-arrow">→</button>
+        </div>
+        <sc-if value="{{ rm.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ rm.link }}" target="_blank" rel="noopener noreferrer" class="rec-chip">View profile ↗</a></sc-if>
+      </div>
+      <button onClick="{{ closeRec }}" aria-label="Close" style="position:absolute;top:18px;right:18px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(var(--tint),.14);background:rgba(var(--base),.85);color:var(--fg);font-size:16px;cursor:pointer">✕</button>
+    </div>
+  </div>
+</sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animation&quot;},&quot;cursorGlow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animation&quot;}}">
 const CATC = {'Power BI':'#F2C94C','Excel':'#7AA2FF','Web apps':'#22D3EE','Android':'#A4C8FF'};
@@ -651,21 +749,27 @@ const EMPTY = {hobbiesHead:{},photos:[],certsHead:{},certifications:[],recsHead:
 const toArr = v => Array.isArray(v) ? v : String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
 const toLines = v => Array.isArray(v) ? v : String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const pad2 = n => String(n).padStart(2,'0');
+const MON = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+const parseYM = s => { s=String(s||''); const m=s.match(/([A-Za-z]{3})[a-z]*\.?\s+(\d{4})/); if(m && MON[m[1].toLowerCase()]!=null) return {y:+m[2], m:MON[m[1].toLowerCase()]}; const y=s.match(/(\d{4})/); return y ? {y:+y[1], m:0} : null; };
+const spanOf = dates => { const [a,b='']=String(dates||'').split(/\s*[\u2014\u2013]\s*|\s+-\s+|\s+to\s+/i); const s=parseYM(a), cur=/present|current|now/i.test(b), now=new Date(); const e=cur?{y:now.getFullYear(),m:now.getMonth()}:parseYM(b); if(!s||!e) return null; return {start:s, months:Math.max(1,(e.y-s.y)*12+(e.m-s.m)+1), cur}; };
+const fmtDur = mo => { const y=Math.floor(mo/12), m=mo%12; return [y?y+(y>1?' yrs':' yr'):'', m?m+(m>1?' mos':' mo'):''].filter(Boolean).join(' ') || '1 mo'; };
+const MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const REC_MS = 8000;
 
 class Component extends DCLogic {
-  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, ind:null, qi:0, filter:'All', open:null, jobOpen:0, hoverMod:0, t:0, live:0 };
+  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
   componentDidMount(){
     const motion = this.motionOn();
     this.io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1, rootMargin:'0px 0px -40px 0px'});
+    this.tlIo = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.setAttribute('data-in',''); this.tlIo.unobserve(e.target); } }),{threshold:.15, rootMargin:'0px 0px -60px 0px'});
     this.scan();
     const t0 = performance.now();
     const tick = now => { const t = Math.min(1,(now-t0)/1800); this.setState({t: 1-Math.pow(1-t,3)}); if(t<1) this.raf=requestAnimationFrame(tick); };
     setTimeout(()=>{ this.raf=requestAnimationFrame(tick); }, 500);
     if (motion) this.iv = setInterval(()=>this.setState(s=>({live:s.live+1})), 2200);
-    this.recIv = setInterval(()=>{ if(this.state.page==='recommendations' && this.motionOn()) this.recStep(1); }, 7500);
-    this.onScroll = () => { const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); if(this.pr?.current) this.pr.current.style.transform=`scaleX(${p})`; };
+    this.onScroll = () => { const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); if(this.pr?.current) this.pr.current.style.transform=`scaleX(${p})`; this.tlUpdate(); };
     this.onMove = e => { if(this.gl?.current) this.gl.current.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; };
-    this.onKey = e => { if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
+    this.onKey = e => { if(this.state.recOpen>=0){ if(e.key==='Escape') this.closeRec(); if(e.key==='ArrowRight') this.recStep(1,true); if(e.key==='ArrowLeft') this.recStep(-1,true); return; } if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
     window.addEventListener('scroll',this.onScroll,{passive:true});
     window.addEventListener('mousemove',this.onMove);
     window.addEventListener('keydown',this.onKey);
@@ -700,26 +804,60 @@ class Component extends DCLogic {
   slide(d, to){ this.setState(s=>{ const n=this._nSlides||1; const i = to!=null ? to : Math.max(0, Math.min(n-1, s.si+d)); return {si:i}; }); }
   phStep(d){ const L=this._phList||[]; if(!L.length) return; const k=Math.max(0,L.indexOf(this.state.ph)); this.setState({ph: L[(k+d+L.length)%L.length]}); }
   certStep(d){ const L=this._certImgs||[]; if(!L.length) return; const k=L.indexOf(this.state.cert); this.setState({cert: L[(k+d+L.length)%L.length]}); }
-  recStep(d){
-    const L = (this.content()?.recommendations||[]).filter(r=>r&&(r.text||r.name));
-    if(!L.length) return;
-    const next = (this.state.recIdx + d + L.length) % L.length;
-    this.setState({recIdx: next});
-    this.scrollRecThumb(next);
+  recList(){ return (this.content()?.recommendations||[]).filter(r=>r&&(r.text||r.name)); }
+  recStep(d, inModal){
+    const n = this.recList().length; if(!n) return;
+    const cur = Math.max(0, this.state.recIdx) % n;
+    this.setRec((cur + d + n) % n, inModal);
   }
-  setRec(i){
-    this.setState({recIdx: i});
-    this.scrollRecThumb(i);
-    const rec = (this.content()?.recommendations||[])[i];
-    window.PortfolioTracker?.trackEvent('recommendation_view', 'Viewed recommendation: ' + (rec?.name || ('#' + (i+1))));
+  setRec(i, inModal){
+    const L = this.recList(); if(!L.length) return;
+    this.setState(inModal ? {recIdx:i, recOpen:i} : {recIdx:i}, ()=>{ this.recFx(); this.recKick(); this.scrollRecThumb(i); });
+    window.PortfolioTracker?.trackEvent('recommendation_view', 'Viewed recommendation: ' + (L[i]?.name || ('#' + (i+1))));
   }
+  openRec(){ this.setState({recOpen: this.state.recIdx}, ()=>this.recKick()); }
+  closeRec(){ this.setState({recOpen:-1}, ()=>this.recKick()); }
+  // Scroll the people rail without moving the page itself.
   scrollRecThumb(i){
-    const el = document.querySelector('[data-rec-thumb="'+i+'"]');
-    if(el){ el.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
+    const box = document.querySelector('[data-rec-list]'), el = box?.querySelector('[data-rec-thumb="'+i+'"]');
+    if(!box || !el) return;
+    const horiz = getComputedStyle(box).flexDirection === 'row';
+    box.scrollTo(horiz ? {left: el.offsetLeft - (box.clientWidth - el.offsetWidth)/2, behavior:'smooth'} : {top: el.offsetTop - (box.clientHeight - el.offsetHeight)/2, behavior:'smooth'});
+  }
+  // The spotlight progress bar doubles as the auto-advance timer, so pausing it pauses rotation.
+  recKick(){
+    this.recBarAnim?.cancel(); this.recBarAnim = null;
+    const bar = this.recBarRef?.current;
+    if(!bar || this.state.page!=='recommendations') return;
+    if(!this.motionOn() || this.recList().length<2){ bar.style.transform='scaleX(0)'; return; }
+    const a = this.recBarAnim = bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}], {duration:REC_MS, easing:'linear', fill:'forwards'});
+    if(this.recHover || this.state.recOpen>=0) a.pause();
+    a.onfinish = () => { if(this.recBarAnim===a) this.recStep(1); };
+  }
+  recFx(){
+    if(!this.motionOn()) return;
+    document.querySelectorAll('[data-rec-anim]').forEach((el,k)=>el.animate([{opacity:0,transform:'translateY(14px)',filter:'blur(6px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:620,delay:k*70,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'}));
+  }
+  // Scroll-driven timeline: fill the spine up to a reading line and light the nodes it passes.
+  tlUpdate(){
+    const box = document.querySelector('[data-tl]'); if(!box) return;
+    const fill = box.querySelector('[data-tl-fill]'), head = box.querySelector('[data-tl-head]');
+    const r = box.getBoundingClientRect(), mark = innerHeight*0.62, h = document.documentElement;
+    const atEnd = h.scrollTop + innerHeight >= h.scrollHeight - 4;
+    const px = atEnd ? r.height : Math.max(0, Math.min(r.height, mark - r.top));
+    const p = r.height ? px/r.height : 0;
+    if(fill) fill.style.transform = 'scaleY('+p+')';
+    if(head){ head.style.top = px+'px'; head.style.opacity = p>0.002 && p<0.998 ? 1 : 0; }
+    box.querySelectorAll('[data-tl-node]').forEach(n=>{ const nr=n.getBoundingClientRect(); n.toggleAttribute('data-lit', atEnd || nr.top + nr.height/2 <= mark); });
   }
   content(){ if(!this._c && window.PortfolioContent) this._c = window.PortfolioContent.load(); return this._c; }
   qLen(){ return Math.max(1, (this.content()?.quotes||[]).length); }
-  componentDidUpdate(){ this.scan(); this.applyTheme(); }
+  componentDidUpdate(){
+    this.scan(); this.applyTheme(); this.tlUpdate();
+    clearTimeout(this._tlT); this._tlT = setTimeout(()=>this.tlUpdate(), 620);
+    const key = this.state.page + '|' + this.recList().length;
+    if(key !== this._recKey){ this._recKey = key; this.recKick(); }
+  }
   sunTheme(){
     const now=new Date(), rad=Math.PI/180, lat=23.8, lon=-now.getTimezoneOffset()/4;
     const n=Math.floor((now-new Date(now.getFullYear(),0,0))/864e5), B=rad*360/365*(n-81);
@@ -812,7 +950,7 @@ class Component extends DCLogic {
     const edge = Math.max(left(p)+p.offsetWidth, btns ? left(btns)+btns.offsetWidth : 0) + pad;
     g.style.right=((left(ph)+ph.offsetWidth)-edge)+'px';
   }
-  componentWillUnmount(){ cancelAnimationFrame(this.raf); clearInterval(this.iv); clearInterval(this.recIv); clearInterval(this.qiv); clearInterval(this.sunIv); this.io?.disconnect(); window.removeEventListener('scroll',this.onScroll); window.removeEventListener('mousemove',this.onMove); window.removeEventListener('keydown',this.onKey); window.removeEventListener('resize',this.onResize); window.removeEventListener('portfolio-content',this.onContent); window.removeEventListener('storage',this.onStorage); window.removeEventListener('popstate',this.onPop); window.removeEventListener('hashchange',this.onPop); clearInterval(this.cw); }
+  componentWillUnmount(){ cancelAnimationFrame(this.raf); clearInterval(this.iv); this.recBarAnim?.cancel(); clearInterval(this.qiv); clearInterval(this.sunIv); this.io?.disconnect(); this.tlIo?.disconnect(); window.removeEventListener('scroll',this.onScroll); window.removeEventListener('mousemove',this.onMove); window.removeEventListener('keydown',this.onKey); window.removeEventListener('resize',this.onResize); window.removeEventListener('portfolio-content',this.onContent); window.removeEventListener('storage',this.onStorage); window.removeEventListener('popstate',this.onPop); window.removeEventListener('hashchange',this.onPop); clearInterval(this.cw); }
   scan(){
     if(!this.io) return;
     const motion = this.motionOn();
@@ -823,13 +961,18 @@ class Component extends DCLogic {
       el.style.transition=`opacity .9s cubic-bezier(.2,.7,.2,1) ${el.dataset.reveal||0}ms, transform .9s cubic-bezier(.2,.7,.2,1) ${el.dataset.reveal||0}ms, border-color .3s, background .3s`;
       this.io.observe(el);
     });
+    document.querySelectorAll('[data-tl-item]:not([data-tlo])').forEach(el=>{
+      el.setAttribute('data-tlo','1');
+      if(!motion){ el.setAttribute('data-in',''); return; }
+      this.tlIo.observe(el);
+    });
   }
   renderVals(){
     this.pr = this.pr || React.createRef(); this.gl = this.gl || React.createRef();
     this.navRef = this.navRef || React.createRef(); this.mainRef = this.mainRef || React.createRef();
-    this.qRef1 = this.qRef1 || React.createRef(); this.qRef2 = this.qRef2 || React.createRef(); this.qRef3 = this.qRef3 || React.createRef();
+    this.recBarRef = this.recBarRef || React.createRef(); this.qRef1 = this.qRef1 || React.createRef(); this.qRef2 = this.qRef2 || React.createRef(); this.qRef3 = this.qRef3 || React.createRef();
     const C = {...EMPTY, ...(this.content() || {})};
-    const { open, jobOpen, hoverMod, t } = this.state;
+    const { open, jobsOpen, hoverMod, t } = this.state;
     const glow = this.props.cursorGlow ?? true;
     if (this.gl.current) this.gl.current.style.opacity = glow ? 1 : 0;
     const catsU = [...new Set(C.projects.map(p=>p.cat).filter(Boolean))];
@@ -854,33 +997,26 @@ class Component extends DCLogic {
     const recIdx = recCount ? (Math.max(0, this.state.recIdx) % recCount) : 0;
     const spotRecRaw = recsAll[recIdx] || null;
     const initialsOf = name => (name || '?').replace(/\(.*?\)/g,'').split(/[\s.]+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0, 2).map(w=>w[0].toUpperCase()).join('') || '•';
-    const spotRec = spotRecRaw ? {
-      ...spotRecRaw,
-      hasPhoto: !!spotRecRaw.photo,
-      noPhoto: !spotRecRaw.photo,
-      hasLink: !!spotRecRaw.link,
-      hasRelation: !!spotRecRaw.relation,
-      initials: initialsOf(spotRecRaw.name)
-    } : null;
-    const recThumbs = recsAll.map((r, i) => {
-      const isActive = i === recIdx;
-      return {
-        ...r,
-        idx: i,
-        hasPhoto: !!r.photo,
-        noPhoto: !r.photo,
-        initials: initialsOf(r.name),
-        isActive,
-        notActive: !isActive,
-        statusText: isActive ? 'SPOTLIGHTED' : pad2(i + 1),
-        statusColor: isActive ? '#22D3EE' : 'var(--muted)',
-        cardBg: isActive ? 'linear-gradient(145deg, rgba(34,211,238,.12), rgba(17,24,48,.9))' : 'var(--surface)',
-        cardBorder: isActive ? '#22D3EE' : 'rgba(var(--tint),.1)',
-        cardShadow: isActive ? '0 12px 28px -8px rgba(34,211,238,.35)' : 'none',
-        cardTransform: isActive ? 'translateY(-4px)' : 'none',
-        onClick: () => this.setRec(i)
-      };
-    });
+    const gradOf = i => 'linear-gradient(135deg,'+PAL[(i+2)%PAL.length]+','+PAL[(i+3)%PAL.length]+')';
+    const recV = (r,i) => r ? {...r, hasPhoto:!!r.photo, noPhoto:!r.photo, hasLink:!!r.link, hasRelation:!!r.relation, initials:initialsOf(r.name), grad:gradOf(i)} : {};
+    const recWide = vw >= 980;
+    const spotLen = (spotRecRaw?.text || '').length;
+    const spotRec = {...recV(spotRecRaw, recIdx), isLong: spotLen > (recWide ? 520 : 340)};
+    const recThumbs = recsAll.map((r, i) => ({...recV(r, i), idx:i, num:pad2(i+1), activeAttr: i===recIdx ? '1' : '0', onClick: () => this.setRec(i)}));
+    const recModalRaw = this.state.recOpen >= 0 ? recsAll[this.state.recOpen % Math.max(1, recCount)] : null;
+    const motionOn = this.motionOn(), tlWide = vw >= 960;
+    const jobSpans = C.jobs.map(j=>spanOf(j.dates));
+    const totalMo = jobSpans.reduce((a,sp)=>a+(sp?sp.months:0), 0);
+    const firstStart = jobSpans.filter(Boolean).map(sp=>sp.start).sort((a,b)=>a.y-b.y||a.m-b.m)[0];
+    const careerStart = firstStart ? MON_NAMES[firstStart.m]+' '+firstStart.y : '';
+    const companyCount = new Set(C.jobs.map(j=>(j.company||'').trim().toLowerCase()).filter(Boolean)).size;
+    const expStats = [
+      totalMo ? {value: Math.floor(totalMo/12) + '+', label: 'Years exp.'} : null,
+      {value: C.jobs.length, label: C.jobs.length===1 ? 'Role' : 'Roles'},
+      companyCount && companyCount !== C.jobs.length ? {value: companyCount, label: 'Companies'} : null,
+      firstStart ? {value: firstStart.y, label: 'Since'} : null
+    ].filter(Boolean);
+    const allJobsOpen = C.jobs.length > 0 && C.jobs.every((_,i)=>jobsOpen[i]);
     const avail=(C.hero.available||'').trim() && C.hero.availableOn!=='hide';
     const certsAll=(C.certifications||[]).filter(x=>x&&x.title);
     const certImgs=certsAll.map((x,i)=>x.image?i:-1).filter(i=>i>=0); this._certImgs=certImgs;
@@ -909,10 +1045,24 @@ class Component extends DCLogic {
       toggleMenu: ()=>this.setState(s=>({menu:!s.menu})),
       sheetItems: PAGES.map(k=>({label:LABELS[k], fg:this.state.page===k?'var(--accent-ink)':'var(--fg)', go:e=>this.go(k,e)})),
       hasRecs: recCount > 0, noRecs: recCount === 0, hasRecsLink: !!C.recsHead.linkedin,
-      recCount, recCountBadge: recCount + (recCount === 1 ? ' Endorsement' : ' Endorsements'),
-      spotRec: spotRec || {}, spotRecPos: pad2(recIdx + 1) + ' / ' + pad2(Math.max(1, recCount)),
+      recCount, recCountLabel: recCount === 1 ? 'Recommendation' : 'Recommendations',
+      recFaces: recsAll.slice(0, 4).map(recV),
+      spotRec, spotRecNum: pad2(recIdx + 1), spotRecTotal: pad2(Math.max(1, recCount)),
+      recQuoteSize: recWide ? (spotLen < 220 ? 'clamp(22px,2.5vw,34px)' : spotLen < 420 ? 'clamp(19px,2vw,27px)' : 'clamp(17px,1.6vw,22px)') : (spotLen < 220 ? '21px' : spotLen < 420 ? '18px' : '16.5px'),
+      recClamp: recWide ? 9 : 11,
+      recCols: recWide ? 'minmax(0,1.7fr) minmax(280px,1fr)' : 'minmax(0,1fr)',
+      recRailContain: recWide ? 'size' : 'none',
+      recListDir: recWide ? 'column' : 'row', recItemFlex: recWide ? '0 0 auto' : '0 0 min(280px,82%)',
+      recMask: recWide ? 'linear-gradient(180deg,transparent,#000 12px,#000 calc(100% - 12px),transparent)' : 'none',
+      recAutoLabel: this.motionOn() && recCount > 1 ? 'Auto-play · hover to pause' : '',
+      recHoverOn: () => { this.recHover = true; this.recBarAnim?.pause(); },
+      recHoverOff: () => { this.recHover = false; if(this.state.recOpen < 0) this.recBarAnim?.play(); },
       prevRec: () => this.recStep(-1), nextRec: () => this.recStep(1),
-      recThumbs,
+      openRec: () => this.openRec(), closeRec: () => this.closeRec(),
+      recModal: !!recModalRaw,
+      rm: recModalRaw ? {...recV(recModalRaw, this.state.recOpen), pos: pad2(this.state.recOpen + 1) + ' / ' + pad2(recCount)} : {},
+      recModalPrev: e => { e.stopPropagation(); this.recStep(-1, true); }, recModalNext: e => { e.stopPropagation(); this.recStep(1, true); },
+      recThumbs, recBarRef: this.recBarRef,
       progressRef:this.pr, glowRef:this.gl,
       modes: [['auto','Auto (sunrise / sunset)'],['light','Light mode'],['dark','Dark mode']].map(([m,title])=>({title, isAuto:m==='auto', isLight:m==='light', isDark:m==='dark', bg:this.state.mode===m?'#22D3EE':'transparent', fg:this.state.mode===m?'#0A0F1E':'var(--fg2)', set:e=>this.setMode(m,e)})), navRef:this.navRef, mainRef:this.mainRef,
       pg: Object.fromEntries(PAGES.map(k=>[k, this.state.page===k])),
@@ -934,52 +1084,52 @@ class Component extends DCLogic {
       skills: C.skills.map((sk,i)=>({...sk, num:pad2(i+1), tags:toArr(sk.tags), delay:i*70})),
       badges: C.badges.map((bd,i)=>({...bd, delay:i*80, color: bd.tone==='blue'?'var(--blue-ink)':'var(--accent-ink)'})),
       jobs: C.jobs.map((j,i)=>{
-        const isCurrent = /present|current/i.test(j.dates||'');
-        const isOpen = i===jobOpen;
-        const pinColor = isCurrent ? '#22D3EE' : (isOpen ? '#7AA2FF' : 'rgba(var(--tint),.35)');
-        const glowColor = isCurrent ? 'rgba(34,211,238,.6)' : (isOpen ? 'rgba(122,162,255,.4)' : 'transparent');
-        const cardBorder = isOpen ? 'rgba(34,211,238,.45)' : (isCurrent ? 'rgba(34,211,238,.25)' : 'rgba(var(--tint),.08)');
-        const cardShadow = isOpen ? '0 24px 60px -15px rgba(0,0,0,.7), 0 0 30px -5px rgba(34,211,238,.2)' : (isCurrent ? '0 16px 40px -15px rgba(0,0,0,.5), 0 0 20px -8px rgba(34,211,238,.12)' : 'none');
-        const topBarGradient = isOpen ? 'linear-gradient(90deg, #22D3EE, #7AA2FF, transparent)' : (isCurrent ? 'linear-gradient(90deg, #22D3EE 40%, transparent)' : 'transparent');
-        const toggleBg = isOpen ? '#22D3EE' : 'rgba(var(--tint),.06)';
-        const toggleFg = isOpen ? '#0A0F1E' : 'var(--fg)';
-        const toggleLabel = isOpen ? 'Collapse' : 'Responsibilities';
-        const roleTag = i===0 ? 'MNC Enterprise' : (i===1 ? 'Operations Lead' : 'Accounts & Ops');
+        const sp = jobSpans[i];
+        const isCurrent = !!sp?.cur || /present|current/i.test(j.dates||'');
+        const isOpen = !!jobsOpen[i];
+        const side = tlWide ? (i%2===0 ? 'l' : 'r') : 'r';
+        const points = toLines(j.points);
         return {
-          ...j,
-          hasLogo: !!j.logo,
-          noLogo: !j.logo,
-          logoBg: j.logo ? '#FFFFFF' : (isCurrent ? 'linear-gradient(135deg,#22D3EE,#7AA2FF)' : 'linear-gradient(135deg,#1E293B,#0F172A)'),
-          logoScale: isOpen ? 1.06 : 1,
+          ...j, side, isOpen, isCurrent,
+          curAttr: isCurrent ? '1' : '0', openAttr: isOpen ? '1' : '0',
+          nodeCol: tlWide ? '2' : '1', nodeRow: tlWide ? '1' : '1 / span 2',
+          metaCol: tlWide ? (side==='l' ? '3' : '1') : '2',
+          cardCol: tlWide ? (side==='l' ? '1' : '3') : '2', cardRow: tlWide ? '1' : '2', cardMl: tlWide ? '0' : '10px',
+          metaAlign: tlWide && side==='r' ? 'right' : 'left', metaJustify: tlWide && side==='r' ? 'flex-end' : 'flex-start',
+          metaPad: tlWide ? '14px 0 0' : '0 0 0 10px',
+          startYear: sp ? sp.start.y : '', dur: sp ? fmtDur(sp.months) : '', hasDur: !!sp,
+          num: pad2(i+1), total: pad2(C.jobs.length),
+          hasLogo: !!j.logo, noLogo: !j.logo,
+          logoBg: j.logo ? '#FFFFFF' : (isCurrent ? 'linear-gradient(135deg,#22D3EE,#7AA2FF)' : 'linear-gradient(135deg,#A4C8FF,#7AA2FF)'),
           initials: (j.company||'?').replace(/\(.*?\)/g,'').split(/[\s.]+/).filter(w=>/^[A-Za-z]/.test(w)&&!/^(pvt|ltd|limited|the|of|and)$/i.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'•',
-          points: toLines(j.points),
-          delay: i*80,
-          rows: isOpen ? '1fr' : '0fr',
-          rot: isOpen ? '45deg' : '0deg',
-          dateColor: isCurrent ? '#22D3EE' : (isOpen ? 'var(--blue-ink)' : 'var(--muted)'),
-          isCurrent,
-          notCurrent: !isCurrent,
-          pinColor,
-          glowColor,
-          cardBorder,
-          cardShadow,
-          topBarGradient,
-          toggleBg,
-          toggleFg,
-          toggleLabel,
-          roleTag,
-          toggle: () => this.setState({jobOpen: isOpen ? -1 : i})
+          points: points.map((text,k)=>({text, n:pad2(k+1), anim: isOpen && motionOn ? 'tlPt .5s cubic-bezier(.2,.7,.2,1) '+(80+k*55)+'ms both' : 'none'})),
+          teaser: points[0] || '', pointCount: points.length,
+          rows: isOpen ? '1fr' : '0fr', teaserRows: isOpen ? '0fr' : '1fr',
+          rot: isOpen ? '180deg' : '0deg',
+          chevBg: isOpen ? '#22D3EE' : 'transparent', chevFg: isOpen ? '#0A0F1E' : 'var(--fg2)', chevBorder: isOpen ? '#22D3EE' : 'rgba(var(--tint),.16)',
+          toggle: () => this.setState(s=>({jobsOpen:{...s.jobsOpen, [i]:!s.jobsOpen[i]}}))
         };
       }),
+      tlCols: tlWide ? 'minmax(0,1fr) 72px minmax(0,1fr)' : '26px minmax(0,1fr)', tlLogo: vw >= 520 ? '56px' : '44px', tlPtPad: vw >= 520 ? '12px 14px' : '10px 10px',
+      tlSpineLeft: tlWide ? '50%' : '13px', tlYearSize: tlWide ? 'clamp(56px,7vw,104px)' : '40px',
+      tlCapCol: '1 / -1', tlCapJustify: tlWide ? 'center' : 'start', tlCapTransform: 'none',
+      hasCareerStart: !!careerStart, careerStart,
+      expStats,
+      allJobsLabel: allJobsOpen ? 'Collapse all' : 'Expand all', allJobsRot: allJobsOpen ? '180deg' : '0deg',
+      toggleAllJobs: () => this.setState({jobsOpen: allJobsOpen ? {} : Object.fromEntries(C.jobs.map((_,i)=>[i,true]))}),
+      hasEducation: C.education.length > 0,
       education: C.education.map((e,i)=>{
-        const isLatest = i === 0;
+        const yrs = String(e.period||'').match(/\d{4}/g) || [];
+        const y0 = +yrs[0], y1 = +yrs[yrs.length-1], nowY = new Date().getFullYear() + new Date().getMonth()/12;
+        const inProgress = /progress|ongoing|present|current|final/i.test((e.period||'')+' '+(e.school||'')) || (y1 && y1 > nowY);
+        const pct = y0 && y1 > y0 ? Math.max(6, Math.min(96, (nowY - y0) / (y1 - y0) * 100)) : 0;
         return {
           ...e,
           delay: i*80,
-          statusBadge: isLatest ? 'IN PROGRESS · FINAL YEAR' : 'COMPLETED DEGREE',
-          badgeColor: isLatest ? '#22D3EE' : 'var(--blue-ink)',
-          cardBorder: isLatest ? 'rgba(34,211,238,.28)' : 'rgba(var(--tint),.08)',
-          cardGlow: isLatest ? '0 16px 40px -15px rgba(34,211,238,.15)' : 'none'
+          latestAttr: inProgress ? '1' : '0',
+          statusBadge: inProgress ? 'IN PROGRESS' : 'COMPLETED',
+          badgeColor: inProgress ? 'var(--accent-ink)' : 'var(--blue-ink)',
+          hasProgress: inProgress && pct > 0, progress: pct.toFixed(0) + '%'
         };
       }),
       mailHref: mail,
