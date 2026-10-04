@@ -451,18 +451,20 @@ const GROUPS = [
    {k:'note',label:'Short note',t:'area',rows:2,full:true},
    {k:'image',label:'Certificate image',t:'image',full:true}]},
  ]},
- {key:'experience', label:'Experience', desc:'Jobs, recommendations and education.', count:'jobs', blocks:[
+ {key:'experience', label:'Experience', desc:'Jobs, career timeline and education.', count:'jobs', blocks:[
   {path:'expHead', kind:'object', title:'Section heading', fields:HEAD},
   {path:'jobs', kind:'list', noun:'job', title:'Jobs', titleKey:'role', subKey:'dates', thumbKey:'logo', blank:{role:'New role',company:'',dates:'',points:'',logo:''}, fields:[
    {k:'role',label:'Role'},{k:'company',label:'Company'},{k:'dates',label:'Dates'},
    {k:'points',label:'Responsibilities',t:'lines',rows:6,full:true,hint:'One per line'},
    {k:'logo',label:'Company logo',t:'image',full:true,hint:'Square PNG or SVG works best. Shown on a white tile.'}]},
-  {path:'recsHead', kind:'object', title:'Recommendations heading', desc:'Shown at the bottom of the Experience page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
+  {path:'education', kind:'list', noun:'entry', title:'Education', titleKey:'degree', subKey:'period', blank:{period:'',degree:'New degree',school:''}, fields:[
+   {k:'degree',label:'Degree'},{k:'period',label:'Years'},{k:'school',label:'Institution',full:true}]},
+ ]},
+ {key:'recommendations', label:'Recommendations', desc:'LinkedIn endorsements and testimonials.', count:'recommendations', blocks:[
+  {path:'recsHead', kind:'object', title:'Section heading', desc:'Shown at the top of the Recommendations page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
   {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:''}, fields:[
    {k:'name',label:'Name'},{k:'role',label:'Role · Company'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…'},
    {k:'text',label:'Recommendation',t:'area',rows:6,full:true},{k:'photo',label:'Photo',t:'image',full:true}]},
-  {path:'education', kind:'list', noun:'entry', title:'Education', titleKey:'degree', subKey:'period', blank:{period:'',degree:'New degree',school:''}, fields:[
-   {k:'degree',label:'Degree'},{k:'period',label:'Years'},{k:'school',label:'Institution',full:true}]},
  ]},
  {key:'hobbies', label:'Hobbies', desc:'Your photography gallery.', count:'photos', blocks:[
   {path:'hobbiesHead', kind:'object', title:'Section heading', fields:[...HEAD,{k:'intro',label:'Intro line',t:'area',rows:2,full:true}]},
@@ -718,7 +720,7 @@ class Component extends DCLogic {
     const pagesObj = ast.pages || {};
     const maxPageViews = Math.max(1, ...Object.values(pagesObj));
     const totalPageViews = Object.values(pagesObj).reduce((a, b) => a + b, 0) || 1;
-    const pageNames = { intro: 'Intro / Hero', projects: 'Projects / Work', skills: 'Skills', certifications: 'Certifications', experience: 'Experience', hobbies: 'Hobbies', contact: 'Contact' };
+    const pageNames = { intro: 'Intro / Hero', projects: 'Projects / Work', skills: 'Skills', certifications: 'Certifications', experience: 'Experience', recommendations: 'Recommendations', hobbies: 'Hobbies', contact: 'Contact' };
     const pagesList = Object.entries(pagesObj).sort((a, b) => b[1] - a[1]).map(([k, cnt]) => ({
       name: pageNames[k] || k,
       count: cnt,

@@ -332,7 +332,7 @@
     var testBrowsers = ['Chrome', 'Safari', 'Edge', 'Firefox'];
     var testOs = ['Windows', 'macOS', 'iOS', 'Android'];
     var testDevices = ['Desktop', 'Mobile', 'Tablet'];
-    var testPages = ['intro', 'projects', 'skills', 'certifications', 'experience', 'hobbies', 'contact'];
+    var testPages = ['intro', 'projects', 'skills', 'certifications', 'experience', 'recommendations', 'hobbies', 'contact'];
     var testEvents = [
       { type: 'page_view', detail: 'Viewed Projects' },
       { type: 'project_view', detail: 'Explored Power BI Sales Dashboard' },
