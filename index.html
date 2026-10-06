@@ -843,6 +843,21 @@ const clipOf = u => { u = String(u||'').trim(); if(!u) return null;
   return {video:u}; };
 // Uploaded dashboards are served as plain text by Supabase Storage, so they are fetched and rendered via srcdoc.
 const dashInline = u => /\/storage\/v1\/object\/public\/|^data:/i.test(u||'');
+// Injected into inline demos: zooms the whole page down until it fits the viewer without scrolling.
+// Phones keep normal size (a full report shrunk to 375px is unreadable), so they may still scroll.
+const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var MIN=0.45,self=false,t;'
+  + 'function el(){return document.scrollingElement||document.documentElement}'
+  + 'function over(){var e=el();return e.scrollHeight>e.clientHeight+2||e.scrollWidth>e.clientWidth+2}'
+  + 'function z(v){document.documentElement.style.zoom=v>=1?"":String(v)}'
+  + 'function fit(){var d=document.documentElement;d.style.overflow="";z(1);'
+  + 'if(innerWidth>=700&&over()){var lo=MIN,hi=1;for(var i=0;i<9;i++){var m=(lo+hi)/2;z(m);if(over())hi=m;else lo=m}z(lo)}'
+  + 'if(!over())d.style.overflow="hidden";self=true;window.dispatchEvent(new Event("resize"));self=false}'
+  + 'function later(ms){clearTimeout(t);t=setTimeout(fit,ms||60)}'
+  + 'addEventListener("resize",function(){if(!self)later(150)});addEventListener("load",function(){later(0)});'
+  + 'if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){later(0)});'
+  + 'function watch(){new MutationObserver(function(){later(80)}).observe(document.getElementById("page")||document.body,{childList:true});later(0)}'
+  + 'document.body?watch():addEventListener("DOMContentLoaded",watch)})()</scr'+'ipt>';
+const withFit = h => /<\/body>/i.test(h) ? h.replace(/<\/body>(?![\s\S]*<\/body>)/i, DASH_FIT + '</body>') : h + DASH_FIT;
 
 class Component extends DCLogic {
   state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
@@ -913,13 +928,13 @@ class Component extends DCLogic {
     }
     // Inline HTML would inherit this site's origin, so it runs scripts only, without same-origin access.
     f.setAttribute('sandbox','allow-scripts allow-popups allow-forms allow-downloads');
-    this.dashHtml(url).then(h=>{ if(this.state.dash?.url===url){ f.onload=done; f.srcdoc=h; } }).catch(()=>{ if(this.state.dash?.url===url) this.setState({dashState:'error'}); });
+    this.dashHtml(url).then(h=>{ if(this.state.dash?.url===url){ f.onload=done; f.srcdoc=withFit(h); } }).catch(()=>{ if(this.state.dash?.url===url) this.setState({dashState:'error'}); });
   }
   dashNewTab(){
     const d=this.state.dash; if(!d) return;
     if(!dashInline(d.url)){ window.open(d.url,'_blank','noopener'); return; }
     const w=window.open('about:blank','_blank');
-    this.dashHtml(d.url).then(h=>{ const u=URL.createObjectURL(new Blob([h],{type:'text/html'})); if(w) w.location=u; else window.open(u,'_blank'); }).catch(()=>w?.close());
+    this.dashHtml(d.url).then(h=>{ const u=URL.createObjectURL(new Blob([withFit(h)],{type:'text/html'})); if(w) w.location=u; else window.open(u,'_blank'); }).catch(()=>w?.close());
   }
   phStep(d){ const L=this._phList||[]; if(!L.length) return; const k=Math.max(0,L.indexOf(this.state.ph)); this.setState({ph: L[(k+d+L.length)%L.length]}); }
   certStep(d){ const L=this._certImgs||[]; if(!L.length) return; const k=L.indexOf(this.state.cert); this.setState({cert: L[(k+d+L.length)%L.length]}); }
