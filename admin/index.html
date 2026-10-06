@@ -154,6 +154,35 @@ input,textarea,select,button{font-family:inherit}
                               <sc-if value="{{ f.hasValue }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.onClear }}" style="padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Clear</button></sc-if>
                             </div>
                           </sc-if>
+                          <sc-if value="{{ f.isDashboard }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                              <input value="{{ f.value }}" onChange="{{ f.onInput }}" placeholder="{{ f.placeholder }}" style="flex:1;min-width:220px;padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none" style-focus="border-color:#22D3EE">
+                              <label style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(34,211,238,.12);color:#22D3EE;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Upload dashboard (.html)<input type="file" accept=".html,.htm,text/html" onChange="{{ f.onHtmlFile }}" style="display:none"></label>
+                              <sc-if value="{{ f.hasValue }}" hint-placeholder-val="{{ false }}">
+                                <button onClick="{{ f.onPreview }}" style="padding:10px 14px;border:1px solid rgba(233,237,247,.14);border-radius:10px;background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer;white-space:nowrap">Preview ↗</button>
+                                <button onClick="{{ f.onClear }}" style="padding:7px 12px;border:0;border-radius:8px;background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Clear</button>
+                              </sc-if>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ f.isClips }}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:8px">
+                              <sc-for list="{{ f.clipRows }}" as="cr" hint-placeholder-count="1">
+                                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(233,237,247,.1);background:#0A0F1E">
+                                  <span style="display:grid;place-items:center;width:30px;height:30px;flex:none;border-radius:8px;background:rgba(34,211,238,.12);color:#22D3EE;font-size:12px">▶</span>
+                                  <span style="flex:none;padding:2px 8px;border-radius:999px;background:rgba(233,237,247,.06);font:500 10px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ cr.kind }}</span>
+                                  <a href="{{ cr.src }}" target="_blank" rel="noopener noreferrer" style="flex:1;min-width:0;font-size:13px;color:#E9EDF7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cr.name }}</a>
+                                  <button onClick="{{ cr.up }}" title="Move up" style="width:30px;height:28px;border:0;border-radius:7px;background:rgba(233,237,247,.06);color:#AEB6CC;cursor:pointer">↑</button>
+                                  <button onClick="{{ cr.down }}" title="Move down" style="width:30px;height:28px;border:0;border-radius:7px;background:rgba(233,237,247,.06);color:#AEB6CC;cursor:pointer">↓</button>
+                                  <button onClick="{{ cr.remove }}" title="Remove" style="width:30px;height:28px;border:0;border-radius:7px;background:rgba(245,158,158,.1);color:#F59E9E;cursor:pointer">✕</button>
+                                </div>
+                              </sc-for>
+                              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                                <input value="{{ f.clipDraft }}" onChange="{{ f.onClipDraft }}" placeholder="Paste a YouTube / Vimeo / Loom / Drive / .mp4 link" style="flex:1;min-width:220px;padding:11px 13px;border-radius:10px;border:1px solid rgba(233,237,247,.12);background:#0A0F1E;color:#E9EDF7;font-size:14px;outline:none" style-focus="border-color:#22D3EE">
+                                <button onClick="{{ f.onClipAdd }}" style="padding:10px 16px;border:1px solid rgba(233,237,247,.14);border-radius:10px;background:transparent;color:#E9EDF7;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Add link</button>
+                                <label style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;background:rgba(34,211,238,.12);color:#22D3EE;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">+ Upload clips<input type="file" accept="video/*" multiple="{{ true }}" onChange="{{ f.onClipFiles }}" style="display:none"></label>
+                              </div>
+                            </div>
+                          </sc-if>
                           <sc-if value="{{ f.isGallery }}" hint-placeholder-val="{{ false }}">
                             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch">
                               <sc-for list="{{ f.gallery }}" as="gi" hint-placeholder-count="2">
@@ -430,12 +459,14 @@ const GROUPS = [
  ]},
  {key:'projects', label:'Projects', desc:'Dashboards, Excel tools, web apps (Operation & CI portals) and Android apps.', count:'projects', blocks:[
   {path:'work', kind:'object', title:'Section heading', fields:HEAD},
-  {path:'projects', kind:'list', noun:'project', title:'Projects', desc:'Categories become the filter buttons on the Work page.', titleKey:'title', subKey:'cat', thumbKey:'image', blank:{title:'New project',cat:'Power BI',summary:'',desc:'',tags:'',image:'',images:[],link:''}, fields:[
+  {path:'projects', kind:'list', noun:'project', title:'Projects', desc:'Categories become the filter buttons on the Work page.', titleKey:'title', subKey:'cat', thumbKey:'image', blank:{title:'New project',cat:'Power BI',summary:'',desc:'',tags:'',image:'',images:[],link:'',dashboard:'',clips:[]}, fields:[
    {k:'title',label:'Title'},{k:'cat',label:'Category',list:'cat-list',hint:'Pick one or type a new category.'},
    {k:'summary',label:'Card summary',t:'area',rows:2,full:true},
    {k:'desc',label:'Full description (shown when opened)',t:'area',rows:5,full:true},
    {k:'tags',label:'Tags',t:'tags',hint:'Comma separated'},{k:'link',label:'Project link',placeholder:'https://…',hint:'Optional. Play Store, live app, etc.'},
-   {k:'images',label:'Screenshots (slides in the popup)',t:'gallery',full:true,hint:'The first image is the card cover. Use ← → to reorder.'}]},
+   {k:'images',label:'Screenshots (slides in the popup)',t:'gallery',full:true,hint:'The first image is the card cover. Use ← → to reorder.'},
+   {k:'dashboard',label:'Live dashboard',t:'dashboard',full:true,placeholder:'https://… or upload a .html file',hint:'Upload a self-contained .html dashboard (e.g. dist/index.html) or paste a link to a hosted one. Visitors get an "Open live dashboard" button that opens it full screen.'},
+   {k:'clips',label:'Video clips',t:'clips',full:true,hint:'Upload MP4 / WebM / MOV files or paste a YouTube, Vimeo, Loom or Google Drive link. Clips play before the screenshots in the popup.'}]},
  ]},
  {key:'skills', label:'Skills', desc:'Skill cards and certificates.', count:'skills', blocks:[
   {path:'skillsHead', kind:'object', title:'Section heading', fields:HEAD},
@@ -589,6 +620,45 @@ class Component extends DCLogic {
     const blob=dataUrlToBlob(dataUrl);
     return PC.uploadImage(blob, blob.type==='image/png'?'png':'jpg');
   }
+  setClips(path, idx, fn){ this.commit(c=>{ const it=c[path][idx]; it.clips=fn(Array.isArray(it.clips)?it.clips.slice():[]); }); }
+  // Large files (dashboards, clips) go to Supabase Storage; local mode keeps small ones inline as data URLs.
+  storeFile(file, ext, type){
+    const PC=window.PortfolioContent;
+    if(!PC || !PC.remote){
+      if(file.size > 2500000) return Promise.reject(new Error('Local mode file limit is ~2 MB. Connect Supabase to store large files.'));
+      return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(type ? new Blob([file],{type}) : file); });
+    }
+    return PC.uploadFile(type ? new File([file], file.name, {type}) : file, ext);
+  }
+  mediaVals(t, val, set, ctx){
+    const fail = err => this.flash('Upload failed: '+String(err&&err.message||err).slice(0,120));
+    if(t==='dashboard') return {
+      onHtmlFile: e=>{ const file=e.target.files&&e.target.files[0]; e.target.value=''; if(!file) return;
+        if(!/\.html?$/i.test(file.name)){ this.flash('Please choose an .html file'); return; }
+        this.flash('Uploading '+file.name+'…');
+        // Stored as plain text; the site fetches it and renders it in a sandboxed frame.
+        this.storeFile(file, 'html', 'text/plain').then(url=>{ set(url); this.flash('Dashboard uploaded'); }).catch(fail); },
+      onPreview: ()=>{ const u=String(val||''); if(!u) return;
+        if(!/\/storage\/v1\/object\/public\/|^data:/i.test(u)){ window.open(u,'_blank','noopener'); return; }
+        fetch(u).then(r=>r.text()).then(h=>window.open(URL.createObjectURL(new Blob([h],{type:'text/html'})),'_blank')).catch(fail); },
+    };
+    if(t!=='clips' || !ctx) return {};
+    const list=Array.isArray(val)?val:[], dk='clip:'+this.keyOf(ctx.path,ctx.idx), draft=(this.state.drafts||{})[dk]||'';
+    const kindOf=u=>/youtu\.?be/i.test(u)?'YouTube':/vimeo\.com/i.test(u)?'Vimeo':/loom\.com/i.test(u)?'Loom':/drive\.google\.com/i.test(u)?'Drive':/^data:/i.test(u)?'Inline':'Video';
+    const mv=(k,d)=>()=>this.setClips(ctx.path,ctx.idx,a=>{ const j=k+d; if(j>=0&&j<a.length) [a[j],a[k]]=[a[k],a[j]]; return a; });
+    return {
+      clipRows: list.map((u,k)=>({src:u, kind:kindOf(u), name:/^data:/i.test(u)?'Inline clip '+(k+1):decodeURIComponent(u.split('?')[0].split('/').pop()||u).replace(/^\d+-[a-z0-9]{6}\./,'clip.'),
+        up:mv(k,-1), down:mv(k,1), remove:()=>this.setClips(ctx.path,ctx.idx,a=>{ a.splice(k,1); return a; })})),
+      clipDraft: draft,
+      onClipDraft: e=>{ const v=e.target.value; this.setState(s=>({drafts:{...(s.drafts||{}),[dk]:v}})); },
+      onClipAdd: ()=>{ const u=draft.trim(); if(!/^https?:\/\//i.test(u)){ this.flash('Paste a full link starting with https://'); return; }
+        this.setClips(ctx.path,ctx.idx,a=>{ a.push(u); return a; }); this.setState(s=>({drafts:{...(s.drafts||{}),[dk]:''}})); this.flash('Clip added'); },
+      onClipFiles: e=>{ const files=[...(e.target.files||[])].filter(f=>/^video\//.test(f.type)); e.target.value=''; if(!files.length){ this.flash('Please choose video files'); return; }
+        this.flash('Uploading '+files.length+' clip'+(files.length>1?'s':'')+'…');
+        files.reduce((pr,file)=>pr.then(()=>this.storeFile(file).then(url=>this.setClips(ctx.path,ctx.idx,a=>{ a.push(url); return a; }))), Promise.resolve())
+          .then(()=>this.flash('Clips added')).catch(fail); },
+    };
+  }
   setGallery(path, idx, fn){ this.commit(c=>{ const it=c[path][idx]; const cur=(Array.isArray(it.images)&&it.images.length)?it.images.slice():(it.image?[it.image]:[]); const next=fn(cur); it.images=next; it.image=next[0]||''; }); }
   uploadTo(set, dataUrl){
     const PC=window.PortfolioContent;
@@ -635,7 +705,8 @@ class Component extends DCLogic {
     let v=val; if(t==='tags' && Array.isArray(v)) v=v.join(', '); if(t==='lines' && Array.isArray(v)) v=v.join('\n');
     return { label:f.label, hint:f.hint||'', hasHint:!!f.hint, placeholder:f.placeholder||'', list:f.list||undefined, rows:f.rows||3,
       span: f.full?'1 / -1':'auto',
-      isText: t==='text'||t==='tags', isNum: t==='num', isArea: t==='area'||t==='lines', isSelect: t==='select', isImage: t==='image', isGallery: t==='gallery', isFile: t==='file',
+      isText: t==='text'||t==='tags', isNum: t==='num', isArea: t==='area'||t==='lines', isSelect: t==='select', isImage: t==='image', isGallery: t==='gallery', isFile: t==='file', isDashboard: t==='dashboard', isClips: t==='clips',
+      ...this.mediaVals(t, val, set, ctx),
       onDocFile: e => {
         const file = e.target.files && e.target.files[0];
         e.target.value = '';
