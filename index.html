@@ -104,6 +104,8 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .rec-person[data-active="1"]::before{transform:scaleY(1)}
 @media (prefers-reduced-motion: reduce){.tl-meta,.tl-card{opacity:1!important;transform:none!important}}
 /* Mobile */
+.dz-btn{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--fg);font:500 18px 'Bricolage Grotesque',sans-serif;cursor:pointer;transition:background .2s,color .2s}
+.dz-btn:hover{background:#22D3EE!important;color:#0A0F1E!important}
 .m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
 html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 @media (max-width:1100px){[data-hero-glass]{display:none!important}}
@@ -767,10 +769,18 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   <div role="dialog" aria-modal="true" aria-label="{{ dv.title }} demo" style="position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;background:var(--bg);animation:rise .4s cubic-bezier(.2,.7,.2,1) both">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px clamp(12px,2vw,20px);padding-top:calc(10px + env(safe-area-inset-top));border-bottom:1px solid rgba(var(--tint),.1);background:rgba(var(--base),.9);backdrop-filter:blur(12px)">
       <div style="display:flex;align-items:center;gap:12px;min-width:0">
-        <span style="display:inline-flex;align-items:center;gap:6px;flex:none;padding:5px 10px;border-radius:999px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.35);font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:#34D399"><span style="width:6px;height:6px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>DEMO</span>
+<sc-if value="{{ dv.showChip }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:6px;flex:none;padding:5px 10px;border-radius:999px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.35);font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:#34D399"><span style="width:6px;height:6px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>DEMO</span></sc-if>
         <span style="font-weight:600;font-size:16px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dv.title }}</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex:none">
+        <sc-if value="{{ dv.canZoom }}" hint-placeholder-val="{{ false }}">
+          <div role="group" aria-label="Zoom" style="display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid rgba(var(--tint),.14);background:rgba(var(--tint),.04)">
+            <button onClick="{{ dashZoomOut }}" aria-label="Zoom out" title="Zoom out (−)" class="dz-btn">−</button>
+            <span aria-live="polite" style="min-width:46px;text-align:center;font:600 12px 'IBM Plex Mono',monospace;color:var(--fg)">{{ dv.zoomLabel }}</span>
+            <button onClick="{{ dashZoomIn }}" aria-label="Zoom in" title="Zoom in (+)" class="dz-btn">+</button>
+            <button onClick="{{ dashZoomFit }}" aria-label="Fit to screen" title="Fit to screen (0)" class="dz-btn" style="width:auto;padding:0 12px;font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.04em;background:{{ dv.fitBg }};color:{{ dv.fitFg }}">FIT</button>
+          </div>
+        </sc-if>
         <button onClick="{{ dashNewTab }}" class="rec-chip" aria-label="Open demo in a new tab" style="background:transparent;cursor:pointer">{{ dv.newTabLabel }}</button>
         <button onClick="{{ closeDash }}" aria-label="Close demo" style="display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(var(--tint),.14);background:rgba(var(--tint),.04);color:var(--fg);font-size:16px;cursor:pointer" style-hover="background:#22D3EE;color:#0A0F1E">✕</button>
       </div>
@@ -843,16 +853,20 @@ const clipOf = u => { u = String(u||'').trim(); if(!u) return null;
   return {video:u}; };
 // Uploaded dashboards are served as plain text by Supabase Storage, so they are fetched and rendered via srcdoc.
 const dashInline = u => /\/storage\/v1\/object\/public\/|^data:/i.test(u||'');
-// Injected into inline demos: zooms the whole page down until it fits the viewer without scrolling.
-// Phones keep normal size (a full report shrunk to 375px is unreadable), so they may still scroll.
-const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var MIN=0.45,self=false,t;'
+// Injected into inline demos: zooms the whole page down until it fits the viewer without scrolling,
+// and takes manual zoom commands from the viewer (postMessage), reporting the current level back.
+// In fit mode phones keep normal size (a full report shrunk to 375px is unreadable), so they may still scroll.
+const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var MIN=0.45,self=false,t,manual=null,cur=1;'
   + 'function el(){return document.scrollingElement||document.documentElement}'
   + 'function over(){var e=el();return e.scrollHeight>e.clientHeight+2||e.scrollWidth>e.clientWidth+2}'
-  + 'function z(v){document.documentElement.style.zoom=v>=1?"":String(v)}'
-  + 'function fit(){var d=document.documentElement;d.style.overflow="";z(1);'
-  + 'if(innerWidth>=700&&over()){var lo=MIN,hi=1;for(var i=0;i<9;i++){var m=(lo+hi)/2;z(m);if(over())hi=m;else lo=m}z(lo)}'
-  + 'if(!over())d.style.overflow="hidden";self=true;window.dispatchEvent(new Event("resize"));self=false}'
+  + 'function z(v){cur=v;document.documentElement.style.zoom=v===1?"":String(v)}'
+  + 'function report(){try{parent.postMessage({type:"demo-zoom-level",z:cur,fit:manual===null},"*")}catch(e){}}'
+  + 'function fit(){var d=document.documentElement;d.style.overflow="";'
+  + 'if(manual!==null){z(manual)}else{z(1);if(innerWidth>=700&&over()){var lo=MIN,hi=1;for(var i=0;i<9;i++){var m=(lo+hi)/2;z(m);if(over())hi=m;else lo=m}z(lo)}if(!over())d.style.overflow="hidden"}'
+  + 'self=true;window.dispatchEvent(new Event("resize"));self=false;report()}'
   + 'function later(ms){clearTimeout(t);t=setTimeout(fit,ms||60)}'
+  + 'addEventListener("message",function(e){var m=e.data;if(!m||m.type!=="demo-zoom")return;'
+  + 'if(m.action==="fit")manual=null;else{var b=manual===null?cur:manual,n=m.action==="in"?b+0.1:b-0.1;manual=Math.round(Math.min(2,Math.max(0.3,n))*20)/20}fit()});'
   + 'addEventListener("resize",function(){if(!self)later(150)});addEventListener("load",function(){later(0)});'
   + 'if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){later(0)});'
   + 'function watch(){new MutationObserver(function(){later(80)}).observe(document.getElementById("page")||document.body,{childList:true});later(0)}'
@@ -860,7 +874,7 @@ const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var 
 const withFit = h => /<\/body>/i.test(h) ? h.replace(/<\/body>(?![\s\S]*<\/body>)/i, DASH_FIT + '</body>') : h + DASH_FIT;
 
 class Component extends DCLogic {
-  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
+  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
   componentDidMount(){
     const motion = this.motionOn();
     this.io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1, rootMargin:'0px 0px -40px 0px'});
@@ -872,10 +886,12 @@ class Component extends DCLogic {
     if (motion) this.iv = setInterval(()=>this.setState(s=>({live:s.live+1})), 2200);
     this.onScroll = () => { const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); if(this.pr?.current) this.pr.current.style.transform=`scaleX(${p})`; this.tlUpdate(); };
     this.onMove = e => { if(this.gl?.current) this.gl.current.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; };
-    this.onKey = e => { if(this.state.dash){ if(e.key==='Escape') this.closeDash(); return; } if(this.state.recOpen>=0){ if(e.key==='Escape') this.closeRec(); if(e.key==='ArrowRight') this.recStep(1,true); if(e.key==='ArrowLeft') this.recStep(-1,true); return; } if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
+    this.onKey = e => { if(this.state.dash){ if(e.key==='Escape') this.closeDash(); else if(e.key==='+'||e.key==='=') this.dashZoom('in'); else if(e.key==='-'||e.key==='_') this.dashZoom('out'); else if(e.key==='0') this.dashZoom('fit'); return; } if(this.state.recOpen>=0){ if(e.key==='Escape') this.closeRec(); if(e.key==='ArrowRight') this.recStep(1,true); if(e.key==='ArrowLeft') this.recStep(-1,true); return; } if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
     window.addEventListener('scroll',this.onScroll,{passive:true});
     window.addEventListener('mousemove',this.onMove);
     window.addEventListener('keydown',this.onKey);
+    this.onMsg = e => { const f=this.dashRef?.current, m=e.data; if(!f || e.source!==f.contentWindow || !m || m.type!=='demo-zoom-level') return; const z=Number(m.z)||1; if(z!==this.state.dashZoom || !!m.fit!==this.state.dashFit) this.setState({dashZoom:z, dashFit:!!m.fit}); };
+    window.addEventListener('message', this.onMsg);
     this.onContent = () => { this._c = null; this.initGA(); this.forceUpdate(); setTimeout(()=>this.layoutHero(), 60); };
     this.onStorage = e => { if(!e.key || e.key===window.PortfolioContent?.KEY) this.onContent(); };
     window.addEventListener('portfolio-content', this.onContent);
@@ -908,9 +924,10 @@ class Component extends DCLogic {
   openDash(p){
     if(!p?.dashboard) return;
     document.querySelectorAll('video[data-clip]').forEach(v=>{ try{ v.pause(); }catch(_){} });
-    this.setState({dash:{id:p.id, url:p.dashboard, title:p.title}, dashState:'loading'}, ()=>this.loadDash(p.dashboard));
+    this.setState({dash:{id:p.id, url:p.dashboard, title:p.title}, dashState:'loading', dashZoom:1, dashFit:true}, ()=>this.loadDash(p.dashboard));
     window.PortfolioTracker?.trackEvent('dashboard_open', 'Opened live dashboard: ' + (p.title||'Project'));
   }
+  dashZoom(action){ const f=this.dashRef?.current; if(!f || !this.state.dash || !dashInline(this.state.dash.url)) return; try{ f.contentWindow.postMessage({type:'demo-zoom', action}, '*'); }catch(_){} }
   closeDash(){ const f=this.dashRef?.current; if(f){ f.removeAttribute('srcdoc'); f.src='about:blank'; } this.setState({dash:null, dashState:'idle'}); }
   dashHtml(url){
     this._dashCache = this._dashCache || {};
@@ -1104,7 +1121,7 @@ class Component extends DCLogic {
     const edge = Math.max(left(p)+p.offsetWidth, btns ? left(btns)+btns.offsetWidth : 0) + pad;
     g.style.right=((left(ph)+ph.offsetWidth)-edge)+'px';
   }
-  componentWillUnmount(){ cancelAnimationFrame(this.raf); clearInterval(this.iv); this.recBarAnim?.cancel(); clearInterval(this.qiv); clearInterval(this.sunIv); this.io?.disconnect(); this.tlIo?.disconnect(); window.removeEventListener('scroll',this.onScroll); window.removeEventListener('mousemove',this.onMove); window.removeEventListener('keydown',this.onKey); window.removeEventListener('resize',this.onResize); window.removeEventListener('portfolio-content',this.onContent); window.removeEventListener('storage',this.onStorage); window.removeEventListener('popstate',this.onPop); window.removeEventListener('hashchange',this.onPop); clearInterval(this.cw); }
+  componentWillUnmount(){ cancelAnimationFrame(this.raf); clearInterval(this.iv); this.recBarAnim?.cancel(); clearInterval(this.qiv); clearInterval(this.sunIv); this.io?.disconnect(); this.tlIo?.disconnect(); window.removeEventListener('scroll',this.onScroll); window.removeEventListener('mousemove',this.onMove); window.removeEventListener('keydown',this.onKey); window.removeEventListener('message',this.onMsg); window.removeEventListener('resize',this.onResize); window.removeEventListener('portfolio-content',this.onContent); window.removeEventListener('storage',this.onStorage); window.removeEventListener('popstate',this.onPop); window.removeEventListener('hashchange',this.onPop); clearInterval(this.cw); }
   scan(){
     if(!this.io) return;
     const motion = this.motionOn();
@@ -1311,8 +1328,9 @@ class Component extends DCLogic {
       tStart: e=>{ this._tx=e.touches[0].clientX; }, tEnd: e=>{ const dx=e.changedTouches[0].clientX-(this._tx??0); if(Math.abs(dx)>40) this.slide(dx<0?1:-1); },
       close: ()=>{ document.querySelectorAll('video[data-clip]').forEach(v=>{ try{ v.pause(); }catch(_){} }); this.setState({open:null}); }, stop: e=>e.stopPropagation(),
       dashOpen: !!this.state.dash, dashRef: this.dashRef,
-      dv: {newTabLabel: vw < 560 ? '↗' : 'Open in new tab ↗', title: this.state.dash?.title || '', loading: this.state.dashState==='loading', error: this.state.dashState==='error'},
+      dv: {showChip: vw >= 600, canZoom: !!this.state.dash && dashInline(this.state.dash.url) && this.state.dashState==='ready', zoomLabel: Math.round(this.state.dashZoom*100)+'%', fitBg: this.state.dashFit ? '#22D3EE' : 'transparent', fitFg: this.state.dashFit ? '#0A0F1E' : 'var(--fg)', newTabLabel: vw < 560 ? '↗' : 'Open in new tab ↗', title: this.state.dash?.title || '', loading: this.state.dashState==='loading', error: this.state.dashState==='error'},
       closeDash: ()=>this.closeDash(), dashNewTab: ()=>this.dashNewTab(),
+      dashZoomIn: ()=>this.dashZoom('in'), dashZoomOut: ()=>this.dashZoom('out'), dashZoomFit: ()=>this.dashZoom('fit'),
     };
   }
 }
