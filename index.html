@@ -108,6 +108,8 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .dz-btn:hover{background:#22D3EE!important;color:#0A0F1E!important}
 .pd-p{margin:0 0 12px;white-space:pre-line}.pd-p:last-child{margin-bottom:0}
 .pd-lead{color:var(--fg);font-weight:600}
+.pd-card .pd-p{margin:0 0 6px}.pd-card .pd-p:last-child,.pd-card .pd-ul:last-child{margin-bottom:0}
+.pd-card .pd-ul{gap:4px;margin:0 0 6px}.pd-card .pd-ul li{padding-left:16px}.pd-card .pd-ul li::before{width:5px;height:5px;left:2px}
 .pd-ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:9px}
 .pd-ul li{position:relative;padding-left:20px}
 .pd-ul li::before{content:'';position:absolute;left:3px;top:.62em;width:7px;height:7px;border-radius:2px;background:#22D3EE;transform:rotate(45deg)}
@@ -298,7 +300,18 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
             <h3 style="margin:0;font-weight:600;font-size:21px;letter-spacing:-.02em;line-height:1.2">{{ p.title }}</h3>
             <span style="font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">{{ p.num }}</span>
           </div>
-          <p style="margin:0;font-size:15px;line-height:1.5;color:var(--fg3);text-wrap:pretty">{{ p.summary }}</p>
+          <div class="pd-card" style="font-size:15px;line-height:1.5;color:var(--fg3);text-wrap:pretty">
+            <sc-for list="{{ p.sumBlocks }}" as="bl" hint-placeholder-count="1">
+              <sc-if value="{{ bl.isP }}" hint-placeholder-val="{{ true }}"><p class="pd-p"><sc-if value="{{ bl.hasLead }}" hint-placeholder-val="{{ false }}"><b class="pd-lead">{{ bl.lead }}</b> </sc-if>{{ bl.rest }}</p></sc-if>
+              <sc-if value="{{ bl.isList }}" hint-placeholder-val="{{ false }}">
+                <ul class="pd-ul">
+                  <sc-for list="{{ bl.items }}" as="li" hint-placeholder-count="2">
+                    <li><sc-if value="{{ li.hasLead }}" hint-placeholder-val="{{ false }}"><b class="pd-lead">{{ li.lead }}</b> </sc-if>{{ li.rest }}</li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+            </sc-for>
+          </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:8px">
             <sc-for list="{{ p.tags }}" as="t" hint-placeholder-count="3">
               <span style="padding:4px 9px;border-radius:6px;background:rgba(var(--tint),.05);font:400 11px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ t }}</span>
@@ -1202,7 +1215,7 @@ class Component extends DCLogic {
     const filter = cats.includes(this.state.filter) ? this.state.filter : 'All';
     const imgsOf = p => { const a=(Array.isArray(p.images)?p.images:[]).filter(Boolean); return a.length ? a : (p.image?[p.image]:[]); };
     const clipsOf = p => (Array.isArray(p.clips)?p.clips:toArr(p.clips)).map(clipOf).filter(Boolean);
-    const all = C.projects.map((p,i)=>({...p, image:imgsOf(p)[0]||'', imgs:imgsOf(p), clipList:clipsOf(p), id:p.id||('p'+i), tags:toArr(p.tags), num:pad2(i+1), tool:p.cat, tagColor:colorOf(p.cat), slotHint:'Drop screenshot: '+(p.title||''), hasImg:imgsOf(p).length>0, noImg:imgsOf(p).length===0, hasLink:!!p.link, hasDash:!!(p.dashboard||'').trim()}));
+    const all = C.projects.map((p,i)=>({...p, image:imgsOf(p)[0]||'', imgs:imgsOf(p), clipList:clipsOf(p), id:p.id||('p'+i), tags:toArr(p.tags), num:pad2(i+1), tool:p.cat, tagColor:colorOf(p.cat), slotHint:'Drop screenshot: '+(p.title||''), hasImg:imgsOf(p).length>0, noImg:imgsOf(p).length===0, hasLink:!!p.link, hasDash:!!(p.dashboard||'').trim(), sumBlocks:descBlocks(p.summary)}));
     all.forEach(p=>{ const v=p.clipList.find(c=>c.video); p.hasClips=p.clipList.length>0; p.clipLabel=p.clipList.length+(p.clipList.length>1?' CLIPS':' CLIP');
       p.vidCover=!p.hasImg && !!v; p.coverVideo=v ? v.video+'#t=0.5' : ''; p.noMedia=!p.hasImg && !v; });
     const list = filter==='All' ? all : all.filter(p=>p.cat===filter);
