@@ -106,6 +106,11 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 /* Mobile */
 .dz-btn{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--fg);font:500 18px 'Bricolage Grotesque',sans-serif;cursor:pointer;transition:background .2s,color .2s}
 .dz-btn:hover{background:#22D3EE!important;color:#0A0F1E!important}
+.pd-p{margin:0 0 12px;white-space:pre-line}.pd-p:last-child{margin-bottom:0}
+.pd-lead{color:var(--fg);font-weight:600}
+.pd-ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:9px}
+.pd-ul li{position:relative;padding-left:20px}
+.pd-ul li::before{content:'';position:absolute;left:3px;top:.62em;width:7px;height:7px;border-radius:2px;background:#22D3EE;transform:rotate(45deg)}
 .m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
 html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 @media (max-width:1100px){[data-hero-glass]{display:none!important}}
@@ -733,7 +738,18 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
             <span style="padding:5px 10px;border-radius:6px;background:rgba(var(--tint),.06);font:400 11px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ t }}</span>
           </sc-for>
         </div>
-        <p class="no-scrollbar" style="flex:1;min-height:0;margin:4px 0 0;overflow:auto;font-size:15px;line-height:1.65;color:var(--fg2);text-wrap:pretty">{{ op.desc }}</p>
+        <div class="no-scrollbar" style="flex:1;min-height:0;margin:4px 0 0;overflow:auto;font-size:15px;line-height:1.65;color:var(--fg2);text-wrap:pretty">
+          <sc-for list="{{ op.blocks }}" as="bl" hint-placeholder-count="2">
+            <sc-if value="{{ bl.isP }}" hint-placeholder-val="{{ true }}"><p class="pd-p"><sc-if value="{{ bl.hasLead }}" hint-placeholder-val="{{ false }}"><b class="pd-lead">{{ bl.lead }}</b> </sc-if>{{ bl.rest }}</p></sc-if>
+            <sc-if value="{{ bl.isList }}" hint-placeholder-val="{{ false }}">
+              <ul class="pd-ul">
+                <sc-for list="{{ bl.items }}" as="li" hint-placeholder-count="3">
+                  <li><sc-if value="{{ li.hasLead }}" hint-placeholder-val="{{ false }}"><b class="pd-lead">{{ li.lead }}</b> </sc-if>{{ li.rest }}</li>
+                </sc-for>
+              </ul>
+            </sc-if>
+          </sc-for>
+        </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <sc-if value="{{ op.hasDash }}" hint-placeholder-val="{{ false }}"><button onClick="{{ op.openDash }}" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:0;border-radius:999px;background:#22D3EE;color:#0A0F1E;font:600 14px 'Bricolage Grotesque',sans-serif;cursor:pointer;box-shadow:0 10px 24px -10px rgba(34,211,238,.7)"><span style="width:7px;height:7px;border-radius:50%;background:#0A0F1E;animation:pulse 1.8s infinite"></span>Watch a demo</button></sc-if>
           <sc-if value="{{ op.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ op.link }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;background:{{ op.linkBg }};color:{{ op.linkFg }};border:1px solid {{ op.linkBorder }};font-weight:600;font-size:14px">Open project ↗</a></sc-if>
@@ -858,6 +874,23 @@ const clipOf = u => { u = String(u||'').trim(); if(!u) return null;
   const g = u.match(/drive\.google\.com\/file\/d\/([\w-]+)/); if(g) return {embed:'https://drive.google.com/file/d/'+g[1]+'/preview'};
   return {video:u}; };
 // Uploaded dashboards are served as plain text by Supabase Storage, so they are fetched and rendered via srcdoc.
+// Turns admin-written description text into paragraphs and bullet lists, keeping the author's line breaks.
+// A short lead-in ("Highlights:", "Overall Efficiency –") is shown in bold.
+const leadOf = t => { const m = t.match(/^(.{2,60}?)(\s[\u2013\u2014-]\s|:\s)([\s\S]+)$/); return m && !/[.!?]/.test(m[1]) ? {lead: m[1] + (m[2].trim()===':' ? ':' : ' \u2013'), rest: m[3], hasLead: true} : {lead: '', rest: t, hasLead: false}; };
+const descBlocks = text => {
+  const out = []; let para = [], list = null;
+  const flushP = () => { if(para.length){ out.push({isP:true, isList:false, ...leadOf(para.join('\n')), items:[]}); para = []; } };
+  const flushL = () => { if(list){ out.push({isP:false, isList:true, items:list}); list = null; } };
+  String(text||'').replace(/\r/g,'').split('\n').forEach(raw => {
+    const line = raw.trim();
+    if(!line){ flushP(); flushL(); return; }
+    const b = line.match(/^(?:[\u2022\u25CF\u25AA\u2023*\u2013-]|\d+[.)])\s+([\s\S]*)$/);
+    if(b){ flushP(); (list = list || []).push(leadOf(b[1])); return; }
+    flushL(); para.push(line);
+  });
+  flushP(); flushL();
+  return out;
+};
 const dashInline = u => /\/storage\/v1\/object\/public\/|^data:/i.test(u||'');
 // Injected into inline demos: zooms the whole page down until it fits the viewer without scrolling,
 // and takes manual zoom commands from the viewer (postMessage), reporting the current level back.
@@ -1182,12 +1215,12 @@ class Component extends DCLogic {
     const nMedia = op ? op.clipList.length + op.imgs.length : 0;
     const nS = op ? Math.max(1, nMedia) : 1; this._nSlides = nS; const si = Math.min(this.state.si, nS-1);
     const opV = op ? {...op, multi: nMedia>1,
-      openDash: ()=>this.openDash(op), linkBg: op.hasDash ? 'transparent' : '#22D3EE', linkFg: op.hasDash ? 'var(--fg)' : '#0A0F1E', linkBorder: op.hasDash ? 'rgba(var(--tint),.2)' : 'transparent',
+      blocks: descBlocks(op.desc), openDash: ()=>this.openDash(op), linkBg: op.hasDash ? 'transparent' : '#22D3EE', linkFg: op.hasDash ? 'var(--fg)' : '#0A0F1E', linkBorder: op.hasDash ? 'rgba(var(--tint),.2)' : 'transparent',
       slides: nMedia ? [
         ...op.clipList.map((c,k)=>({isVideo:!!c.video, isEmbed:!!c.embed, src:c.video||'', embedSrc: c.embed && k===si ? c.embed : 'about:blank', has:false, none:false, alt:op.title+' clip '+(k+1)})),
         ...op.imgs.map((src,k)=>({src, has:true, none:false, isVideo:false, isEmbed:false, alt:op.title+' screenshot '+(k+1)}))
       ] : [{has:false, none:true, isVideo:false, isEmbed:false}],
-      dots: [...op.clipList, ...op.imgs].map((_,k)=>({n:k+1, w:k===si?'22px':'6px', bg:k===si?'#22D3EE':'rgba(var(--tint),.35)', go:()=>this.slide(0,k)}))} : {tags:[], slides:[], dots:[]};
+      dots: [...op.clipList, ...op.imgs].map((_,k)=>({n:k+1, w:k===si?'22px':'6px', bg:k===si?'#22D3EE':'rgba(var(--tint),.35)', go:()=>this.slide(0,k)}))} : {tags:[], slides:[], dots:[], blocks:[]};
     const recsAll = (C.recommendations||[]).filter(r=>r && (r.text||r.name));
     const recCount = recsAll.length;
     const recIdx = recCount ? (Math.max(0, this.state.recIdx) % recCount) : 0;
