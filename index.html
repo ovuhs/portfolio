@@ -138,6 +138,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .sl-btn:hover:not(:disabled){background:#22D3EE;color:#0A0F1E}
 /* Cards: a real button that stretches over the whole card, with a clear keyboard focus ring */
 [data-dlg]:focus{outline:none}
+.outcome{padding:9px 12px;border-radius:8px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.22);font-size:14px;line-height:1.45;font-weight:500;color:var(--fg);text-wrap:pretty}.outcome-k{margin-right:8px;font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)}
 .card-hit{all:unset;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit}
 .card-hit::after{content:'';position:absolute;inset:0;z-index:1}
 .card-hit.r18::after{border-radius:18px}.card-hit.r20::after{border-radius:20px}
@@ -341,6 +342,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
               </sc-if>
             </sc-for>
           </div>
+          <sc-if value="{{ p.hasOutcome }}" hint-placeholder-val="{{ false }}"><div class="outcome"><span class="outcome-k">Result</span>{{ p.outcome }}</div></sc-if>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:8px">
             <sc-for list="{{ p.tags }}" as="t" hint-placeholder-count="3">
               <span style="padding:4px 9px;border-radius:6px;background:rgba(var(--tint),.05);font:400 11px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ t }}</span>
@@ -783,6 +785,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
             <span style="padding:5px 10px;border-radius:6px;background:rgba(var(--tint),.06);font:400 11px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ t }}</span>
           </sc-for>
         </div>
+        <sc-if value="{{ op.hasOutcome }}" hint-placeholder-val="{{ false }}"><div class="outcome"><span class="outcome-k">Result</span>{{ op.outcome }}</div></sc-if>
         <div class="no-scrollbar" style="flex:1;min-height:0;margin:4px 0 0;overflow:auto;font-size:15px;line-height:1.65;color:var(--fg2);text-wrap:pretty">
           <sc-for list="{{ op.blocks }}" as="bl" hint-placeholder-count="2">
             <sc-if value="{{ bl.isP }}" hint-placeholder-val="{{ true }}"><p class="pd-p"><sc-if value="{{ bl.hasLead }}" hint-placeholder-val="{{ false }}"><b class="pd-lead">{{ bl.lead }}</b> </sc-if>{{ bl.rest }}</p></sc-if>
@@ -1304,7 +1307,7 @@ class Component extends DCLogic {
     const filter = cats.includes(this.state.filter) ? this.state.filter : 'All';
     const imgsOf = p => { const a=(Array.isArray(p.images)?p.images:[]).filter(Boolean); return a.length ? a : (p.image?[p.image]:[]); };
     const clipsOf = p => (Array.isArray(p.clips)?p.clips:toArr(p.clips)).map(clipOf).filter(Boolean);
-    const all = C.projects.map((p,i)=>({...p, image:imgsOf(p)[0]||'', imgs:imgsOf(p), clipList:clipsOf(p), id:p.id||('p'+i), tags:toArr(p.tags), num:pad2(i+1), tool:p.cat, tagColor:colorOf(p.cat), slotHint:'Drop screenshot: '+(p.title||''), hasImg:imgsOf(p).length>0, noImg:imgsOf(p).length===0, hasLink:!!p.link, hasDash:!!(p.dashboard||'').trim(), sumBlocks:descBlocks(p.summary)}));
+    const all = C.projects.map((p,i)=>({...p, image:imgsOf(p)[0]||'', imgs:imgsOf(p), clipList:clipsOf(p), id:p.id||('p'+i), tags:toArr(p.tags), num:pad2(i+1), tool:p.cat, tagColor:colorOf(p.cat), slotHint:'Drop screenshot: '+(p.title||''), hasImg:imgsOf(p).length>0, noImg:imgsOf(p).length===0, hasLink:!!p.link, hasDash:!!(p.dashboard||'').trim(), hasOutcome:!!(p.outcome||'').trim(), sumBlocks:descBlocks(p.summary)}));
     all.forEach(p=>{ const v=p.clipList.find(c=>c.video); p.hasClips=p.clipList.length>0; p.clipLabel=p.clipList.length+(p.clipList.length>1?' CLIPS':' CLIP');
       p.vidCover=!p.hasImg && !!v; p.coverVideo=v ? v.video+'#t=0.5' : ''; p.noMedia=!p.hasImg && !v; });
     const list = filter==='All' ? all : all.filter(p=>p.cat===filter);

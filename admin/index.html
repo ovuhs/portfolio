@@ -532,9 +532,10 @@ const GROUPS = [
  ]},
  {key:'projects', label:'Projects', desc:'Dashboards, Excel tools, web apps (Operation & CI portals) and Android apps.', count:'projects', blocks:[
   {path:'work', kind:'object', title:'Section heading', fields:HEAD},
-  {path:'projects', kind:'list', noun:'project', title:'Projects', desc:'Categories become the filter buttons on the Work page.', titleKey:'title', subKey:'cat', thumbKey:'image', blank:{title:'New project',cat:'Power BI',summary:'',desc:'',tags:'',image:'',images:[],link:'',dashboard:'',clips:[]}, fields:[
+  {path:'projects', kind:'list', noun:'project', title:'Projects', desc:'Categories become the filter buttons on the Work page.', titleKey:'title', subKey:'cat', thumbKey:'image', blank:{title:'New project',cat:'Power BI',summary:'',outcome:'',desc:'',tags:'',image:'',images:[],link:'',dashboard:'',clips:[]}, fields:[
    {k:'title',label:'Title'},{k:'cat',label:'Category',list:'cat-list',hint:'Pick one or type a new category.'},
    {k:'summary',label:'Card summary',t:'area',rows:2,full:true},
+   {k:'outcome',label:'Result (one line with a number)',full:true,placeholder:'e.g. Cut weekly reporting from 6 hours to 20 minutes',hint:'Optional. Shown as a highlighted line on the card and in the popup. Real numbers work best: time saved, % reduced, money saved, people served.'},
    {k:'desc',label:'Full description (shown when opened)',t:'area',rows:5,full:true},
    {k:'tags',label:'Tags',t:'tags',hint:'Comma separated'},{k:'link',label:'Project link',placeholder:'https://…',hint:'Optional. Play Store, live app, etc.'},
    {k:'images',label:'Screenshots (slides in the popup)',t:'gallery',full:true,hint:'The first image is the card cover. Use ← → to reorder.'},
