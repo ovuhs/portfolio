@@ -7,7 +7,7 @@
   },
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/:section(projects|skills|certifications|experience|recommendations|hobbies|contact)", "destination": "/index.html" }
+    { "source": "/(projects|skills|certifications|experience|recommendations|hobbies|contact)", "destination": "/" }
   ],
   "headers": [
     { "source": "/assets/vendor/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
