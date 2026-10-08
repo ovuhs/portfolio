@@ -499,6 +499,44 @@ input,textarea,select,button{font-family:inherit}
           </sc-if>
         </section>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px">
+          <sc-if value="{{ isRemote }}" hint-placeholder-val="{{ false }}">
+          <section style="grid-column:1/-1;padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">
+              <div>
+                <h2 style="margin:0;font-weight:600;font-size:19px">Version history</h2>
+                <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#AEB6CC;max-width:640px">Every editing session starts with an automatic copy of the previous version, so a mistake can be undone. Restoring puts that version back on the live site, and your current version is saved first.</p>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button onClick="{{ onSavePoint }}" style="padding:10px 16px;border:0;border-radius:10px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Save a restore point now</button>
+                <button onClick="{{ onRefreshHist }}" style="padding:10px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">↻ Refresh</button>
+              </div>
+            </div>
+            <sc-if value="{{ histNeedsSetup }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:16px;padding:18px;border-radius:14px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.07);display:flex;flex-direction:column;gap:12px;line-height:1.55;font-size:14px">
+                <b>One-time setup needed</b>
+                <span>Copy the SQL, open Supabase → SQL Editor → New query, paste it and press Run. Then press Refresh.</span>
+                <div><button onClick="{{ onCopyHistSql }}" style="padding:9px 16px;border-radius:10px;border:0;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Copy the setup SQL</button></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ histError }}" hint-placeholder-val="{{ false }}"><div style="margin-top:16px;padding:12px 14px;border-radius:12px;border:1px solid rgba(245,158,158,.3);color:#F59E9E;font-size:13.5px">{{ histError }}</div></sc-if>
+            <sc-if value="{{ histEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:16px 0 0;font-size:14px;color:#AEB6CC">No saved versions yet. The first one appears the next time you edit something.</p></sc-if>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+              <sc-for list="{{ histList }}" as="v" hint-placeholder-count="2">
+                <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-radius:12px;background:#0D1326;border:1px solid rgba(233,237,247,.08)">
+                  <div style="min-width:0">
+                    <div style="font-weight:600;font-size:14.5px;overflow-wrap:anywhere">{{ v.title }}</div>
+                    <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC;margin-top:3px">{{ v.when }}</div>
+                  </div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button onClick="{{ v.restore }}" style="padding:7px 14px;border-radius:9px;border:0;background:#E9EDF7;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Restore</button>
+                    <button onClick="{{ v.download }}" style="padding:7px 14px;border-radius:9px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">Download</button>
+                    <button onClick="{{ v.del }}" style="padding:7px 14px;border-radius:9px;border:1px solid rgba(245,158,158,.3);background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Delete</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+          </sc-if>
           <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
             <h2 style="margin:0;font-weight:600;font-size:19px">Backup</h2>
             <p style="margin:8px 0 0;font-size:14px;color:#7F89A3">Export everything as JSON or restore from a backup.</p>
@@ -546,6 +584,7 @@ const HEAD_STYLE = [
   {k:'headSize',label:'Heading size',t:'select',options:[{value:'m',label:'Medium (default)'},{value:'xs',label:'Extra small'},{value:'s',label:'Small'},{value:'l',label:'Large'},{value:'xl',label:'Extra large'}]},
   {k:'headShow',label:'Show heading',t:'select',options:[{value:'all',label:'Small label + heading'},{value:'title',label:'Heading only'},{value:'label',label:'Small label only'},{value:'none',label:'Hide both'}]}];
 const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}, ...HEAD_STYLE];
+const HIST_SQL = '-- Version history for the site content.\n-- Run once: Supabase -> SQL Editor -> New query -> paste -> Run.\n-- Safe to run again; it only adds what is missing.\n--\n-- Before an editing session changes your content, the previous version is saved automatically\n-- (at most one every 5 minutes, the latest 60 are kept). You can also save named restore points\n-- from the admin (Settings -> Version history). Only the signed-in admin can see or use them.\n\ncreate table if not exists public.site_content_history (\n  id          bigint generated by default as identity primary key,\n  data        jsonb not null,\n  kind        text not null default \'auto\' check (kind in (\'auto\', \'manual\')),\n  label       text,\n  created_at  timestamptz not null default now()\n);\n\ncreate index if not exists site_content_history_created_idx on public.site_content_history (created_at desc);\n\nalter table public.site_content_history enable row level security;\n\ndrop policy if exists "admin can read history" on public.site_content_history;\ncreate policy "admin can read history" on public.site_content_history\n  for select to authenticated using (true);\n\ndrop policy if exists "admin can add history" on public.site_content_history;\ncreate policy "admin can add history" on public.site_content_history\n  for insert to authenticated with check (true);\n\ndrop policy if exists "admin can delete history" on public.site_content_history;\ncreate policy "admin can delete history" on public.site_content_history\n  for delete to authenticated using (true);\n\ncreate or replace function public.site_content_snapshot() returns trigger\nlanguage plpgsql security definer set search_path = public as $$\nbegin\n  if old.data is distinct from new.data\n     and not exists (select 1 from public.site_content_history\n                     where kind = \'auto\' and created_at > now() - interval \'5 minutes\') then\n    insert into public.site_content_history (data, kind) values (old.data, \'auto\');\n    delete from public.site_content_history\n      where kind = \'auto\'\n        and id not in (select id from public.site_content_history where kind = \'auto\' order by created_at desc limit 60);\n  end if;\n  return new;\nend;\n$$;\n\ndrop trigger if exists site_content_snapshot on public.site_content;\ncreate trigger site_content_snapshot\n  before update on public.site_content\n  for each row execute function public.site_content_snapshot();\n\n-- A first restore point with the content as it is right now.\ninsert into public.site_content_history (data, kind, label)\nselect data, \'manual\', \'Before version history was turned on\'\nfrom public.site_content\nwhere id = 1 and not exists (select 1 from public.site_content_history);\n';
 const MSG_SQL = '-- Messages from the contact form on the portfolio.\n-- Run once: Supabase -> SQL Editor -> New query -> paste -> Run.\n-- Safe to run again; it only adds what is missing.\n--\n-- Anyone can send a message (insert only). Only the signed-in admin can read, mark or delete them,\n-- as long as "Allow new users to sign up" is turned OFF (see SETUP.md, step 2).\n\ncreate table if not exists public.contact_messages (\n  id          bigint generated by default as identity primary key,\n  name        text not null check (char_length(name) between 1 and 120),\n  email       text not null check (char_length(email) between 5 and 200 and email like \'%@%\'),\n  message     text not null check (char_length(message) between 5 and 4000),\n  is_read     boolean not null default false,\n  created_at  timestamptz not null default now()\n);\n\ncreate index if not exists contact_messages_created_idx on public.contact_messages (created_at desc);\n\nalter table public.contact_messages enable row level security;\n\ndrop policy if exists "anyone can send a message" on public.contact_messages;\ncreate policy "anyone can send a message" on public.contact_messages\n  for insert to anon, authenticated\n  with check (is_read = false);\n\ndrop policy if exists "admin can read messages" on public.contact_messages;\ncreate policy "admin can read messages" on public.contact_messages\n  for select to authenticated using (true);\n\ndrop policy if exists "admin can update messages" on public.contact_messages;\ncreate policy "admin can update messages" on public.contact_messages\n  for update to authenticated using (true) with check (true);\n\ndrop policy if exists "admin can delete messages" on public.contact_messages;\ncreate policy "admin can delete messages" on public.contact_messages\n  for delete to authenticated using (true);\n';
 const GROUPS = [
  {key:'messages', label:'Messages', desc:'Messages sent from the contact form on your site.'},
@@ -687,7 +726,7 @@ const fmtDur=s=>{ s=Math.round(s||0); if(s<=0) return '0s'; if(s<60) return s+'s
 const PALETTE=['#22D3EE','#7AA2FF','#9BE7A0','#F2C94C','#C8A2FF','#F59E9E','#A4C8FF'];
 
 class Component extends DCLogic {
-  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', msgs:null, msgsLoading:false, msgsErr:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
+  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', hist:null, histLoading:false, histErr:'', msgs:null, msgsLoading:false, msgsErr:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
   componentDidMount(){
     const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
       if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
@@ -722,6 +761,21 @@ class Component extends DCLogic {
     this.patchMsg=(id,body)=>this.msgReq('?id=eq.'+id,{method:'PATCH',body:JSON.stringify(body),headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); });
     this.deleteMsg=id=>this.msgReq('?id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); });
     this.loadMsgs(true);
+    this.histReq=(path,opt)=>{
+      const PC=window.PortfolioContent, cfg=window.PORTFOLIO_CONFIG||{};
+      return PC.getToken().then(t=>fetch(cfg.supabaseUrl.replace(/\/$/,'')+'/rest/v1/site_content_history'+path,Object.assign({},opt,{headers:Object.assign({apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+t,'Content-Type':'application/json'},(opt&&opt.headers)||{})})));
+    };
+    this.loadHist=(silent)=>{
+      const PC=window.PortfolioContent;
+      if(!(PC&&PC.remote&&PC.getSession&&PC.getSession())) return;
+      if(!silent) this.setState({histLoading:true});
+      this.histReq('?select=id,kind,label,created_at&order=created_at.desc&limit=100').then(r=>r.ok?r.json():r.text().then(t=>{ const e=new Error(t); e.status=r.status; throw e; }))
+        .then(rows=>this.setState({hist:rows,histLoading:false,histErr:''}))
+        .catch(e=>this.setState({hist:[],histLoading:false,histErr:(e.status===404||/PGRST205|42P01|does not exist|schema cache/i.test(e.message||''))?'SETUP':'Could not load versions: '+(e.message||'unknown error').slice(0,200)}));
+    };
+    this.histData=id=>this.histReq('?id=eq.'+id+'&select=data').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status))).then(rows=>{ if(!rows[0]) throw new Error('Version not found'); return rows[0].data; });
+    this.histAdd=(data,label)=>this.histReq('',{method:'POST',body:JSON.stringify({data,kind:'manual',label}),headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); });
+    this.loadHist(true);
     this.loadAnalytics();
     this.analyticsTick=setInterval(()=>{ if(this.state.group==='analytics') this.loadAnalytics(true); },20000);
     this.onAnalyticsUpdate=()=>this.loadAnalytics(true);
@@ -1023,7 +1077,7 @@ class Component extends DCLogic {
       const countVal = isAn ? an.navCount : isMsg ? unread : (C&&x.count?(C[x.count]||[]).length:0);
       return {
         label:x.label,
-        go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); if(isMsg) this.loadMsgs(true); },
+        go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); if(isMsg) this.loadMsgs(true); if(x.key==='settings') this.loadHist(true); },
         bg:x.key===S.group?'rgba(34,211,238,.12)':'transparent',
         fg:x.key===S.group?'#22D3EE':'#AEB6CC',
         hasCount: (isAn||isMsg) ? countVal>0 : !!(x.count&&C),
@@ -1066,6 +1120,20 @@ class Component extends DCLogic {
       onPw:e=>this.setState({pw:e.target.value,err:''}),
       login:e=>this.doLogin(e),
       logout:()=>{ try{sessionStorage.removeItem(AUTH_KEY);}catch(_){} if(PC&&PC.remote) PC.signOut(); this.setState({authed:false}); },
+      histNeedsSetup:S.histErr==='SETUP', histError:S.histErr==='SETUP'?'':S.histErr, histEmpty:S.hist!==null&&!S.hist.length&&!S.histErr,
+      histList:(S.hist||[]).map(v=>({
+        title: v.label || (v.kind==='auto' ? 'Automatic copy before an editing session' : 'Restore point'),
+        when: new Date(v.created_at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}) + ' · ' + formatTimeAgo(new Date(v.created_at).getTime()),
+        restore:()=>{
+          if(!window.confirm('Put this version back on the live site? Your current version is saved first, so you can undo this.')) return;
+          this.histData(v.id).then(d=>this.histAdd(JSON.parse(JSON.stringify(S.c)),'Before restoring a version ('+new Date().toLocaleString()+')').then(()=>d)).then(d=>{ this.commit(c=>{ Object.keys(c).forEach(k=>delete c[k]); Object.assign(c,d); }); this.flash('Version restored'); setTimeout(()=>this.loadHist(true),1500); }).catch(()=>this.flash('Could not restore that version'));
+        },
+        download:()=>{ this.histData(v.id).then(d=>download('portfolio-content-'+String(v.created_at).slice(0,10)+'.json', JSON.stringify(d,null,2), 'application/json')).catch(()=>this.flash('Could not download that version')); },
+        del:()=>{ if(window.confirm('Delete this saved version for good?')) this.histReq('?id=eq.'+v.id,{method:'DELETE',headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error(); this.flash('Version deleted'); this.loadHist(true); }).catch(()=>this.flash('Could not delete that version')); }
+      })),
+      onRefreshHist:()=>this.loadHist(false),
+      onSavePoint:()=>{ const name=window.prompt('Name this restore point','Before '); if(name===null) return; this.histAdd(JSON.parse(JSON.stringify(S.c)),name.trim()||'Restore point').then(()=>{ this.flash('Restore point saved'); this.loadHist(true); }).catch(()=>{ this.flash('Could not save the restore point'); this.loadHist(false); }); },
+      onCopyHistSql:()=>{ const sql=HIST_SQL; const ok=()=>this.flash('Setup SQL copied. Paste it into the Supabase SQL Editor.'); const fb=()=>{ download('site_content_history.sql', sql, 'text/plain'); this.flash('Could not copy, so the SQL was downloaded instead'); }; try{ navigator.clipboard.writeText(sql).then(ok, fb); }catch(_){ fb(); } },
       isMessages, msgList, msgNeedsSetup:msgSetup, msgError:msgSetup?'':S.msgsErr, msgEmpty:S.msgs!==null&&!msgs.length&&!S.msgsErr,
       msgSummary:S.msgsLoading?'Loading…':(msgs.length?(msgs.length+' message'+(msgs.length===1?'':'s')+(unread?(', '+unread+' unread'):'')):''),
       onRefreshMsgs:()=>{ this.loadMsgs(false); },

@@ -60,6 +60,15 @@ The Contact page has a "Send me a message" form. Messages are saved in your Supa
 
 Visitors can only add messages; only you (signed in) can read, mark or delete them. Spam is limited by a hidden field, a minimum fill time, a one-minute pause per browser and length limits in the table. You are not emailed automatically; check the Messages tab (the unread count shows next to it).
 
+## 3c. Version history (recommended)
+
+Every admin save goes live straight away, so this gives you an undo.
+
+1. Admin -> Settings -> Version history -> **Copy the setup SQL** (or open `supabase/site_content_history.sql`).
+2. Supabase -> SQL Editor -> New query -> paste -> Run. It is safe to run again.
+
+From then on, the previous version is copied automatically before an editing session changes anything (at most one every 5 minutes, the latest 60 are kept). You can also press **Save a restore point now** and give it a name. **Restore** puts a version back on the live site (your current version is saved first, so you can undo a restore too). **Download** gives you that version as a JSON file.
+
 ## Security notes
 - Local mode password is hashed and locks for 1 minute after 5 wrong tries, but it only protects your own browser's draft. Real protection comes from Supabase.
 - Your phone number is no longer shown publicly.
