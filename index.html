@@ -49,8 +49,8 @@ try {
 <x-dc>
 <helmet>
 <style>
-:root,[data-theme=dark]{--bg:#0A0F1E;--surface:#111830;--surface2:#16203D;--fg:#E9EDF7;--fg2:#AEB6CC;--fg3:#9DA6BE;--muted:#7F89A3;--dim:#626C87;--accent-ink:#22D3EE;--blue-ink:#7AA2FF;--tint:233,237,247;--base:10,15,30;--glass:17,24,48;color-scheme:dark}
-[data-theme=light]{--bg:#F3F5FA;--surface:#FFFFFF;--surface2:#EAEFF8;--fg:#0A0F1E;--fg2:#3A4560;--fg3:#4A556F;--muted:#5E6983;--dim:#7A849C;--accent-ink:#0E7490;--blue-ink:#3552C9;--tint:10,15,30;--base:243,245,250;--glass:255,255,255;color-scheme:light}
+:root,[data-theme=dark]{--bg:#0A0F1E;--surface:#111830;--surface2:#16203D;--fg:#E9EDF7;--fg2:#AEB6CC;--fg3:#9DA6BE;--muted:#8F99B3;--dim:#838DA8;--accent-ink:#22D3EE;--blue-ink:#7AA2FF;--tint:233,237,247;--base:10,15,30;--glass:17,24,48;color-scheme:dark}
+[data-theme=light]{--bg:#F3F5FA;--surface:#FFFFFF;--surface2:#EAEFF8;--fg:#0A0F1E;--fg2:#3A4560;--fg3:#4A556F;--muted:#505A74;--dim:#5A647D;--accent-ink:#0E7490;--blue-ink:#3552C9;--tint:10,15,30;--base:243,245,250;--glass:255,255,255;color-scheme:light}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);transition:background-color .5s,color .5s;font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -308,7 +308,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     </div>
     <div data-filters="1" class="no-scrollbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:5px;border-radius:999px;border:1px solid rgba(var(--tint),.1)">
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
-        <button onClick="{{ f.onClick }}" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;cursor:pointer;font:500 13px 'IBM Plex Mono',monospace;background:{{ f.bg }};color:{{ f.fg }};transition:all .25s">{{ f.label }}<span style="opacity:.55">{{ f.count }}</span></button>
+        <button onClick="{{ f.onClick }}" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;cursor:pointer;font:500 13px 'IBM Plex Mono',monospace;background:{{ f.bg }};color:{{ f.fg }};transition:all .25s">{{ f.label }}<span style="opacity:.8">{{ f.count }}</span></button>
       </sc-for>
     </div>
   </div>
@@ -318,7 +318,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
       <article data-reveal="{{ p.delay }}" style="position:relative;display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.08);overflow:hidden;cursor:pointer;transition:border-color .3s, background .3s" style-hover="border-color:rgba(34,211,238,.5);background:var(--surface2)">
         <div style="position:relative;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,rgba(var(--tint),.03) 0 10px,transparent 10px 20px);border-bottom:1px solid rgba(var(--tint),.06)">
           <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ p.image }}" data-w="640,960" data-sizes="(max-width:760px) 92vw, 420px" alt="{{ p.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if><sc-if value="{{ p.vidCover }}" hint-placeholder-val="{{ false }}"><video data-cover="1" src="{{ p.coverVideo }}" muted="{{ true }}" playsInline="{{ true }}" preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none"></video></sc-if><sc-if value="{{ p.noMedia }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:grid;place-items:center;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">Screenshot coming soon</div></sc-if>
-          <span style="position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.8);backdrop-filter:blur(6px);font:500 11px 'IBM Plex Mono',monospace;color:{{ p.tagColor }};pointer-events:none">{{ p.tool }}</span>
+          <span style="position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.9);backdrop-filter:blur(6px);font:500 11px 'IBM Plex Mono',monospace;color:{{ p.tagColor }};pointer-events:none">{{ p.tool }}</span>
           <span style="position:absolute;left:12px;bottom:12px;display:flex;gap:6px;pointer-events:none">
             <sc-if value="{{ p.hasDash }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.85);backdrop-filter:blur(6px);font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:#34D399"><span style="width:6px;height:6px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>DEMO AVAILABLE</span></sc-if>
             <sc-if value="{{ p.hasClips }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.85);backdrop-filter:blur(6px);font:600 10.5px 'IBM Plex Mono',monospace;color:#E9EDF7">▶ {{ p.clipLabel }}</span></sc-if>
@@ -467,7 +467,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 
           <!-- Meta: big year + period -->
           <div class="tl-meta" style="grid-column:{{ j.metaCol }};grid-row:1;text-align:{{ j.metaAlign }};padding:{{ j.metaPad }}">
-            <div class="tl-year" style="font-size:{{ tlYearSize }}">{{ j.startYear }}</div>
+            <div class="tl-year" aria-hidden="true" style="font-size:{{ tlYearSize }}">{{ j.startYear }}</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:{{ j.metaJustify }};margin-top:10px">
               <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2)">{{ j.dates }}</span>
               <sc-if value="{{ j.hasDur }}" hint-placeholder-val="{{ true }}"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">· {{ j.dur }}</span></sc-if>
