@@ -214,162 +214,233 @@ input,textarea,select,button{font-family:inherit}
       </sc-if>
 
       <sc-if value="{{ isAnalytics }}" hint-placeholder-val="{{ false }}">
-        <section style="padding:20px 24px;border-radius:18px;background:#111830;border:1px solid rgba(34,211,238,.3);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span style="position:relative;display:flex;width:10px;height:10px">
-              <span style="position:absolute;inset:0;border-radius:50%;background:#22D3EE;opacity:.75;animation:pulse 2s infinite"></span>
-              <span style="position:relative;width:10px;height:10px;border-radius:50%;background:#22D3EE"></span>
-            </span>
-            <div>
-              <div style="font-weight:600;font-size:16px;letter-spacing:-.01em">Visitor Traffic &amp; Activity Monitor</div>
-              <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC;margin-top:2px">{{ analyticsSourceText }}</div>
+        <!-- HEADER -->
+        <section style="padding:22px 24px;border-radius:20px;background:linear-gradient(135deg,#111830,#0D1326);border:1px solid rgba(34,211,238,.28);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:14px;min-width:0">
+              <span style="display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:14px;background:linear-gradient(135deg,#22D3EE,#7AA2FF);color:#0A0F1E;box-shadow:0 10px 24px -10px rgba(34,211,238,.7)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+              </span>
+              <div style="min-width:0">
+                <div style="font-weight:700;font-size:21px;letter-spacing:-.025em">Visitor analytics</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">
+                  <span style="display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:999px;background:{{ an.sourceBg }};border:1px solid {{ an.sourceBorder }};font:600 11px 'IBM Plex Mono',monospace;color:{{ an.sourceColor }}">{{ an.sourceText }}</span>
+                  <sc-if value="{{ an.verified }}" hint-placeholder-val="{{ false }}"><span style="padding:4px 11px;border-radius:999px;background:rgba(155,231,160,.1);border:1px solid rgba(155,231,160,.3);font:600 11px 'IBM Plex Mono',monospace;color:#9BE7A0">✓ Cloud tracking verified</span></sc-if>
+                  <span style="display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:999px;background:rgba(233,237,247,.05);border:1px solid rgba(233,237,247,.1);font:500 11px 'IBM Plex Mono',monospace;color:#E9EDF7"><span style="width:7px;height:7px;border-radius:50%;background:{{ an.onlineDot }};{{ an.onlinePulse }}"></span>{{ an.onlineText }}</span>
+                  <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">{{ an.updatedText }}</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;padding:4px;border-radius:12px;background:#0A0F1E;border:1px solid rgba(233,237,247,.08)">
+              <sc-for list="{{ rangeBtns }}" as="rb" hint-placeholder-count="4">
+                <button onClick="{{ rb.go }}" style="padding:8px 14px;border:0;border-radius:9px;background:{{ rb.bg }};color:{{ rb.fg }};font:600 12px 'Bricolage Grotesque',sans-serif;cursor:pointer;transition:all .2s">{{ rb.label }}</button>
+              </sc-for>
             </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button onClick="{{ onTestVisit }}" title="Generate a simulated test visit" style="display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:10px;border:1px solid rgba(34,211,238,.45);background:rgba(34,211,238,.08);color:#22D3EE;font-weight:600;font-size:13px;cursor:pointer">+ Test visit</button>
-            <button onClick="{{ onRefreshAnalytics }}" title="Refresh metrics" style="display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">↻ Refresh</button>
-            <button onClick="{{ onExportCsv }}" title="Download CSV report" style="padding:9px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#AEB6CC;font-size:13px;cursor:pointer">Export CSV</button>
-            <button onClick="{{ onClearAnalytics }}" title="Reset analytics" style="padding:9px 14px;border-radius:10px;border:1px solid rgba(245,158,158,.3);background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Reset</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button onClick="{{ onRefreshAnalytics }}" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">↻ Refresh</button>
+            <button onClick="{{ onExportCsv }}" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#AEB6CC;font-size:13px;cursor:pointer">Export CSV</button>
+            <button onClick="{{ onToggleCounting }}" title="Turn off to keep your own visits out of the numbers (this browser only)" style="padding:8px 14px;border-radius:10px;border:1px solid {{ an.countBorder }};background:{{ an.countBg }};color:{{ an.countFg }};font-size:13px;cursor:pointer">{{ an.countText }}</button>
+            <button onClick="{{ onTestVisit }}" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);color:#22D3EE;font-weight:600;font-size:13px;cursor:pointer">{{ an.testLabel }}</button>
+            <sc-if value="{{ an.canReset }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onClearAnalytics }}" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(245,158,158,.3);background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Reset</button></sc-if>
           </div>
         </section>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
-          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(34,211,238,.2);position:relative;overflow:hidden">
-            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(34,211,238,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
-            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Total Visits</div>
-            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#22D3EE;margin-top:8px">{{ statTotalVisits }}</div>
-            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">All recorded visitor sessions</div>
-          </div>
-          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(122,162,255,.2);position:relative;overflow:hidden">
-            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(122,162,255,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
-            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Unique Visitors</div>
-            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#7AA2FF;margin-top:8px">{{ statUnique }}</div>
-            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Distinct devices &amp; browsers</div>
-          </div>
-          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(155,231,160,.2);position:relative;overflow:hidden">
-            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(155,231,160,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
-            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Today's Visits</div>
-            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#9BE7A0;margin-top:8px">{{ statToday }}</div>
-            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Visits recorded today</div>
-          </div>
-          <div style="padding:22px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid rgba(242,201,76,.2);position:relative;overflow:hidden">
-            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(242,201,76,.15),transparent 70%);border-radius:50%;pointer-events:none"></div>
-            <div style="font:500 12px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.05em">Total Events</div>
-            <div style="font-size:36px;font-weight:700;letter-spacing:-.03em;color:#F2C94C;margin-top:8px">{{ statEvents }}</div>
-            <div style="font-size:12px;color:#AEB6CC;margin-top:4px">Clicks, views, downloads</div>
-          </div>
+        <!-- SETUP / PROBLEM BANNER -->
+        <sc-if value="{{ an.showSetup }}" hint-placeholder-val="{{ false }}">
+          <section style="padding:22px 24px;border-radius:18px;background:linear-gradient(135deg,rgba(242,201,76,.1),#111830);border:1px solid rgba(242,201,76,.4);display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+            <span style="display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:12px;background:rgba(242,201,76,.16);color:#F2C94C;font-size:20px;font-weight:700">!</span>
+            <div style="flex:1 1 360px;min-width:0">
+              <div style="font-weight:700;font-size:17px;letter-spacing:-.01em;color:#F2C94C">{{ an.setupTitle }}</div>
+              <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#E9EDF7;max-width:760px">{{ an.setupText }}</p>
+              <ol style="margin:12px 0 0;padding-left:20px;font-size:13.5px;line-height:1.75;color:#AEB6CC">
+                <sc-for list="{{ an.setupSteps }}" as="ss" hint-placeholder-count="3"><li>{{ ss.text }}</li></sc-for>
+              </ol>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+                <button onClick="{{ onCopySql }}" style="padding:10px 18px;border:0;border-radius:10px;background:#F2C94C;color:#0A0F1E;font-weight:700;font-size:13px;cursor:pointer">Copy setup SQL</button>
+                <a href="{{ an.sqlUrl }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;padding:10px 18px;border-radius:10px;border:1px solid rgba(242,201,76,.5);color:#F2C94C;font-weight:600;font-size:13px">Open Supabase SQL Editor ↗</a>
+                <button onClick="{{ onTestVisit }}" style="padding:10px 18px;border-radius:10px;border:1px solid rgba(233,237,247,.18);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">Send test event</button>
+              </div>
+              <sc-if value="{{ an.hasErrorText }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3;overflow-wrap:anywhere">Details: {{ an.errorText }}</div></sc-if>
+            </div>
+          </section>
+        </sc-if>
+        <sc-if value="{{ an.truncated }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px 16px;border-radius:12px;background:rgba(122,162,255,.08);border:1px solid rgba(122,162,255,.25);font-size:13px;color:#AEB6CC">Showing the most recent 10,000 events. Older history is not included in these numbers.</div>
+        </sc-if>
+
+        <!-- KPI CARDS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,158px),1fr));gap:14px">
+          <sc-for list="{{ an.kpiCards }}" as="kc" hint-placeholder-count="6">
+            <div style="position:relative;overflow:hidden;padding:20px 20px 18px;border-radius:18px;background:linear-gradient(180deg,#111830,#0D1326);border:1px solid {{ kc.border }}">
+              <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,{{ kc.glow }},transparent 70%);pointer-events:none"></div>
+              <div style="position:relative;font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;text-transform:uppercase;letter-spacing:.06em">{{ kc.label }}</div>
+              <div style="position:relative;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <span style="font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1;color:{{ kc.color }}">{{ kc.value }}</span>
+                <sc-if value="{{ kc.hasDelta }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 8px;border-radius:999px;background:{{ kc.deltaBg }};font:600 11px 'IBM Plex Mono',monospace;color:{{ kc.deltaColor }}">{{ kc.delta }}</span></sc-if>
+              </div>
+              <div style="position:relative;font-size:12px;color:#AEB6CC;margin-top:8px">{{ kc.sub }}</div>
+            </div>
+          </sc-for>
         </div>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px">
-          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
-            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between">
-              <span>Top Visited Sections</span>
-              <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">By page views</span>
-            </h3>
-            <sc-if value="{{ noPages }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:20px;padding:24px;text-align:center;font-size:13px;color:#626C87;border:1px dashed rgba(233,237,247,.1);border-radius:12px">No section views logged yet.</div>
-            </sc-if>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:18px">
-              <sc-for list="{{ pagesList }}" as="pg" hint-placeholder-count="4">
-                <div>
-                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
-                    <span style="font-weight:500;color:#E9EDF7">{{ pg.name }}</span>
-                    <span style="font:400 12px 'IBM Plex Mono',monospace;color:#22D3EE">{{ pg.count }} <span style="color:#7F89A3">({{ pg.pct }})</span></span>
+        <!-- TRAFFIC CHART -->
+        <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div>
+              <h3 style="margin:0;font-weight:600;font-size:18px;letter-spacing:-.01em">Traffic over time</h3>
+              <p style="margin:4px 0 0;font-size:13px;color:#7F89A3">{{ an.chartSub }}</p>
+            </div>
+            <div style="display:flex;gap:16px;font:500 12px 'IBM Plex Mono',monospace;color:#AEB6CC">
+              <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:10px;height:10px;border-radius:3px;background:rgba(34,211,238,.35)"></span>Visits</span>
+              <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:10px;height:10px;border-radius:3px;background:#22D3EE"></span>Visitors</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:22px">
+            <div style="display:flex;flex-direction:column;justify-content:space-between;height:170px;font:400 10.5px 'IBM Plex Mono',monospace;color:#626C87;text-align:right;min-width:26px">
+              <span>{{ an.yMax }}</span><span>{{ an.yMid }}</span><span>0</span>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="position:relative;display:flex;align-items:stretch;gap:3px;height:170px;border-bottom:1px solid rgba(233,237,247,.14)">
+                <div style="position:absolute;left:0;right:0;top:50%;border-top:1px dashed rgba(233,237,247,.07);pointer-events:none"></div>
+                <div style="position:absolute;left:0;right:0;top:0;border-top:1px dashed rgba(233,237,247,.07);pointer-events:none"></div>
+                <sc-for list="{{ an.chartBars }}" as="cb" hint-placeholder-count="14">
+                  <div title="{{ cb.title }}" style="position:relative;flex:1;min-width:3px;cursor:default">
+                    <div style="position:absolute;left:8%;right:8%;bottom:0;height:{{ cb.h1 }};border-radius:5px 5px 0 0;background:rgba(34,211,238,.3);transition:height .5s cubic-bezier(.2,.8,.2,1)"></div>
+                    <div style="position:absolute;left:8%;right:8%;bottom:0;height:{{ cb.h2 }};border-radius:5px 5px 0 0;background:linear-gradient(180deg,#22D3EE,#7AA2FF);transition:height .5s cubic-bezier(.2,.8,.2,1)"></div>
                   </div>
-                  <div style="height:6px;border-radius:3px;background:rgba(233,237,247,.08);overflow:hidden">
-                    <div style="height:100%;width:{{ pg.width }};background:linear-gradient(90deg,#22D3EE,#7AA2FF);border-radius:3px"></div>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:3px;margin-top:8px">
+                <sc-for list="{{ an.chartBars }}" as="cl" hint-placeholder-count="14">
+                  <div style="flex:1;min-width:3px;position:relative;height:14px"><span style="position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font:400 10.5px 'IBM Plex Mono',monospace;color:#7F89A3">{{ cl.label }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTIONS + ENGAGEMENT -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px">
+          <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between"><span>Top sections</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">Page views</span></h3>
+            <sc-if value="{{ an.noPages }}" hint-placeholder-val="{{ false }}"><div style="margin-top:18px;padding:24px;text-align:center;font-size:13px;color:#626C87;border:1px dashed rgba(233,237,247,.1);border-radius:12px">No section views in this period.</div></sc-if>
+            <div style="display:flex;flex-direction:column;gap:13px;margin-top:18px">
+              <sc-for list="{{ an.pagesList }}" as="pg" hint-placeholder-count="4">
+                <div>
+                  <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px"><span style="font-weight:500;color:#E9EDF7">{{ pg.name }}</span><span style="font:400 12px 'IBM Plex Mono',monospace;color:#22D3EE">{{ pg.count }} <span style="color:#7F89A3">{{ pg.pct }}</span></span></div>
+                  <div style="height:7px;border-radius:4px;background:rgba(233,237,247,.07);overflow:hidden"><div style="height:100%;width:{{ pg.width }};background:linear-gradient(90deg,#22D3EE,#7AA2FF);border-radius:4px"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Engagement</span><span style="font:600 11px 'IBM Plex Mono',monospace;color:#9BE7A0">{{ an.goalRate }}</span></h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:18px">
+              <sc-for list="{{ an.actionTiles }}" as="at" hint-placeholder-count="6">
+                <div style="padding:14px 14px 12px;border-radius:14px;background:#0E1428;border:1px solid rgba(233,237,247,.06)">
+                  <div style="font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;color:{{ at.color }}">{{ at.value }}</div>
+                  <div style="margin-top:7px;font-size:12px;color:#AEB6CC;line-height:1.35">{{ at.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+
+        <!-- PROJECTS + PEAK HOURS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px">
+          <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between"><span>Most viewed projects</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">Popup opens</span></h3>
+            <sc-if value="{{ an.noProjects }}" hint-placeholder-val="{{ false }}"><div style="margin-top:18px;padding:24px;text-align:center;font-size:13px;color:#626C87;border:1px dashed rgba(233,237,247,.1);border-radius:12px">No project was opened in this period.</div></sc-if>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:18px">
+              <sc-for list="{{ an.projectsList }}" as="pj" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="display:grid;place-items:center;width:26px;height:26px;flex:none;border-radius:8px;background:rgba(242,201,76,.12);color:#F2C94C;font:600 11px 'IBM Plex Mono',monospace">{{ pj.rank }}</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:5px"><span style="font-weight:500;color:#E9EDF7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pj.name }}</span><span style="font:400 12px 'IBM Plex Mono',monospace;color:#F2C94C;flex:none">{{ pj.count }}</span></div>
+                    <div style="height:6px;border-radius:3px;background:rgba(233,237,247,.07);overflow:hidden"><div style="height:100%;width:{{ pj.width }};background:#F2C94C;border-radius:3px"></div></div>
                   </div>
                 </div>
               </sc-for>
             </div>
           </section>
 
-          <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
-            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between">
-              <span>Visitor Environment &amp; Tech</span>
-              <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">Hardware &amp; OS</span>
-            </h3>
-            <div style="display:flex;flex-direction:column;gap:16px;margin-top:18px">
-              <div>
-                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Devices</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ devicesList }}" as="dev" hint-placeholder-count="3">
-                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
-                      <span style="color:#E9EDF7">{{ dev.name }}</span>
-                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#22D3EE">{{ dev.count }}</span>
-                    </span>
-                  </sc-for>
-                </div>
-              </div>
-              <div>
-                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Browsers</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ browsersList }}" as="br" hint-placeholder-count="3">
-                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
-                      <span style="color:#E9EDF7">{{ br.name }}</span>
-                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#7AA2FF">{{ br.count }}</span>
-                    </span>
-                  </sc-for>
-                </div>
-              </div>
-              <div>
-                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Operating Systems</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ osList }}" as="o" hint-placeholder-count="3">
-                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
-                      <span style="color:#E9EDF7">{{ o.name }}</span>
-                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#9BE7A0">{{ o.count }}</span>
-                    </span>
-                  </sc-for>
-                </div>
-              </div>
-              <div>
-                <div style="font:500 11px 'IBM Plex Mono',monospace;color:#7F89A3;margin-bottom:8px;text-transform:uppercase">Traffic Sources</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <sc-for list="{{ referrersList }}" as="rf" hint-placeholder-count="2">
-                    <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(233,237,247,.06);font-size:13px;border:1px solid rgba(233,237,247,.08)">
-                      <span style="color:#E9EDF7">{{ rf.name }}</span>
-                      <span style="font:500 11px 'IBM Plex Mono',monospace;color:#F2C94C">{{ rf.count }}</span>
-                    </span>
-                  </sc-for>
-                </div>
-              </div>
+          <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between"><span>Busiest hours</span><span style="font:600 11px 'IBM Plex Mono',monospace;color:#22D3EE">{{ an.peakText }}</span></h3>
+            <p style="margin:4px 0 0;font-size:12.5px;color:#7F89A3">When visits start, in your local time.</p>
+            <div style="display:grid;grid-template-columns:repeat(24,1fr);gap:4px;margin-top:20px">
+              <sc-for list="{{ an.hourCells }}" as="hc" hint-placeholder-count="24">
+                <div title="{{ hc.title }}" style="height:46px;border-radius:6px;background:{{ hc.bg }};border:1px solid rgba(34,211,238,.1)"></div>
+              </sc-for>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(24,1fr);gap:4px;margin-top:6px">
+              <sc-for list="{{ an.hourCells }}" as="hl" hint-placeholder-count="24">
+                <div style="text-align:center;font:400 10px 'IBM Plex Mono',monospace;color:#626C87">{{ hl.label }}</div>
+              </sc-for>
             </div>
           </section>
         </div>
 
-        <section style="padding:24px;border-radius:18px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+        <!-- AUDIENCE -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+          <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+            <h3 style="margin:0;font-weight:600;font-size:17px">Devices</h3>
+            <div style="display:flex;align-items:center;gap:22px;margin-top:20px;flex-wrap:wrap">
+              <div style="position:relative;width:128px;height:128px;flex:none;border-radius:50%;background:{{ an.donut }}">
+                <div style="position:absolute;inset:20px;border-radius:50%;background:#111830;display:grid;place-items:center;text-align:center"><div><div style="font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1">{{ an.donutTotal }}</div><div style="margin-top:3px;font:500 9.5px 'IBM Plex Mono',monospace;color:#7F89A3;letter-spacing:.06em">VISITS</div></div></div>
+              </div>
+              <div style="flex:1;min-width:130px;display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ an.deviceLegend }}" as="dl" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:8px;color:#E9EDF7"><span style="width:10px;height:10px;border-radius:3px;background:{{ dl.color }}"></span>{{ dl.name }}</span><span style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ dl.count }} <span style="color:#7F89A3">{{ dl.pct }}</span></span></div>
+                </sc-for>
+              </div>
+            </div>
+          </section>
+          <sc-for list="{{ an.audience }}" as="au" hint-placeholder-count="5">
+            <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
+              <h3 style="margin:0;font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:10px"><span>{{ au.title }}</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3;text-align:right">{{ au.sub }}</span></h3>
+              <sc-if value="{{ au.empty }}" hint-placeholder-val="{{ false }}"><div style="margin-top:18px;padding:22px;text-align:center;font-size:13px;color:#626C87;border:1px dashed rgba(233,237,247,.1);border-radius:12px">No data yet.</div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:18px">
+                <sc-for list="{{ au.items }}" as="ai" hint-placeholder-count="4">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:5px"><span style="color:#E9EDF7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ai.name }}</span><span style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC;flex:none">{{ ai.count }} <span style="color:#7F89A3">{{ ai.pct }}</span></span></div>
+                    <div style="height:6px;border-radius:3px;background:rgba(233,237,247,.07);overflow:hidden"><div style="height:100%;width:{{ ai.width }};background:{{ ai.color }};border-radius:3px"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </sc-for>
+        </div>
+
+        <!-- LIVE FEED -->
+        <section style="padding:24px;border-radius:20px;background:#111830;border:1px solid rgba(233,237,247,.08)">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
             <div>
-              <h3 style="margin:0;font-weight:600;font-size:18px;letter-spacing:-.01em">Live Activity Stream</h3>
-              <p style="margin:4px 0 0;font-size:13px;color:#7F89A3">Every page view, project opening, certificate click, and download.</p>
+              <h3 style="margin:0;font-weight:600;font-size:18px;letter-spacing:-.01em">Live activity</h3>
+              <p style="margin:4px 0 0;font-size:13px;color:#7F89A3">Page views, project openings, certificate views, demos and downloads as they happen.</p>
             </div>
-            <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC">
-              {{ activityCountLabel }}
-            </div>
+            <div style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ an.feedCount }}</div>
           </div>
-
-          <sc-if value="{{ noActivities }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ an.noFeed }}" hint-placeholder-val="{{ false }}">
             <div style="padding:36px 20px;text-align:center;border-radius:14px;border:1px dashed rgba(233,237,247,.14);color:#7F89A3">
-              <div style="font-size:15px;font-weight:500;color:#E9EDF7">No visitor activities yet</div>
-              <p style="margin:8px 0 0;font-size:13px">When visitors browse your portfolio, their actions will stream in here in real-time.</p>
-              <button onClick="{{ onTestVisit }}" style="margin-top:16px;padding:9px 18px;border-radius:10px;border:0;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Send test visitor</button>
+              <div style="font-size:15px;font-weight:500;color:#E9EDF7">{{ an.emptyTitle }}</div>
+              <p style="margin:8px 0 0;font-size:13px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.55">{{ an.emptyText }}</p>
             </div>
           </sc-if>
-
-          <sc-if value="{{ hasActivities }}" hint-placeholder-val="{{ true }}">
-            <div style="display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto;padding-right:4px">
-              <sc-for list="{{ activitiesList }}" as="act" hint-placeholder-count="5">
+          <sc-if value="{{ an.hasFeed }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:8px;max-height:560px;overflow-y:auto;padding-right:4px">
+              <sc-for list="{{ an.feed }}" as="act" hint-placeholder-count="5">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:#0E1428;border:1px solid rgba(233,237,247,.06);font-size:13px;flex-wrap:wrap">
-                  <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 300px">
-                    <span style="font:500 11px 'IBM Plex Mono',monospace;padding:3px 8px;border-radius:6px;background:{{ act.badgeBg }};color:{{ act.badgeFg }};border:1px solid {{ act.badgeBorder }};flex:none">{{ act.badgeText }}</span>
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 280px">
+                    <span style="font:500 10.5px 'IBM Plex Mono',monospace;padding:3px 8px;border-radius:6px;background:{{ act.badgeBg }};color:{{ act.badgeFg }};border:1px solid {{ act.badgeBorder }};flex:none;white-space:nowrap">{{ act.badgeText }}</span>
                     <span style="color:#E9EDF7;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ act.detail }}</span>
                   </div>
-                  <div style="display:flex;align-items:center;gap:10px;flex:none">
-                    <span style="font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3;display:inline-flex;align-items:center;gap:4px">
-                      <span style="color:#AEB6CC">{{ act.device }}</span> · <span>{{ act.browser }} ({{ act.os }})</span>
-                    </span>
-                    <span style="font:400 11px 'IBM Plex Mono',monospace;color:#626C87;padding-left:6px;border-left:1px solid rgba(233,237,247,.1)">{{ act.timeAgo }}</span>
+                  <div style="display:flex;align-items:center;gap:10px;flex:none;flex-wrap:wrap;font:400 11px 'IBM Plex Mono',monospace;color:#7F89A3">
+                    <span title="Visitor">#{{ act.vcode }}</span>
+                    <span style="color:#AEB6CC">{{ act.place }}</span>
+                    <span>{{ act.device }} · {{ act.browser }}</span>
+                    <span title="{{ act.exact }}" style="color:#626C87;padding-left:10px;border-left:1px solid rgba(233,237,247,.1)">{{ act.timeAgo }}</span>
                   </div>
                 </div>
               </sc-for>
@@ -546,6 +617,8 @@ function badgeFor(type){
     case 'cert_view': return {text:'CERTIFICATE', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
     case 'photo_view': return {text:'PHOTO', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
     case 'theme_toggle': return {text:'THEME', bg:'rgba(233,237,247,.08)', fg:'#AEB6CC', border:'rgba(233,237,247,.15)'};
+    case 'dashboard_open': return {text:'DEMO', bg:'rgba(52,211,153,.12)', fg:'#34D399', border:'rgba(52,211,153,.3)'};
+    case 'recommendation_view': return {text:'RECOMMENDATION', bg:'rgba(200,162,255,.12)', fg:'#C8A2FF', border:'rgba(200,162,255,.3)'};
     default: return {text:(type||'EVENT').toUpperCase(), bg:'rgba(233,237,247,.08)', fg:'#AEB6CC', border:'rgba(233,237,247,.15)'};
   }
 }
@@ -560,27 +633,19 @@ function formatTimeAgo(ts){
   return Math.floor(h/24)+'d ago';
 }
 function exportCsv(acts){
-  const rows=[['Timestamp','Visitor ID','Type','Detail','Page','Device','Browser','OS','Screen','Referrer','Timezone']];
-  (acts||[]).forEach(a=>{
-    rows.push([
-      new Date(a.time).toISOString(),
-      a.vid||'',
-      a.type||'',
-      ('"'+(a.detail||'').replace(/"/g,'""')+'"'),
-      a.page||'',
-      a.device||'',
-      a.browser||'',
-      a.os||'',
-      a.screen||'',
-      a.referrer||'',
-      a.tz||''
-    ]);
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=[['Timestamp','Visitor ID','Visit ID','Type','Detail','Page','Device','Browser','OS','Screen','Language','Source','Timezone'].join(',')];
+  (acts||[]).filter(a=>a.type!=='test').forEach(a=>{
+    rows.push([new Date(a.time).toISOString(),a.vid,a.sid,a.type,a.detail,a.page,a.device,a.browser,a.os,a.screen,a.lang,a.referrer,a.tz].map(q).join(','));
   });
-  download('visitor-activities-'+new Date().toISOString().slice(0,10)+'.csv', rows.map(r=>r.join(',')).join('\n'), 'text/csv');
+  download('visitor-activities-'+new Date().toISOString().slice(0,10)+'.csv', rows.join('\n'), 'text/csv');
 }
+const p2h=h=>String(h).padStart(2,'0');
+const fmtDur=s=>{ s=Math.round(s||0); if(s<=0) return '0s'; if(s<60) return s+'s'; const m=Math.floor(s/60); return m+'m '+String(s%60).padStart(2,'0')+'s'; };
+const PALETTE=['#22D3EE','#7AA2FF','#9BE7A0','#F2C94C','#C8A2FF','#F59E9E','#A4C8FF'];
 
 class Component extends DCLogic {
-  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', analyticsStats:null, analyticsLoading:false };
+  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
   componentDidMount(){
     const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
       if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
@@ -589,20 +654,149 @@ class Component extends DCLogic {
     this.w=setInterval(init,40); init();
     this.tick=setInterval(()=>this.forceUpdate(),30000);
     this.loadAnalytics=(silent)=>{
-      if(!window.PortfolioTracker) return;
+      const PT=window.PortfolioTracker; if(!PT) return;
       const PC=window.PortfolioContent;
-      const token=(PC&&PC.remote&&PC.getSession&&PC.getSession())?PC.getSession().token:null;
       if(!silent) this.setState({analyticsLoading:true});
-      window.PortfolioTracker.getStats(token).then(stats=>{
-        this.setState({analyticsStats:stats, analyticsLoading:false});
-      }).catch(()=>{ if(!silent) this.setState({analyticsLoading:false}); });
+      const done=d=>this.setState({analyticsData:d, analyticsLoading:false, analyticsAt:Date.now()});
+      const fail=()=>this.setState({analyticsLoading:false});
+      const signedIn=!!(PC&&PC.remote&&PC.getSession&&PC.getSession());
+      // From the first sign-in, keep the admin's own visits out of the numbers unless it was switched on on purpose.
+      if(this.state.authed && PT.optOutUnset && PT.optOutUnset()) PT.setCounting(false);
+      if(signedIn && PC.getToken) PC.getToken().then(t=>PT.getEvents(t).then(done), ()=>PT.getEvents(null).then(done)).catch(fail);
+      else PT.getEvents(null).then(done).catch(fail);
     };
     this.loadAnalytics();
-    this.analyticsTick=setInterval(()=>{ if(this.state.group==='analytics') this.loadAnalytics(true); },8000);
+    this.analyticsTick=setInterval(()=>{ if(this.state.group==='analytics') this.loadAnalytics(true); },20000);
     this.onAnalyticsUpdate=()=>this.loadAnalytics(true);
     window.addEventListener('portfolio-analytics-update', this.onAnalyticsUpdate);
   }
   componentWillUnmount(){ clearInterval(this.lockTick); clearInterval(this.w); clearInterval(this.tick); clearInterval(this.analyticsTick); clearTimeout(this.st); clearTimeout(this.tt); window.removeEventListener('portfolio-analytics-update', this.onAnalyticsUpdate); }
+  analyticsVals(){
+    const S=this.state, PT=window.PortfolioTracker, PC=window.PortfolioContent;
+    const d=S.analyticsData||{events:[],isRemote:false,configured:!!(window.PORTFOLIO_CONFIG&&window.PORTFOLIO_CONFIG.supabaseUrl),error:null,truncated:false};
+    const range=S.range, days=range;
+    const st=PT.summarize(d.events,{days});
+    const k=st.kpis, prev=st.prev;
+    const num=x=>Number(x||0).toLocaleString();
+    const pct=x=>Math.round(x)+'%';
+    const PAGES={intro:'Intro / Hero',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',hobbies:'Hobbies',contact:'Contact'};
+    const rangeName=days===1?'today':days===0?'all time':'the last '+days+' days';
+    const prevName=days===1?'yesterday':'the previous '+days+' days';
+
+    const delta=(cur,pv,goodUp=true)=>{
+      if(!prev) return {hasDelta:false};
+      if(!pv && !cur) return {hasDelta:false};
+      if(!pv) return {hasDelta:true, delta:'New', deltaColor:'#22D3EE', deltaBg:'rgba(34,211,238,.12)'};
+      const ch=(cur-pv)/pv*100; if(Math.abs(ch)<0.5) return {hasDelta:true, delta:'= 0%', deltaColor:'#AEB6CC', deltaBg:'rgba(233,237,247,.08)'};
+      const up=ch>0, good=up===goodUp;
+      return {hasDelta:true, delta:(up?'▲ ':'▼ ')+Math.abs(Math.round(ch))+'%', deltaColor:good?'#9BE7A0':'#F59E9E', deltaBg:good?'rgba(155,231,160,.12)':'rgba(245,158,158,.12)'};
+    };
+    const card=(label,value,sub,color,border,glow,dl)=>({label,value,sub,color,border,glow,...(dl||{hasDelta:false})});
+    const kpiCards=[
+      card('Visitors',num(k.visitors),'Unique people '+(prev?'· vs '+prevName:''),'#7AA2FF','rgba(122,162,255,.22)','rgba(122,162,255,.18)',prev?delta(k.visitors,prev.visitors):null),
+      card('Visits',num(k.visits),k.pagesPerVisit.toFixed(1)+' sections per visit','#22D3EE','rgba(34,211,238,.25)','rgba(34,211,238,.18)',prev?delta(k.visits,prev.visits):null),
+      card('Page views',num(k.pageViews),'Sections opened','#9BE7A0','rgba(155,231,160,.22)','rgba(155,231,160,.16)',prev?delta(k.pageViews,prev.pageViews):null),
+      card('Avg. time on site',fmtDur(k.avgSecs),'Per visit, while the tab is open','#F2C94C','rgba(242,201,76,.22)','rgba(242,201,76,.16)',prev?delta(k.avgSecs,prev.avgSecs):null),
+      card('Bounce rate',pct(k.bounceRate),'Left within 15s without clicking','#F59E9E','rgba(245,158,158,.22)','rgba(245,158,158,.15)',prev?delta(k.bounceRate,prev.bounceRate,false):null),
+      card('Returning visitors',pct(k.returningRate),'Came back to the site','#C8A2FF','rgba(200,162,255,.22)','rgba(200,162,255,.16)',prev?delta(k.returningRate,prev.returningRate):null),
+    ];
+
+    // chart
+    const series=st.series, maxV=Math.max(1,...series.map(b=>b.visits));
+    const n=series.length, step=days===1?3:(n<=8?1:n<=14?2:n<=31?5:10);
+    const chartBars=series.map((b,i)=>({
+      h1:b.visits?Math.max(3,b.visits/maxV*100)+'%':'0%', h2:b.visitors?Math.max(3,b.visitors/maxV*100)+'%':'0%',
+      title:b.label+' · '+b.visits+' visit'+(b.visits===1?'':'s')+' · '+b.visitors+' visitor'+(b.visitors===1?'':'s'),
+      label:((n-1-i)%step===0)?b.label:''
+    }));
+
+    // lists
+    const bars=(items,total,color)=>{ const mx=Math.max(1,...items.map(x=>x.count)); return items.map((x,i)=>({name:x.name,count:num(x.count),pct:pct(x.count/Math.max(1,total)*100),width:Math.max(6,Math.round(x.count/mx*100))+'%',color:color||PALETTE[i%PALETTE.length]})); };
+    const totalPV=Math.max(1,st.pages.reduce((a,x)=>a+x.count,0));
+    const pagesList=st.pages.map(x=>({name:PAGES[x.name]||x.name,count:x.count})).map(x=>({name:x.name,count:num(x.count),pct:pct(x.count/totalPV*100),width:Math.max(6,Math.round(x.count/Math.max(1,st.pages[0].count)*100))+'%'}));
+    const projMax=Math.max(1,...st.projects.map(x=>x.count));
+    const projectsList=st.projects.map((x,i)=>({rank:i+1,name:x.name,count:num(x.count),width:Math.max(6,Math.round(x.count/projMax*100))+'%'}));
+
+    const a=st.actions;
+    const actionTiles=[
+      {label:'Projects opened',value:num(a.projectViews),color:'#F2C94C'},
+      {label:'Demos watched',value:num(a.demos),color:'#34D399'},
+      {label:'CV downloads',value:num(a.cv),color:'#9BE7A0'},
+      {label:'Contact clicks',value:num(a.contact),color:'#C8A2FF'},
+      {label:'Certificates viewed',value:num(a.certs),color:'#7AA2FF'},
+      {label:'Photos viewed',value:num(a.photos),color:'#A4C8FF'},
+      {label:'Recommendations read',value:num(a.recs),color:'#22D3EE'},
+    ];
+    const goals=a.cv+a.contact;
+    const goalRate=k.visits?pct(goals/k.visits*100)+' of visits reached out':'';
+
+    // devices donut
+    const dTot=Math.max(1,st.devices.reduce((x,y)=>x+y.count,0));
+    let acc=0; const stops=st.devices.map((x,i)=>{ const from=acc/dTot*100; acc+=x.count; return PALETTE[i%PALETTE.length]+' '+from.toFixed(2)+'% '+(acc/dTot*100).toFixed(2)+'%'; });
+    const donut=stops.length?'conic-gradient('+stops.join(',')+')':'conic-gradient(rgba(233,237,247,.08) 0 100%)';
+    const deviceLegend=st.devices.length?st.devices.map((x,i)=>({name:x.name,count:num(x.count),pct:pct(x.count/dTot*100),color:PALETTE[i%PALETTE.length]})):[{name:'No data yet',count:'',pct:'',color:'rgba(233,237,247,.15)'}];
+
+    const T=Math.max(1,k.visits);
+    const audience=[
+      {title:'Traffic sources',sub:'Where visits come from',items:bars(st.sources,T)},
+      {title:'Locations',sub:'Approximate · from time zone',items:bars(st.countries,T)},
+      {title:'Browsers',sub:'By visit',items:bars(st.browsers,T)},
+      {title:'Operating systems',sub:'By visit',items:bars(st.os,T)},
+      {title:'Languages',sub:'Browser setting',items:bars(st.languages,T)},
+      {title:'Screen sizes',sub:'Width × height',items:bars(st.screens,T)},
+    ].map(x=>({...x,empty:x.items.length===0}));
+
+    // hours
+    const maxH=Math.max(1,...st.hours);
+    const hour12=h=>(h%12||12)+(h<12?' AM':' PM');
+    const peak=st.hours.indexOf(Math.max(...st.hours));
+    const hourCells=st.hours.map((c,h)=>({title:p2h(h)+':00 · '+c+' visit'+(c===1?'':'s'), bg:'rgba(34,211,238,'+(c?(0.12+0.83*(c/maxH)).toFixed(2):'0.04')+')', label:h%3===0?String(h):''}));
+
+    // feed
+    const feed=st.feed.slice(0,60).map(e=>{ const b=badgeFor(e.type); return {
+      detail:e.detail||e.type, badgeText:b.text, badgeBg:b.bg, badgeFg:b.fg, badgeBorder:b.border,
+      vcode:String(e.vid||'').replace(/^v-/,'').slice(-4).toUpperCase(), place:PT.countryOf(e.tz), device:e.device||'Desktop', browser:e.browser||'Other',
+      timeAgo:formatTimeAgo(e.time), exact:new Date(e.time).toLocaleString() }; });
+
+    // connection status
+    const err=d.error, configured=d.configured;
+    const sourceText=d.isRemote?'● Live · Supabase cloud':(configured?'⚠ Not connected · showing this browser only':'This browser only');
+    const sourceColor=d.isRemote?'#9BE7A0':(configured?'#F2C94C':'#AEB6CC');
+    const sourceBg=d.isRemote?'rgba(155,231,160,.1)':(configured?'rgba(242,201,76,.1)':'rgba(233,237,247,.06)');
+    const sourceBorder=d.isRemote?'rgba(155,231,160,.3)':(configured?'rgba(242,201,76,.35)':'rgba(233,237,247,.14)');
+    const showSetup=!!configured && (err==='missing_table'||err==='denied'||err==='error');
+    const setupTitle=err==='missing_table'?"Visitor tracking isn't set up in Supabase yet":err==='denied'?"The admin isn't allowed to read visits":"Couldn't load visits from Supabase";
+    const setupText=err==='missing_table'
+      ? "Your Supabase project has no site_activities table, so visits from your visitors can't be saved. Until it exists, this page can only show activity from this browser. Set it up once and every visit from then on is recorded."
+      : err==='denied'
+      ? "Supabase refused the request. Sign out and sign in again. If it keeps happening, run the setup SQL below again; it re-creates the access rules."
+      : "Something went wrong while reading the visit log. Try Refresh. If it keeps happening, run the setup SQL below again.";
+    const setupSteps=err==='missing_table'
+      ? [{text:'Click "Copy setup SQL".'},{text:'Open the Supabase SQL Editor, choose New query, paste it, and press Run.'},{text:'Come back here and press "Send test event". You should see "Cloud tracking verified".'}]
+      : [{text:'Click "Copy setup SQL" and run it in the Supabase SQL Editor (safe to run again).'},{text:'Come back and press Refresh.'}];
+    let ref=''; try{ ref=new URL(window.PORTFOLIO_CONFIG.supabaseUrl).hostname.split('.')[0]; }catch(_){}
+    const verified=!!(d.isRemote && d.events.some(e=>e.type==='test' && Date.now()-e.time<24*3600e3));
+    const real=st.hasData;
+    const counting=PT.isCounting();
+    return {
+      sourceText, sourceColor, sourceBg, sourceBorder, verified,
+      onlineText:st.online+' online now', onlineDot:st.online?'#34D399':'#626C87', onlinePulse:st.online?'animation:pulse 1.8s infinite':'',
+      updatedText:S.analyticsAt?('Updated '+formatTimeAgo(S.analyticsAt).toLowerCase()+(d.isRemote?'':'')) : (S.analyticsLoading?'Loading…':''),
+      countText:'Counting my visits: '+(counting?'On':'Off'), countBg:counting?'rgba(155,231,160,.1)':'transparent', countBorder:counting?'rgba(155,231,160,.35)':'rgba(233,237,247,.14)', countFg:counting?'#9BE7A0':'#AEB6CC',
+      testLabel:d.isRemote||configured?'Send test event':'+ Test visit', canReset:!d.isRemote,
+      showSetup, setupTitle, setupText, setupSteps, hasErrorText:!!d.errorText && err!=='missing_table', errorText:d.errorText||'',
+      sqlUrl: ref?('https://supabase.com/dashboard/project/'+ref+'/sql/new'):'https://supabase.com/dashboard', truncated:!!d.truncated,
+      kpiCards, chartBars, yMax:num(maxV), yMid:num(Math.round(maxV/2)),
+      chartSub:(days===1?'Visits by hour, today':'Visits per day, '+rangeName)+(st.allTime.visits?' · '+num(st.allTime.visits)+' visits and '+num(st.allTime.visitors)+' visitors all time':''),
+      noPages:pagesList.length===0, pagesList, noProjects:projectsList.length===0, projectsList,
+      actionTiles, goalRate, donut, donutTotal:num(dTot===1&&!st.devices.length?0:dTot), deviceLegend, audience,
+      hourCells, peakText:st.hours.some(x=>x)?'Peak: '+hour12(peak):'',
+      feed, hasFeed:feed.length>0, noFeed:feed.length===0, feedCount:feed.length?('Latest '+feed.length+' event'+(feed.length>1?'s':'')):'No events',
+      emptyTitle: showSetup?'Nothing is being recorded yet':(d.isRemote&&!real?'Waiting for the first visitor':'No visitor activity yet'),
+      emptyText: showSetup?'Finish the setup above and visits will start appearing here within seconds.':(d.isRemote?'Tracking is connected. Press "Send test event" to confirm, or open your live site in a private window and browse a little.':'When visitors browse your portfolio their actions stream in here.'),
+      navCount: st.allTime.visits, st, d,
+    };
+  }
   flash(msg){ clearTimeout(this.tt); this.setState({toast:msg}); this.tt=setTimeout(()=>this.setState({toast:''}),2600); }
   commit(fn){ this.setState(s=>{ const c=JSON.parse(JSON.stringify(s.c)); fn(c); return {c,status:'saving'}; }, ()=>{ clearTimeout(this.st); this.st=setTimeout(()=>this.persist(),450); }); }
   persist(){
@@ -751,15 +945,11 @@ class Component extends DCLogic {
     const isSettings = g.key==='settings';
     const notSettings = !isSettings && !isAnalytics;
 
-    const ast = S.analyticsStats || (window.PortfolioTracker ? window.PortfolioTracker.getStats() : null) || {};
-    const totalVisits = ast.totalVisits || 0;
-    const uniqueVisitors = ast.uniqueVisitors || 0;
-    const todayVisits = ast.todayVisits || 0;
-    const totalEvents = ast.totalEvents || 0;
+    const an=this.analyticsVals();
 
     const nav=GROUPS.map(x=>{
       const isAn = x.key==='analytics';
-      const countVal = isAn ? totalVisits : (C&&x.count?(C[x.count]||[]).length:0);
+      const countVal = isAn ? an.navCount : (C&&x.count?(C[x.count]||[]).length:0);
       return {
         label:x.label,
         go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); },
@@ -792,39 +982,6 @@ class Component extends DCLogic {
         })};
     });
 
-    const pagesObj = ast.pages || {};
-    const maxPageViews = Math.max(1, ...Object.values(pagesObj));
-    const totalPageViews = Object.values(pagesObj).reduce((a, b) => a + b, 0) || 1;
-    const pageNames = { intro: 'Intro / Hero', projects: 'Projects / Work', skills: 'Skills', certifications: 'Certifications', experience: 'Experience', recommendations: 'Recommendations', hobbies: 'Hobbies', contact: 'Contact' };
-    const pagesList = Object.entries(pagesObj).sort((a, b) => b[1] - a[1]).map(([k, cnt]) => ({
-      name: pageNames[k] || k,
-      count: cnt,
-      pct: Math.round((cnt / totalPageViews) * 100) + '%',
-      width: Math.max(8, Math.round((cnt / maxPageViews) * 100)) + '%'
-    }));
-
-    const devicesList = Object.entries(ast.devices || {}).map(([name, count]) => ({ name, count }));
-    const browsersList = Object.entries(ast.browsers || {}).map(([name, count]) => ({ name, count }));
-    const osList = Object.entries(ast.os || {}).map(([name, count]) => ({ name, count }));
-    const referrersList = Object.entries(ast.referrers || {}).map(([name, count]) => ({ name, count }));
-
-    const acts = ast.activities || [];
-    const activitiesList = acts.map(a => {
-      const b = badgeFor(a.type);
-      return {
-        id: a.id,
-        timeAgo: formatTimeAgo(a.time),
-        detail: a.detail || a.type,
-        badgeText: b.text,
-        badgeBg: b.bg,
-        badgeFg: b.fg,
-        badgeBorder: b.border,
-        device: a.device || 'Desktop',
-        browser: a.browser || 'Other',
-        os: a.os || 'Other'
-      };
-    });
-
     const ago = S.savedAt ? Math.round((Date.now()-S.savedAt)/60000) : null;
     const statusText = S.status==='saving' ? 'Saving…' : S.status==='error' ? 'Not saved' : S.status==='live' ? (S.savedAt?'Live · saved':'Live · Supabase') : S.status==='published' ? 'Showing published content' : (ago===null||ago<1 ? 'Saved to this browser' : 'Saved '+ago+' min ago');
     const statusColor = S.status==='saving' ? '#F2C94C' : S.status==='error' ? '#F59E9E' : '#22D3EE';
@@ -841,25 +998,23 @@ class Component extends DCLogic {
       nav, groupLabel:g.label, groupDesc:g.desc, isSettings, notSettings, isAnalytics, blocks,
       catOptions: C ? [...new Set((C.projects||[]).map(p=>p.cat).filter(Boolean))] : [],
       statusText, statusColor,
-      statTotalVisits: totalVisits.toLocaleString(),
-      statUnique: uniqueVisitors.toLocaleString(),
-      statToday: todayVisits.toLocaleString(),
-      statEvents: totalEvents.toLocaleString(),
-      analyticsSourceText: ast.isRemote ? 'Live Cloud Sync (Supabase)' : 'Browser Local Storage',
-      onTestVisit: () => { window.PortfolioTracker?.recordTestVisit(); this.flash('Test visitor recorded!'); this.loadAnalytics(true); },
+      an,
+      rangeBtns:[['Today',1],['7 days',7],['30 days',30],['All time',0]].map(([label,v])=>({label, bg:S.range===v?'#22D3EE':'transparent', fg:S.range===v?'#0A0F1E':'#AEB6CC', go:()=>this.setState({range:v})})),
       onRefreshAnalytics: () => { this.loadAnalytics(false); this.flash('Analytics refreshed'); },
-      onExportCsv: () => { exportCsv(acts); },
-      onClearAnalytics: () => { if(window.confirm('Reset all visitor counters and activity history?')){ window.PortfolioTracker?.clearData(); this.loadAnalytics(false); this.flash('Analytics reset'); } },
-      noPages: pagesList.length === 0,
-      pagesList,
-      devicesList: devicesList.length ? devicesList : [{ name: 'Desktop', count: 0 }],
-      browsersList: browsersList.length ? browsersList : [{ name: 'Chrome', count: 0 }],
-      osList: osList.length ? osList : [{ name: 'Windows', count: 0 }],
-      referrersList: referrersList.length ? referrersList : [{ name: 'Direct', count: 0 }],
-      noActivities: activitiesList.length === 0,
-      hasActivities: activitiesList.length > 0,
-      activityCountLabel: activitiesList.length ? (activitiesList.length + ' event' + (activitiesList.length > 1 ? 's' : '') + ' recorded') : 'No events',
-      activitiesList,
+      onExportCsv: () => { exportCsv(an.d.events); },
+      onToggleCounting: () => { const PT=window.PortfolioTracker; const on=!PT.isCounting(); PT.setCounting(on); this.setState({counting:on}); this.flash(on?'Your visits from this browser are now counted':'Your visits from this browser are no longer counted'); },
+      onCopySql: () => { const sql=window.PortfolioTracker.setupSql; const ok=()=>this.flash('Setup SQL copied. Paste it into the Supabase SQL Editor.'); const fb=()=>{ download('site_activities.sql', sql, 'text/plain'); this.flash('Could not copy, so the SQL was downloaded instead'); }; try{ navigator.clipboard.writeText(sql).then(ok, fb); }catch(_){ fb(); } },
+      onTestVisit: () => {
+        const PT=window.PortfolioTracker;
+        if(an.d.configured){
+          this.flash('Sending a test event…');
+          PT.sendTestEvent().then(r=>{
+            if(r.ok){ this.flash('Test event sent. Checking…'); setTimeout(()=>this.loadAnalytics(false),900); }
+            else this.flash(r.status===404 ? 'The tracking table is missing. Run the setup SQL first.' : 'Could not write to Supabase (HTTP '+(r.status||'network')+')');
+          });
+        } else { PT.recordTestVisit(); this.flash('Test visit recorded'); this.loadAnalytics(true); }
+      },
+      onClearAnalytics: () => { if(window.confirm('Reset all visitor counters and activity history stored in this browser?')){ window.PortfolioTracker?.clearData(); this.loadAnalytics(false); this.flash('Analytics reset'); } },
       downloadJs:()=>{ download('content.js', window.PortfolioContent.buildFile(C), 'text/javascript'); this.flash('content.js downloaded. Upload it to your hosting to go live.'); },
       exportJson:()=>download('portfolio-content-'+new Date().toISOString().slice(0,10)+'.json', JSON.stringify(C,null,2), 'application/json'),
       importJson:e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); this.commit(c=>Object.assign(c,d)); this.flash('Backup imported'); }catch(err){ this.flash('That file is not valid JSON'); } }; r.readAsText(f); },
