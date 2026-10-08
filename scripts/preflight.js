@@ -55,6 +55,14 @@ try {
   }
 } catch (e) { bad('image config check: ' + e.message); }
 
+// 2c. every popup (data-dlg) must declare itself a modal dialog, or keyboard focus handling quietly stops making sense
+try {
+  const html = read('index.html');
+  const n = (re) => (html.match(re) || []).length;
+  const dlg = n(/data-dlg="1"/g), role = n(/role="dialog"/g), modal = n(/aria-modal="true"/g);
+  dlg && dlg === role && dlg === modal ? ok('all ' + dlg + ' popups declare role="dialog" and aria-modal') : bad('popups (data-dlg=' + dlg + ') do not match role="dialog" (' + role + ') / aria-modal (' + modal + ')');
+} catch (e) { bad('popup check: ' + e.message); }
+
 // 3. every function parses (underscore files are helpers, not endpoints, but must still be valid)
 fs.readdirSync(path.join(ROOT, 'api')).filter((f) => f.endsWith('.js')).forEach((f) => {
   try { execFileSync(process.execPath, ['--check', path.join(ROOT, 'api', f)], { stdio: 'pipe' }); ok('api/' + f + ' parses'); }
