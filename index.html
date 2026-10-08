@@ -231,8 +231,8 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     </div>
     <button onClick="{{ ctaMenu }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;border:0;border-radius:999px;background:#22D3EE;color:#0A0F1E;font:600 16px 'Bricolage Grotesque',sans-serif;cursor:pointer">{{ c.hero.navCta }} <span>→</span></button>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <button type="button" onClick="{{ ctaBadge }}" style="display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;font:500 13px 'IBM Plex Mono',monospace;color:var(--fg);cursor:pointer;text-align:left"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</button>
-      <div style="display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1)">
+      <sc-if value="{{ hasAvail }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ ctaBadge }}" style="display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;font:500 13px 'IBM Plex Mono',monospace;color:var(--fg);cursor:pointer;text-align:left"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</button></sc-if>
+      <div style="margin-left:auto;display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1)">
         <sc-for list="{{ modes }}" as="md" hint-placeholder-count="3">
           <button onClick="{{ md.set }}" title="{{ md.title }}" aria-label="{{ md.title }}" style="display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;cursor:pointer;background:{{ md.bg }};color:{{ md.fg }};transition:all .3s">
             <sc-if value="{{ md.isAuto }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"></path></svg></sc-if>
@@ -1445,7 +1445,7 @@ class Component extends DCLogic {
       certs: certsAll.map((x,i)=>({...x, delay:(i%3)*80, meta:metaOf(x)||' ', hasImg:!!x.image, noImg:!x.image, hasCat:!!x.category, hasNote:!!x.note, hasCred:!!x.credentialId, hasUrl:!!x.url, badgeText:x.issuer||x.category||'Certified', cursor:x.image?'zoom-in':'default', open:()=>{ if(x.image){ this.setState({cert:i}); window.PortfolioTracker?.trackEvent('cert_view', 'Viewed certificate: ' + (x.title||'Certificate')); } }, stop:e=>e.stopPropagation()})),
       certLb: !!(cOpen&&cOpen.image), cl: cOpen ? {...cOpen, meta:metaOf(cOpen)} : {}, certMulti: certImgs.length>1, certPos: pad2(Math.max(1,certImgs.indexOf(this.state.cert)+1))+' / '+pad2(certImgs.length),
       certClose: ()=>this.setState({cert:-1}), certPrev: e=>{ e.stopPropagation(); this.certStep(-1); }, certNext: e=>{ e.stopPropagation(); this.certStep(1); },
-      wide, narrow:!wide, showBadge: !!avail && vw>=1420, showCta: vw>=1100, menuOpen: !wide && this.state.menu, menuClosed: !(!wide && this.state.menu),
+      wide, narrow:!wide, showBadge: !!avail && vw>=1420, hasAvail: !!avail, showCta: vw>=1100, menuOpen: !wide && this.state.menu, menuClosed: !(!wide && this.state.menu),
       toggleMenu: ()=>this.setState(s=>({menu:!s.menu})),
       sheetItems: PAGES.map((k,i)=>({label:LABELS[k], num:pad2(i+1), delay:(i*35)+'ms', arrowOp:this.state.page===k?1:.35, fg:this.state.page===k?'var(--accent-ink)':'var(--fg)', go:e=>this.go(k,e)})),
       brandName: C.hero.brand || 'Shuvo Ibn Alam', brandInitials: (C.hero.brand || 'Shuvo Ibn Alam').split(/\s+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join(''), pageLabel: LABELS[this.state.page],

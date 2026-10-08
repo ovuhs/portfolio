@@ -592,7 +592,7 @@ const GROUPS = [
  {key:'intro', label:'Intro', desc:'First page: headline quotes, intro text, photo, counters and the scrolling strip.', blocks:[
   {path:'hero', kind:'object', title:'Hero', desc:'Main intro content and buttons.', fields:[
    {k:'brand',label:'Top-left brand text'},{k:'navCta',label:'Top bar button'},
-   {k:'available',label:'Availability badge text',hint:'Shown in the top bar.'},{k:'availableOn',label:'Availability badge',t:'select',options:[{value:'show',label:'Show'},{value:'hide',label:'Hide'}]},
+   {k:'availableOn',label:'Show the "Open to new roles" badge',t:'select',options:[{value:'show',label:'Show it'},{value:'hide',label:'Hide it'}],hint:'Turn this off when you are not looking for a job. It disappears from the top bar and the phone menu.'},{k:'available',label:'Badge text',hint:'Shown in the top bar and the phone menu. Leaving it empty also hides the badge.'},
    {k:'intro',label:'Intro paragraph',t:'area',rows:4,full:true},
    {k:'photo',label:'Hero photo',t:'image',full:true,hint:'Use a PNG with a transparent background for the cut-out look.'},
    {k:'cta1',label:'Primary button'},{k:'cta2',label:'Secondary button'},
