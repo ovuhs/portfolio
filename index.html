@@ -140,6 +140,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 [data-dlg]:focus{outline:none}
 .outcome{padding:9px 12px;border-radius:8px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.22);font-size:14px;line-height:1.45;font-weight:500;color:var(--fg);text-wrap:pretty}.outcome-k{margin-right:8px;font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)}
 .cf{max-width:760px}.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cf-full{grid-column:1/-1}@media(max-width:640px){.cf-grid{grid-template-columns:1fr}}.cf-field{display:flex;flex-direction:column;gap:6px}.cf-field label{font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.cf-field{min-width:0}.cf-field input,.cf-field textarea{box-sizing:border-box;width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(var(--tint),.18);background:var(--surface);color:var(--fg);font:400 16px 'Bricolage Grotesque',sans-serif;resize:vertical}.cf-field input:focus-visible,.cf-field textarea:focus-visible{outline:3px solid #22D3EE;outline-offset:1px}.cf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}.cf-send{padding:14px 26px;border-radius:999px;border:0;background:var(--fg);color:var(--bg);font:600 15px 'Bricolage Grotesque',sans-serif;cursor:pointer}.cf-send:disabled{opacity:.6;cursor:wait}.cf-send:focus-visible{outline:3px solid #22D3EE;outline-offset:3px}.cf-err{font-size:14px;color:#E5484D}:root[data-theme=dark] .cf-err{color:#FF8A8E}.cf-ok{padding:18px 20px;border-radius:14px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);font-size:16px;line-height:1.5}
+.priv-link{padding:0;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.priv-link:hover{color:var(--accent-ink)}.priv-link:focus-visible,.priv-btn:focus-visible{outline:3px solid #22D3EE;outline-offset:3px}.priv-body{font-size:15.5px;line-height:1.65;color:var(--fg2)}.priv-body p{margin:0 0 12px}.priv-body h3{margin:20px 0 6px;font-weight:600;font-size:17px;color:var(--fg)}.priv-btn{padding:11px 20px;border-radius:999px;border:1px solid rgba(var(--tint),.25);background:transparent;color:var(--fg);font:600 14px 'Bricolage Grotesque',sans-serif;cursor:pointer}.priv-btn:hover{background:rgba(var(--tint),.08)}
 .card-hit{all:unset;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit}
 .card-hit::after{content:'';position:absolute;inset:0;z-index:1}
 .card-hit.r18::after{border-radius:18px}.card-hit.r20::after{border-radius:20px}
@@ -751,7 +752,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     </div>
     </sc-if>
     <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:56px;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">
-      <span>{{ c.contact.footer }}</span><span>{{ c.contact.location }}</span>
+      <span>{{ c.contact.footer }} · <button type="button" class="priv-link" aria-haspopup="dialog" onClick="{{ privacy.open }}">Privacy</button></span><span>{{ c.contact.location }}</span>
     </div>
   </div>
 </section>
@@ -826,6 +827,30 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         </div>
       </div>
       <button onClick="{{ close }}" aria-label="Close" style="position:absolute;top:14px;right:14px;z-index:2;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(var(--tint),.14);background:rgba(var(--base),.85);color:var(--fg);font-size:16px;cursor:pointer" style-hover="background:#22D3EE;color:#0A0F1E">✕</button>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ privacy.show }}" hint-placeholder-val="{{ false }}">
+  <div data-dlg="1" tabindex="-1" role="dialog" aria-modal="true" aria-label="Privacy" onClick="{{ privacy.close }}" style="position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(12px,3vw,40px);background:rgba(4,7,16,.82);backdrop-filter:blur(10px);animation:rise .35s cubic-bezier(.2,.7,.2,1) both">
+    <div onClick="{{ stop }}" style="position:relative;width:min(640px,100%);max-height:calc(100svh - 48px);overflow:auto;padding:clamp(22px,4vw,36px);border-radius:22px;background:var(--bg);border:1px solid rgba(var(--tint),.14);box-shadow:0 40px 100px -30px rgba(0,0,0,.8)">
+      <button type="button" onClick="{{ privacy.close }}" aria-label="Close privacy note" style="position:absolute;top:14px;right:14px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(var(--tint),.2);background:transparent;color:var(--fg);font-size:15px;cursor:pointer">✕</button>
+      <h2 style="margin:0 44px 14px 0;font-weight:700;font-size:28px;letter-spacing:-.03em">Privacy</h2>
+      <div class="priv-body">
+        <p>This is a personal portfolio. It counts visits so I can see which work people look at. I do not sell or share this data.</p>
+        <h3>What is recorded when you visit</h3>
+        <p>The pages you open and what you click (for example a project, the CV download or a contact link), your device type, browser, operating system, screen size, language and time zone, and the site you came from. It does not include your name, email address or IP address.</p>
+        <p>A random ID is kept in your browser's local storage so repeat visits can be told apart. I set no cookies of my own.</p>
+        <sc-if value="{{ privacy.hasGA }}" hint-placeholder-val="{{ true }}"><p>I also use Google Analytics (with IP anonymisation) for overall traffic numbers. Google sets its own cookies for that.</p></sc-if>
+        <sc-if value="{{ privacy.hasForm }}" hint-placeholder-val="{{ true }}">
+          <h3>The contact form</h3>
+          <p>If you send a message, I keep your name, email address and message so I can reply. Ask me and I will delete it.</p>
+        </sc-if>
+        <h3>Your choice</h3>
+        <p>{{ privacy.stateText }}</p>
+        <button type="button" class="priv-btn" onClick="{{ privacy.toggle }}">{{ privacy.toggleLabel }}</button>
+        <p style="margin-top:18px">Questions or deletion requests: <a href="{{ privacy.mail }}" style="color:var(--accent-ink);text-decoration:underline">{{ privacy.email }}</a></p>
+        <p style="font-size:13px;color:var(--muted)">The site is hosted on Vercel, and the data is stored with Supabase. Both keep standard server logs.</p>
+      </div>
     </div>
   </div>
 </sc-if>
@@ -988,7 +1013,7 @@ const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var 
 const withFit = h => /<\/body>/i.test(h) ? h.replace(/<\/body>(?![\s\S]*<\/body>)/i, DASH_FIT + '</body>') : h + DASH_FIT;
 
 class Component extends DCLogic {
-  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromLocation(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0, cf:{st:'idle',err:''} };
+  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromLocation(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0, cf:{st:'idle',err:''}, priv:false, privTick:0 };
   componentDidMount(){
     const motion = this.motionOn();
     this.io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1, rootMargin:'0px 0px -40px 0px'});
@@ -1000,7 +1025,7 @@ class Component extends DCLogic {
     if (motion) this.iv = setInterval(()=>this.setState(s=>({live:s.live+1})), 2200);
     this.onScroll = () => { const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); if(this.pr?.current) this.pr.current.style.transform=`scaleX(${p})`; this.tlUpdate(); };
     this.onMove = e => { if(this.gl?.current) this.gl.current.style.transform=`translate(${e.clientX}px,${e.clientY}px)`; };
-    this.onKey = e => { if(this.state.menu && e.key==='Escape'){ this.setState({menu:false}); const mb=document.querySelector('[aria-label="Menu"]'); if(mb) mb.focus(); return; } if(this.state.dash){ this.dashKey(e.key); return; } if(this.state.recOpen>=0){ if(e.key==='Escape') this.closeRec(); if(e.key==='ArrowRight') this.recStep(1,true); if(e.key==='ArrowLeft') this.recStep(-1,true); return; } if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
+    this.onKey = e => { if(this.state.priv){ if(e.key==='Escape') this.setState({priv:false}); return; } if(this.state.menu && e.key==='Escape'){ this.setState({menu:false}); const mb=document.querySelector('[aria-label="Menu"]'); if(mb) mb.focus(); return; } if(this.state.dash){ this.dashKey(e.key); return; } if(this.state.recOpen>=0){ if(e.key==='Escape') this.closeRec(); if(e.key==='ArrowRight') this.recStep(1,true); if(e.key==='ArrowLeft') this.recStep(-1,true); return; } if(this.state.ph>=0){ if(e.key==='Escape') this.setState({ph:-1}); if(e.key==='ArrowRight') this.phStep(1); if(e.key==='ArrowLeft') this.phStep(-1); return; } if(this.state.cert>=0){ if(e.key==='Escape') this.setState({cert:-1}); if(e.key==='ArrowRight') this.certStep(1); if(e.key==='ArrowLeft') this.certStep(-1); return; } if(!this.state.open) return; if(e.key==='Escape') this.setState({open:null}); if(e.key==='ArrowRight') this.slide(1); if(e.key==='ArrowLeft') this.slide(-1); };
     window.addEventListener('scroll',this.onScroll,{passive:true});
     window.addEventListener('mousemove',this.onMove);
     this.onTrap = e => {
@@ -1043,6 +1068,7 @@ class Component extends DCLogic {
   initGA(){
     const id = (this.content()?.site?.gaId||'').trim();
     if(!/^G-[A-Z0-9]{4,20}$/.test(id) || window.__gaLoaded) return;
+    if(window.PortfolioTracker && !window.PortfolioTracker.isCounting()){ window['ga-disable-'+id]=true; return; }
     window.__gaLoaded=id; window.dataLayer=window.dataLayer||[]; window.gtag=function(){ window.dataLayer.push(arguments); };
     window.gtag('js', new Date()); window.gtag('config', id, {anonymize_ip:true});
     const sc=document.createElement('script'); sc.async=true; sc.src='https://www.googletagmanager.com/gtag/js?id='+id; document.head.appendChild(sc);
@@ -1448,6 +1474,13 @@ class Component extends DCLogic {
       pg: Object.fromEntries(PAGES.map(k=>[k, this.state.page===k])),
       navItems: [['intro','Intro'],['projects','Projects'],['skills','Skills'],['certifications','Certifications'],['experience','Experience'],['recommendations','Recommendations'],['hobbies','Hobbies']].map(([key,label],k)=>({key,label,fg:this.state.page===key?'#0A0F1E':'var(--fg2)',go:e=>this.go(key,e)})),
       indLeft:(this.state.ind?.l ?? 5)+'px', indWidth:(this.state.ind?.w ?? 0)+'px', indOpacity:this.state.ind?1:0,
+      privacy:(()=>{ const T=window.PortfolioTracker, counting=!T||T.isCounting(), em=(C.contact&&C.contact.email)||'';
+        return { show:this.state.priv, open:()=>this.setState({priv:true}), close:()=>this.setState({priv:false}),
+          hasGA:!!(C.site&&/^G-[A-Z0-9]{4,20}$/.test((C.site.gaId||'').trim())), hasForm:!!((window.PORTFOLIO_CONFIG||{}).supabaseUrl),
+          stateText: counting ? 'Your visits are currently counted.' : 'Your visits are not counted on this browser.',
+          toggleLabel: counting ? 'Stop counting my visits' : 'Count my visits again',
+          toggle:()=>{ if(T) T.setCounting(!counting); const id=(C.site&&C.site.gaId||'').trim(); if(id) window['ga-disable-'+id]=counting; this.setState({privTick:Date.now()}); },
+          email:em, mail:em?'mailto:'+em:'#contact' }; })(),
       cform:{ on:!!((window.PORTFOLIO_CONFIG||{}).supabaseUrl && (window.PORTFOLIO_CONFIG||{}).supabaseAnonKey), open:this.state.cf.st!=='sent', sent:this.state.cf.st==='sent', busy:this.state.cf.st==='sending', label:this.state.cf.st==='sending'?'Sending…':'Send message', error:this.state.cf.err, send:()=>this.sendMessage() },
       goIntro:e=>this.go('intro',e), goWork:e=>this.go('projects',e), goContact:e=>this.go('contact',e),
       ctaBadge:e=>{ window.PortfolioTracker?.trackEvent('cta_click','Open to new roles badge'); this.go('contact',e); },
