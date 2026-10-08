@@ -136,6 +136,11 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .pd-ul li::before{content:'';position:absolute;left:3px;top:.62em;width:7px;height:7px;border-radius:2px;background:#22D3EE;transform:rotate(45deg)}
 .sl-btn{display:grid;place-items:center;width:36px;height:36px;padding:0;flex:none;border-radius:50%;border:1px solid rgba(var(--tint),.16);background:rgba(var(--base),.8);backdrop-filter:blur(8px);color:var(--fg);font-size:16px;cursor:pointer;pointer-events:auto;transition:opacity .3s,background .25s,color .25s}
 .sl-btn:hover:not(:disabled){background:#22D3EE;color:#0A0F1E}
+/* Cards: a real button that stretches over the whole card, with a clear keyboard focus ring */
+.card-hit{all:unset;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit}
+.card-hit::after{content:'';position:absolute;inset:0;z-index:1}
+.card-hit.r18::after{border-radius:18px}.card-hit.r20::after{border-radius:20px}
+.card-hit:focus-visible::after{outline:3px solid #22D3EE;outline-offset:-3px;box-shadow:inset 0 0 0 7px rgba(34,211,238,.2)}
 .m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
 html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 @media (max-width:1100px){[data-hero-glass]{display:none!important}}
@@ -309,7 +314,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:20px;margin-top:48px">
     <sc-for list="{{ shown }}" as="p" hint-placeholder-count="6">
-      <article data-reveal="{{ p.delay }}" onClick="{{ p.open }}" style="position:relative;display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.08);overflow:hidden;cursor:pointer;transition:border-color .3s, background .3s" style-hover="border-color:rgba(34,211,238,.5);background:var(--surface2)">
+      <article data-reveal="{{ p.delay }}" style="position:relative;display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.08);overflow:hidden;cursor:pointer;transition:border-color .3s, background .3s" style-hover="border-color:rgba(34,211,238,.5);background:var(--surface2)">
         <div style="position:relative;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,rgba(var(--tint),.03) 0 10px,transparent 10px 20px);border-bottom:1px solid rgba(var(--tint),.06)">
           <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ p.image }}" data-w="640,960" data-sizes="(max-width:760px) 92vw, 420px" alt="{{ p.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if><sc-if value="{{ p.vidCover }}" hint-placeholder-val="{{ false }}"><video data-cover="1" src="{{ p.coverVideo }}" muted="{{ true }}" playsInline="{{ true }}" preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none"></video></sc-if><sc-if value="{{ p.noMedia }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:grid;place-items:center;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">Screenshot coming soon</div></sc-if>
           <span style="position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.8);backdrop-filter:blur(6px);font:500 11px 'IBM Plex Mono',monospace;color:{{ p.tagColor }};pointer-events:none">{{ p.tool }}</span>
@@ -320,7 +325,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;padding:20px 22px 22px;flex:1">
           <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
-            <h3 style="margin:0;font-weight:600;font-size:21px;letter-spacing:-.02em;line-height:1.2">{{ p.title }}</h3>
+            <h3 style="margin:0;font-weight:600;font-size:21px;letter-spacing:-.02em;line-height:1.2"><button type="button" class="card-hit r18" aria-haspopup="dialog" onClick="{{ p.open }}">{{ p.title }}</button></h3>
             <span style="font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">{{ p.num }}</span>
           </div>
           <div class="pd-card" style="font-size:15px;line-height:1.5;color:var(--fg3);text-wrap:pretty">
@@ -392,7 +397,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px;margin-top:48px">
     <sc-for list="{{ certs }}" as="ce" hint-placeholder-count="5">
-      <article data-reveal="{{ ce.delay }}" onClick="{{ ce.open }}" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--tint),.08);cursor:{{ ce.cursor }};transition:border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="border-color:rgba(34,211,238,.5);transform:translateY(-4px)">
+      <article data-reveal="{{ ce.delay }}" style="position:relative;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--tint),.08);cursor:{{ ce.cursor }};transition:border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="border-color:rgba(34,211,238,.5);transform:translateY(-4px)">
         <div style="position:relative;aspect-ratio:4/3;background:var(--bg);border-bottom:1px solid rgba(var(--tint),.06);overflow:hidden">
           <sc-if value="{{ ce.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ ce.image }}" data-w="480,960" data-sizes="(max-width:600px) 92vw, 320px" alt="{{ ce.title }} certificate" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14px;box-sizing:border-box;display:block"></sc-if>
           <sc-if value="{{ ce.noImg }}" hint-placeholder-val="{{ true }}">
@@ -406,12 +411,12 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
           <sc-if value="{{ ce.hasCat }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;background:rgba(var(--base),.85);backdrop-filter:blur(6px);font:500 11px 'IBM Plex Mono',monospace;color:var(--accent-ink)">{{ ce.category }}</span></sc-if>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;padding:20px 22px 22px;flex:1">
-          <h3 style="margin:0;font-weight:600;font-size:20px;letter-spacing:-.02em;line-height:1.2">{{ ce.title }}</h3>
+          <h3 style="margin:0;font-weight:600;font-size:20px;letter-spacing:-.02em;line-height:1.2"><sc-if value="{{ ce.hasImg }}" hint-placeholder-val="{{ false }}"><button type="button" class="card-hit r20" aria-haspopup="dialog" onClick="{{ ce.open }}">{{ ce.title }}</button></sc-if><sc-if value="{{ ce.noImg }}" hint-placeholder-val="{{ true }}">{{ ce.title }}</sc-if></h3>
           <div style="font-size:14px;color:var(--fg3)">{{ ce.meta }}</div>
           <sc-if value="{{ ce.hasNote }}" hint-placeholder-val="{{ false }}"><p style="margin:4px 0 0;font-size:14px;line-height:1.5;color:var(--fg2);text-wrap:pretty">{{ ce.note }}</p></sc-if>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;padding-top:12px">
             <sc-if value="{{ ce.hasCred }}" hint-placeholder-val="{{ false }}"><span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">ID {{ ce.credentialId }}</span></sc-if>
-            <sc-if value="{{ ce.hasUrl }}" hint-placeholder-val="{{ false }}"><a href="{{ ce.url }}" target="_blank" rel="noopener noreferrer" onClick="{{ ce.stop }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid rgba(var(--tint),.16);font-size:13px;font-weight:500;white-space:nowrap" style-hover="border-color:#22D3EE">Verify ↗</a></sc-if>
+            <sc-if value="{{ ce.hasUrl }}" hint-placeholder-val="{{ false }}"><a href="{{ ce.url }}" target="_blank" rel="noopener noreferrer" onClick="{{ ce.stop }}" style="position:relative;z-index:2;margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid rgba(var(--tint),.16);font-size:13px;font-weight:500;white-space:nowrap" style-hover="border-color:#22D3EE">Verify ↗</a></sc-if>
           </div>
         </div>
       </article>
@@ -695,8 +700,9 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   </sc-if>
   <div style="columns:3 300px;column-gap:16px;margin-top:48px">
     <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="6">
-      <figure data-reveal="{{ ph.delay }}" onClick="{{ ph.open }}" style="position:relative;margin:0 0 16px;break-inside:avoid;border-radius:18px;overflow:hidden;cursor:zoom-in;background:var(--surface)" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,.7)">
-        <img data-src="{{ ph.image }}" data-w="480,960" data-sizes="(max-width:760px) 92vw, 440px" alt="{{ ph.alt }}" loading="lazy" style="display:block;width:100%;height:auto;transform:scale({{ ph.scale }});transition:transform .8s cubic-bezier(.2,.8,.2,1)" onMouseEnter="{{ ph.enter }}" onMouseLeave="{{ ph.leave }}">
+      <figure data-reveal="{{ ph.delay }}" onMouseEnter="{{ ph.enter }}" onMouseLeave="{{ ph.leave }}" style="position:relative;margin:0 0 16px;break-inside:avoid;border-radius:18px;overflow:hidden;cursor:zoom-in;background:var(--surface)" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,.7)">
+        <img data-src="{{ ph.image }}" data-w="480,960" data-sizes="(max-width:760px) 92vw, 440px" alt="{{ ph.alt }}" loading="lazy" style="display:block;width:100%;height:auto;transform:scale({{ ph.scale }});transition:transform .8s cubic-bezier(.2,.8,.2,1)">
+        <button type="button" class="card-hit r18" aria-haspopup="dialog" aria-label="View larger: {{ ph.label }}" onClick="{{ ph.open }}" onFocus="{{ ph.enter }}" onBlur="{{ ph.leave }}"></button>
         <sc-if value="{{ ph.hasCap }}" hint-placeholder-val="{{ false }}">
           <figcaption style="position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:40px 18px 16px;background:linear-gradient(180deg,rgba(4,7,16,0),rgba(4,7,16,.82));color:#E9EDF7;opacity:{{ ph.capOp }};transform:translateY({{ ph.capY }});transition:opacity .4s, transform .4s;pointer-events:none">
             <div style="min-width:0"><div style="font-weight:600;font-size:16px">{{ ph.title }}</div><div style="margin-top:2px;font:400 11px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ ph.meta }}</div></div>
@@ -1333,7 +1339,7 @@ class Component extends DCLogic {
       c: C, hd,
       hasHobbyIntro: !!C.hobbiesHead.intro, noPhotos: phAll.length===0, hasPhotoCats: phCats.length>1,
       photoFilters: ['All',...phCats].map(k=>({label:k, bg:k===phCat?'var(--fg)':'transparent', fg:k===phCat?'var(--bg)':'var(--fg2)', onClick:()=>this.setState({phCat:k})})),
-      photos: phShown.map((x,k)=>{ const hov=this.state.phHover===x._i; return {...x, delay:(k%3)*80, alt:x.title||'Photo by Shuvo', meta:phMeta(x), hasCap:!!(x.title||phMeta(x)||x.category), hasCat:!!x.category, scale:hov?1.05:1, capOp:(hov||touch)?1:.0, capY:(hov||touch)?'0':'12px', enter:()=>this.setState({phHover:x._i}), leave:()=>this.setState({phHover:-1}), open:()=>{ this.setState({ph:x._i}); window.PortfolioTracker?.trackEvent('photo_view', 'Viewed photo: ' + (x.title||x.category||'Photo')); }}; }),
+      photos: phShown.map((x,k)=>{ const hov=this.state.phHover===x._i; const t=String(x.title||'').trim(); const nice=t && !/^[\d_\-\s.]+$/.test(t) && !/^(img|dsc|dscn|image|photo|pxl|mvimg)[\s_\-]*\d+/i.test(t); const alt=nice ? t : ([x.category, x.place].filter(Boolean).join(', ')+(x.category||x.place?' - ':'')+'Photograph by '+(C.hero.brand||'the photographer')); return {...x, delay:(k%3)*80, alt, label:alt+', '+(k+1)+' of '+phShown.length, meta:phMeta(x), hasCap:!!(x.title||phMeta(x)||x.category), hasCat:!!x.category, scale:hov?1.05:1, capOp:(hov||touch)?1:.0, capY:(hov||touch)?'0':'12px', enter:()=>this.setState({phHover:x._i}), leave:()=>this.setState({phHover:-1}), open:()=>{ this.setState({ph:x._i}); window.PortfolioTracker?.trackEvent('photo_view', 'Viewed photo: ' + (x.title||x.category||'Photo')); }}; }),
       phLb: !!pOpen, pl: pOpen ? {...pOpen, alt:pOpen.title||'Photo', metaPos:[phMeta(pOpen), pad2(Math.max(1,this._phList.indexOf(pOpen._i)+1))+' / '+pad2(this._phList.length)].filter(Boolean).join(' · ')} : {},
       phClose: ()=>this.setState({ph:-1}), phPrev: e=>{ e.stopPropagation(); this.phStep(-1); }, phNext: e=>{ e.stopPropagation(); this.phStep(1); },
       phTStart: e=>{ this._ptx=e.touches[0].clientX; }, phTEnd: e=>{ const dx=e.changedTouches[0].clientX-(this._ptx??0); if(Math.abs(dx)>40) this.phStep(dx<0?1:-1); },
