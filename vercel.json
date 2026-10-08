@@ -1,5 +1,5 @@
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
   "functions": {
     "api/seo.js": {
@@ -13,8 +13,8 @@
   },
   "rewrites": [
     {
-      "source": "/googlec229be52c8fbbeca.html",
-      "destination": "/api/google-verify"
+      "source": "/admin",
+      "destination": "/admin/index.html"
     },
     {
       "source": "/sitemap.xml",
