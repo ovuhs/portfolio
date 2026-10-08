@@ -1,0 +1,11 @@
+# Keep line endings as LF everywhere so Windows and Vercel agree (and Git stops warning about CRLF).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff2 binary
