@@ -51,6 +51,15 @@ The anon key is meant to be public. Only your email can change content, enforced
 ## 3. Google Analytics (optional)
 Create a GA4 property at https://analytics.google.com, copy the Measurement ID (`G-…`), paste it in *Admin → Settings → Google Analytics*.
 
+## 3b. Contact form (optional)
+
+The Contact page has a "Send me a message" form. Messages are saved in your Supabase project and appear in the admin under **Messages**.
+
+1. Admin -> Messages -> **Copy the setup SQL** (or open `supabase/contact_messages.sql`).
+2. Supabase -> SQL Editor -> New query -> paste -> Run. It is safe to run again.
+
+Visitors can only add messages; only you (signed in) can read, mark or delete them. Spam is limited by a hidden field, a minimum fill time, a one-minute pause per browser and length limits in the table. You are not emailed automatically; check the Messages tab (the unread count shows next to it).
+
 ## Security notes
 - Local mode password is hashed and locks for 1 minute after 5 wrong tries, but it only protects your own browser's draft. Real protection comes from Supabase.
 - Your phone number is no longer shown publicly.

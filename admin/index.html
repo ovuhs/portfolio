@@ -215,6 +215,38 @@ input,textarea,select,button{font-family:inherit}
         </sc-for>
       </sc-if>
 
+      <sc-if value="{{ isMessages }}" hint-placeholder-val="{{ false }}">
+        <section style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+            <div style="font-size:14px;color:#AEB6CC">{{ msgSummary }}</div>
+            <button onClick="{{ onRefreshMsgs }}" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">↻ Refresh</button>
+          </div>
+          <sc-if value="{{ msgNeedsSetup }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:20px;border-radius:16px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.07);display:flex;flex-direction:column;gap:12px;line-height:1.55;font-size:14px">
+              <b>One-time setup needed</b>
+              <span>Your Supabase project has no <code>contact_messages</code> table yet, so the contact form cannot save messages. Copy the SQL, open Supabase → SQL Editor → New query, paste it and press Run. Then press Refresh.</span>
+              <div><button onClick="{{ onCopyMsgSql }}" style="padding:9px 16px;border-radius:10px;border:0;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;cursor:pointer">Copy the setup SQL</button></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ msgError }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 16px;border-radius:12px;border:1px solid rgba(245,158,158,.3);color:#F59E9E;font-size:13.5px">{{ msgError }}</div></sc-if>
+          <sc-if value="{{ msgEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;border-radius:16px;border:1px dashed rgba(233,237,247,.16);text-align:center;color:#AEB6CC;font-size:14px">No messages yet. When someone uses the contact form, it will show up here.</div></sc-if>
+          <sc-for list="{{ msgList }}" as="m" hint-placeholder-count="2">
+            <article style="padding:18px 20px;border-radius:16px;background:#0D1326;border:1px solid {{ m.border }};display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+                <div style="font-weight:600;font-size:16px">{{ m.name }} <a href="{{ m.mail }}" style="font-weight:400;font-size:13.5px;color:#22D3EE;margin-left:6px">{{ m.email }}</a></div>
+                <span style="font:400 12px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ m.when }}</span>
+              </div>
+              <div style="font-size:14.5px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:#E9EDF7">{{ m.message }}</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <a href="{{ m.mail }}" style="padding:7px 14px;border-radius:9px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:13px;text-decoration:none">Reply by email</a>
+                <button onClick="{{ m.toggle }}" style="padding:7px 14px;border-radius:9px;border:1px solid rgba(233,237,247,.14);background:transparent;color:#E9EDF7;font-size:13px;cursor:pointer">{{ m.toggleLabel }}</button>
+                <button onClick="{{ m.del }}" style="padding:7px 14px;border-radius:9px;border:1px solid rgba(245,158,158,.3);background:transparent;color:#F59E9E;font-size:13px;cursor:pointer">Delete</button>
+              </div>
+            </article>
+          </sc-for>
+        </section>
+      </sc-if>
+
       <sc-if value="{{ isAnalytics }}" hint-placeholder-val="{{ false }}">
         <!-- HEADER -->
         <section style="padding:22px 24px;border-radius:20px;background:linear-gradient(135deg,#111830,#0D1326);border:1px solid rgba(34,211,238,.28);display:flex;flex-direction:column;gap:18px">
@@ -514,7 +546,9 @@ const HEAD_STYLE = [
   {k:'headSize',label:'Heading size',t:'select',options:[{value:'m',label:'Medium (default)'},{value:'xs',label:'Extra small'},{value:'s',label:'Small'},{value:'l',label:'Large'},{value:'xl',label:'Extra large'}]},
   {k:'headShow',label:'Show heading',t:'select',options:[{value:'all',label:'Small label + heading'},{value:'title',label:'Heading only'},{value:'label',label:'Small label only'},{value:'none',label:'Hide both'}]}];
 const HEAD = [{k:'label',label:'Small label'},{k:'title',label:'Heading'},{k:'italic',label:'Heading (italic part)'}, ...HEAD_STYLE];
+const MSG_SQL = '-- Messages from the contact form on the portfolio.\n-- Run once: Supabase -> SQL Editor -> New query -> paste -> Run.\n-- Safe to run again; it only adds what is missing.\n--\n-- Anyone can send a message (insert only). Only the signed-in admin can read, mark or delete them,\n-- as long as "Allow new users to sign up" is turned OFF (see SETUP.md, step 2).\n\ncreate table if not exists public.contact_messages (\n  id          bigint generated by default as identity primary key,\n  name        text not null check (char_length(name) between 1 and 120),\n  email       text not null check (char_length(email) between 5 and 200 and email like \'%@%\'),\n  message     text not null check (char_length(message) between 5 and 4000),\n  is_read     boolean not null default false,\n  created_at  timestamptz not null default now()\n);\n\ncreate index if not exists contact_messages_created_idx on public.contact_messages (created_at desc);\n\nalter table public.contact_messages enable row level security;\n\ndrop policy if exists "anyone can send a message" on public.contact_messages;\ncreate policy "anyone can send a message" on public.contact_messages\n  for insert to anon, authenticated\n  with check (is_read = false);\n\ndrop policy if exists "admin can read messages" on public.contact_messages;\ncreate policy "admin can read messages" on public.contact_messages\n  for select to authenticated using (true);\n\ndrop policy if exists "admin can update messages" on public.contact_messages;\ncreate policy "admin can update messages" on public.contact_messages\n  for update to authenticated using (true) with check (true);\n\ndrop policy if exists "admin can delete messages" on public.contact_messages;\ncreate policy "admin can delete messages" on public.contact_messages\n  for delete to authenticated using (true);\n';
 const GROUPS = [
+ {key:'messages', label:'Messages', desc:'Messages sent from the contact form on your site.'},
  {key:'analytics', label:'Analytics', desc:'Real-time visitor counters, device insights, and live activity stream.'},
  {key:'intro', label:'Intro', desc:'First page: headline quotes, intro text, photo, counters and the scrolling strip.', blocks:[
   {path:'hero', kind:'object', title:'Hero', desc:'Main intro content and buttons.', fields:[
@@ -651,7 +685,7 @@ const fmtDur=s=>{ s=Math.round(s||0); if(s<=0) return '0s'; if(s<60) return s+'s
 const PALETTE=['#22D3EE','#7AA2FF','#9BE7A0','#F2C94C','#C8A2FF','#F59E9E','#A4C8FF'];
 
 class Component extends DCLogic {
-  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
+  state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', msgs:null, msgsLoading:false, msgsErr:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
   componentDidMount(){
     const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
       if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
@@ -671,6 +705,21 @@ class Component extends DCLogic {
       if(signedIn && PC.getToken) PC.getToken().then(t=>PT.getEvents(t).then(done), ()=>PT.getEvents(null).then(done)).catch(fail);
       else PT.getEvents(null).then(done).catch(fail);
     };
+    this.msgReq=(path,opt)=>{
+      const PC=window.PortfolioContent, cfg=window.PORTFOLIO_CONFIG||{};
+      return PC.getToken().then(t=>fetch(cfg.supabaseUrl.replace(/\/$/,'')+'/rest/v1/contact_messages'+path,Object.assign({},opt,{headers:Object.assign({apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+t,'Content-Type':'application/json'},(opt&&opt.headers)||{})})));
+    };
+    this.loadMsgs=(silent)=>{
+      const PC=window.PortfolioContent;
+      if(!(PC&&PC.remote&&PC.getSession&&PC.getSession())){ this.setState({msgs:[],msgsErr:'Sign in with your Supabase account to see messages.'}); return; }
+      if(!silent) this.setState({msgsLoading:true});
+      this.msgReq('?select=*&order=created_at.desc&limit=200').then(r=>r.ok?r.json():r.text().then(t=>{ const e=new Error(t); e.status=r.status; throw e; }))
+        .then(rows=>this.setState({msgs:rows,msgsLoading:false,msgsErr:''}))
+        .catch(e=>this.setState({msgs:[],msgsLoading:false,msgsErr:(e.status===404||/PGRST205|42P01|does not exist|schema cache/i.test(e.message||''))?'SETUP':'Could not load messages: '+(e.message||'unknown error').slice(0,200)}));
+    };
+    this.patchMsg=(id,body)=>this.msgReq('?id=eq.'+id,{method:'PATCH',body:JSON.stringify(body),headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); });
+    this.deleteMsg=id=>this.msgReq('?id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); });
+    this.loadMsgs(true);
     this.loadAnalytics();
     this.analyticsTick=setInterval(()=>{ if(this.state.group==='analytics') this.loadAnalytics(true); },20000);
     this.onAnalyticsUpdate=()=>this.loadAnalytics(true);
@@ -948,20 +997,32 @@ class Component extends DCLogic {
     const locked=!S.authed;
     const g=GROUPS.find(x=>x.key===S.group)||GROUPS[0];
     const isAnalytics = g.key==='analytics';
+    const isMessages = g.key==='messages';
     const isSettings = g.key==='settings';
-    const notSettings = !isSettings && !isAnalytics;
+    const notSettings = !isSettings && !isAnalytics && !isMessages;
 
+    const msgs=S.msgs||[], unread=msgs.filter(m=>!m.is_read).length;
+    const msgSetup=S.msgsErr==='SETUP';
+    const msgList=msgs.map(m=>({
+      name:m.name, email:m.email, message:m.message, when:formatTimeAgo(new Date(m.created_at).getTime()),
+      border:m.is_read?'rgba(233,237,247,.08)':'rgba(34,211,238,.45)',
+      mail:'mailto:'+m.email+'?subject='+encodeURIComponent('Re: your message')+'&body='+encodeURIComponent('Hi '+m.name+','+String.fromCharCode(10,10)),
+      toggleLabel:m.is_read?'Mark as unread':'Mark as read',
+      toggle:()=>{ this.patchMsg(m.id,{is_read:!m.is_read}).then(()=>this.loadMsgs(true)).catch(()=>this.flash('Could not update that message')); },
+      del:()=>{ if(window.confirm('Delete this message for good?')) this.deleteMsg(m.id).then(()=>{ this.flash('Message deleted'); this.loadMsgs(true); }).catch(()=>this.flash('Could not delete that message')); }
+    }));
     const an=this.analyticsVals();
 
     const nav=GROUPS.map(x=>{
       const isAn = x.key==='analytics';
-      const countVal = isAn ? an.navCount : (C&&x.count?(C[x.count]||[]).length:0);
+      const isMsg = x.key==='messages';
+      const countVal = isAn ? an.navCount : isMsg ? unread : (C&&x.count?(C[x.count]||[]).length:0);
       return {
         label:x.label,
-        go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); },
+        go:()=>{ this.setState({group:x.key,open:{}}); window.scrollTo({top:0}); if(isAn) this.loadAnalytics(true); if(isMsg) this.loadMsgs(true); },
         bg:x.key===S.group?'rgba(34,211,238,.12)':'transparent',
         fg:x.key===S.group?'#22D3EE':'#AEB6CC',
-        hasCount: isAn ? countVal>0 : !!(x.count&&C),
+        hasCount: (isAn||isMsg) ? countVal>0 : !!(x.count&&C),
         count: countVal
       };
     });
@@ -1001,6 +1062,10 @@ class Component extends DCLogic {
       onPw:e=>this.setState({pw:e.target.value,err:''}),
       login:e=>this.doLogin(e),
       logout:()=>{ try{sessionStorage.removeItem(AUTH_KEY);}catch(_){} if(PC&&PC.remote) PC.signOut(); this.setState({authed:false}); },
+      isMessages, msgList, msgNeedsSetup:msgSetup, msgError:msgSetup?'':S.msgsErr, msgEmpty:S.msgs!==null&&!msgs.length&&!S.msgsErr,
+      msgSummary:S.msgsLoading?'Loading…':(msgs.length?(msgs.length+' message'+(msgs.length===1?'':'s')+(unread?(', '+unread+' unread'):'')):''),
+      onRefreshMsgs:()=>{ this.loadMsgs(false); },
+      onCopyMsgSql:()=>{ const sql=MSG_SQL; const ok=()=>this.flash('Setup SQL copied. Paste it into the Supabase SQL Editor.'); const fb=()=>{ download('contact_messages.sql', sql, 'text/plain'); this.flash('Could not copy, so the SQL was downloaded instead'); }; try{ navigator.clipboard.writeText(sql).then(ok, fb); }catch(_){ fb(); } },
       nav, groupLabel:g.label, groupDesc:g.desc, isSettings, notSettings, isAnalytics, blocks,
       catOptions: C ? [...new Set((C.projects||[]).map(p=>p.cat).filter(Boolean))] : [],
       statusText, statusColor,

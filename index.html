@@ -139,6 +139,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 /* Cards: a real button that stretches over the whole card, with a clear keyboard focus ring */
 [data-dlg]:focus{outline:none}
 .outcome{padding:9px 12px;border-radius:8px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.22);font-size:14px;line-height:1.45;font-weight:500;color:var(--fg);text-wrap:pretty}.outcome-k{margin-right:8px;font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink)}
+.cf{max-width:760px}.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cf-full{grid-column:1/-1}@media(max-width:640px){.cf-grid{grid-template-columns:1fr}}.cf-field{display:flex;flex-direction:column;gap:6px}.cf-field label{font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.cf-field{min-width:0}.cf-field input,.cf-field textarea{box-sizing:border-box;width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(var(--tint),.18);background:var(--surface);color:var(--fg);font:400 16px 'Bricolage Grotesque',sans-serif;resize:vertical}.cf-field input:focus-visible,.cf-field textarea:focus-visible{outline:3px solid #22D3EE;outline-offset:1px}.cf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}.cf-send{padding:14px 26px;border-radius:999px;border:0;background:var(--fg);color:var(--bg);font:600 15px 'Bricolage Grotesque',sans-serif;cursor:pointer}.cf-send:disabled{opacity:.6;cursor:wait}.cf-send:focus-visible{outline:3px solid #22D3EE;outline-offset:3px}.cf-err{font-size:14px;color:#E5484D}:root[data-theme=dark] .cf-err{color:#FF8A8E}.cf-ok{padding:18px 20px;border-radius:14px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);font-size:16px;line-height:1.5}
 .card-hit{all:unset;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit}
 .card-hit::after{content:'';position:absolute;inset:0;z-index:1}
 .card-hit.r18::after{border-radius:18px}.card-hit.r20::after{border-radius:20px}
@@ -728,6 +729,27 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <a href="{{ lk.href }}" target="{{ lk.target }}" rel="noopener noreferrer" style="display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--bg);transition:background .25s" style-hover="background:var(--surface);color:var(--fg)"><span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted);text-transform:uppercase">{{ lk.label }}</span><span style="font-size:17px;overflow-wrap:anywhere">{{ lk.value }}</span></a>
       </sc-for>
     </div>
+    <sc-if value="{{ cform.on }}" hint-placeholder-val="{{ true }}">
+    <div data-reveal="160" class="cf" style="margin-top:56px">
+      <h2 style="margin:0 0 6px;font-weight:700;font-size:clamp(26px,3vw,38px);letter-spacing:-.03em">Send me a message</h2>
+      <p style="margin:0 0 22px;font-size:15.5px;line-height:1.55;color:var(--fg3)">Tell me what you are working on. I read every message and reply by email.</p>
+      <sc-if value="{{ cform.sent }}" hint-placeholder-val="{{ false }}">
+        <div role="status" class="cf-ok"><b>Message sent.</b> Thank you, I will get back to you by email soon.</div>
+      </sc-if>
+      <sc-if value="{{ cform.open }}" hint-placeholder-val="{{ true }}">
+        <div class="cf-grid">
+          <div class="cf-field"><label for="cf-name">Your name</label><input id="cf-name" type="text" autocomplete="name" maxlength="120" required></div>
+          <div class="cf-field"><label for="cf-email">Your email</label><input id="cf-email" type="email" autocomplete="email" maxlength="200" required></div>
+          <div class="cf-field cf-full"><label for="cf-msg">Message</label><textarea id="cf-msg" rows="5" maxlength="4000" required></textarea></div>
+          <div class="cf-hp" aria-hidden="true"><label for="cf-site">Leave this empty</label><input id="cf-site" type="text" tabindex="-1" autocomplete="off"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px">
+          <button type="button" class="cf-send" onClick="{{ cform.send }}" disabled="{{ cform.busy }}">{{ cform.label }}</button>
+          <span role="alert" class="cf-err">{{ cform.error }}</span>
+        </div>
+      </sc-if>
+    </div>
+    </sc-if>
     <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:56px;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">
       <span>{{ c.contact.footer }}</span><span>{{ c.contact.location }}</span>
     </div>
@@ -966,7 +988,7 @@ const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var 
 const withFit = h => /<\/body>/i.test(h) ? h.replace(/<\/body>(?![\s\S]*<\/body>)/i, DASH_FIT + '</body>') : h + DASH_FIT;
 
 class Component extends DCLogic {
-  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromLocation(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
+  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromLocation(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0, cf:{st:'idle',err:''} };
   componentDidMount(){
     const motion = this.motionOn();
     this.io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1, rootMargin:'0px 0px -40px 0px'});
@@ -1054,6 +1076,22 @@ class Component extends DCLogic {
     window.PortfolioTracker?.trackEvent('dashboard_open', 'Opened live dashboard: ' + (p.title||'Project'));
   }
   dashZoom(action){ const f=this.dashRef?.current; if(!f || !this.state.dash || !dashInline(this.state.dash.url)) return; try{ f.contentWindow.postMessage({type:'demo-zoom', action}, '*'); }catch(_){} }
+  // Contact form: one insert into Supabase. Spam is limited by a hidden field, a minimum fill time and a 1-minute pause per browser.
+  sendMessage(){
+    const g=id=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
+    const name=g('cf-name'), email=g('cf-email'), message=g('cf-msg');
+    const fail=err=>this.setState({cf:{st:'idle',err}});
+    if(!name) return fail('Please tell me your name.');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail('Please enter a valid email address so I can reply.');
+    if(message.length<5) return fail('Please write a short message.');
+    const cfg=window.PORTFOLIO_CONFIG||{};
+    try{ if(Date.now()-Number(localStorage.getItem('shuvo-cf-last')||0)<60000) return fail('You just sent a message. Please wait a minute before sending another.'); }catch(e){}
+    if(g('cf-site') || performance.now()<4000) { this.setState({cf:{st:'sent',err:''}}); return; }
+    this.setState({cf:{st:'sending',err:''}});
+    fetch(cfg.supabaseUrl.replace(/\/$/,'')+'/rest/v1/contact_messages',{method:'POST',headers:{apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+cfg.supabaseAnonKey,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name,email,message})})
+      .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); try{ localStorage.setItem('shuvo-cf-last',String(Date.now())); }catch(e){} window.PortfolioTracker?.trackEvent('contact_form','Sent a message from the contact form'); this.setState({cf:{st:'sent',err:''}}); })
+      .catch(()=>{ const em=(window.PortfolioContent&&window.PortfolioContent.load().contact.email)||''; this.setState({cf:{st:'idle',err:'Sorry, that did not go through.'+(em?' Please email me at '+em+' instead.':' Please try again in a moment.')}}); });
+  }
   // Keys for the open demo viewer. (Full screen needs a real key press on this page, so it is not offered from inside the demo.)
   dashKey(k){ if(k==='Escape') this.closeDash(); else if(k==='+'||k==='=') this.dashZoom('in'); else if(k==='-'||k==='_') this.dashZoom('out'); else if(k==='0') this.dashZoom('fit'); else if((k==='f'||k==='F') && document.activeElement && document.activeElement.tagName!=='IFRAME') this.dashFullToggle(); }
   dashFullToggle(){
@@ -1410,6 +1448,7 @@ class Component extends DCLogic {
       pg: Object.fromEntries(PAGES.map(k=>[k, this.state.page===k])),
       navItems: [['intro','Intro'],['projects','Projects'],['skills','Skills'],['certifications','Certifications'],['experience','Experience'],['recommendations','Recommendations'],['hobbies','Hobbies']].map(([key,label],k)=>({key,label,fg:this.state.page===key?'#0A0F1E':'var(--fg2)',go:e=>this.go(key,e)})),
       indLeft:(this.state.ind?.l ?? 5)+'px', indWidth:(this.state.ind?.w ?? 0)+'px', indOpacity:this.state.ind?1:0,
+      cform:{ on:!!((window.PORTFOLIO_CONFIG||{}).supabaseUrl && (window.PORTFOLIO_CONFIG||{}).supabaseAnonKey), open:this.state.cf.st!=='sent', sent:this.state.cf.st==='sent', busy:this.state.cf.st==='sending', label:this.state.cf.st==='sending'?'Sending…':'Send message', error:this.state.cf.err, send:()=>this.sendMessage() },
       goIntro:e=>this.go('intro',e), goWork:e=>this.go('projects',e), goContact:e=>this.go('contact',e),
       cvHref: cv || '#contact', cvTarget: cv ? '_blank' : '_self', onCv: e=>{ window.PortfolioTracker?.trackEvent('cv_download', 'Clicked CV / Resume download'); if(!cv) this.go('contact',e); },
       ctaBg:this.state.page==='contact'?'var(--accent-ink)':'var(--fg)', ctaFg:this.state.page==='contact'?'#0A0F1E':'var(--bg)', ctaBorder:this.state.page==='contact'?'var(--accent-ink)':'transparent', qRef1:this.qRef1, qRef2:this.qRef2, qRef3:this.qRef3,
