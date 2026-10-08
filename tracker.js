@@ -439,12 +439,14 @@
 
     // Event breakdowns
     var pages = {}, projects = {}, contacts = {};
-    var act = { cv: 0, contact: 0, certs: 0, photos: 0, demos: 0, recs: 0, projectViews: 0 };
+    var act = { cv: 0, contact: 0, cta: 0, form: 0, certs: 0, photos: 0, demos: 0, recs: 0, projectViews: 0 };
     inE.forEach(function(e) {
       if (e.type === 'page_view') tally(pages, e.page || 'intro');
       else if (e.type === 'project_view') { act.projectViews++; tally(projects, (e.detail || '').replace(/^Explored project:\s*/i, '') || 'Project'); }
       else if (e.type === 'cv_download' || e.type === 'cv_click') act.cv++;
       else if (e.type === 'contact_click') { act.contact++; tally(contacts, (e.detail || '').replace(/^Clicked contact:\s*/i, '') || 'Contact'); }
+      else if (e.type === 'cta_click') { act.cta++; tally(contacts, e.detail || 'Call to action'); }
+      else if (e.type === 'contact_form') act.form++;
       else if (e.type === 'cert_view') act.certs++;
       else if (e.type === 'photo_view') act.photos++;
       else if (e.type === 'dashboard_open') act.demos++;

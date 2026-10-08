@@ -197,7 +197,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   <div style="flex:none;margin-left:auto;display:flex;align-items:center;gap:10px">
     <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
       <sc-if value="{{ showBadge }}" hint-placeholder-val="{{ false }}">
-        <span style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.08);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg);white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;box-shadow:0 0 0 3px rgba(52,211,153,.2);animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</span>
+        <button type="button" onClick="{{ ctaBadge }}" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.08);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg);white-space:nowrap;cursor:pointer"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;box-shadow:0 0 0 3px rgba(52,211,153,.2);animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</button>
       </sc-if>
     <div style="display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1)">
       <sc-for list="{{ modes }}" as="md" hint-placeholder-count="3">
@@ -209,7 +209,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
       </sc-for>
     </div>
     <sc-if value="{{ showCta }}" hint-placeholder-val="{{ true }}">
-    <button onClick="{{ goContact }}" style="display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid {{ ctaBorder }};background:{{ ctaBg }};color:{{ ctaFg }};font:600 14px 'Bricolage Grotesque',sans-serif;cursor:pointer;white-space:nowrap;transition:all .35s">{{ c.hero.navCta }} <span>→</span></button>
+    <button onClick="{{ ctaNav }}" style="display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid {{ ctaBorder }};background:{{ ctaBg }};color:{{ ctaFg }};font:600 14px 'Bricolage Grotesque',sans-serif;cursor:pointer;white-space:nowrap;transition:all .35s">{{ c.hero.navCta }} <span>→</span></button>
     </sc-if>
     </sc-if>
     <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
@@ -228,9 +228,9 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <button onClick="{{ si.go }}" style="display:flex;align-items:center;gap:16px;padding:14px 4px;border:0;border-bottom:1px solid rgba(var(--tint),.08);background:transparent;color:{{ si.fg }};font:600 clamp(24px,7vw,32px) 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;text-align:left;cursor:pointer;animation:menuIn .45s {{ si.delay }} cubic-bezier(.2,.8,.2,1) both"><span style="min-width:28px;font:500 12px 'IBM Plex Mono',monospace;letter-spacing:0;color:var(--muted)">{{ si.num }}</span><span style="flex:1">{{ si.label }}</span><span style="font-size:20px;opacity:{{ si.arrowOp }};color:var(--accent-ink)">→</span></button>
       </sc-for>
     </div>
-    <button onClick="{{ goContact }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;border:0;border-radius:999px;background:#22D3EE;color:#0A0F1E;font:600 16px 'Bricolage Grotesque',sans-serif;cursor:pointer">{{ c.hero.navCta }} <span>→</span></button>
+    <button onClick="{{ ctaMenu }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;border:0;border-radius:999px;background:#22D3EE;color:#0A0F1E;font:600 16px 'Bricolage Grotesque',sans-serif;cursor:pointer">{{ c.hero.navCta }} <span>→</span></button>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <span style="display:flex;align-items:center;gap:8px;font:500 13px 'IBM Plex Mono',monospace;color:var(--fg)"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</span>
+      <button type="button" onClick="{{ ctaBadge }}" style="display:flex;align-items:center;gap:8px;padding:0;border:0;background:transparent;font:500 13px 'IBM Plex Mono',monospace;color:var(--fg);cursor:pointer;text-align:left"><span style="width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>{{ c.hero.available }}</button>
       <div style="display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(var(--tint),.05);border:1px solid rgba(var(--tint),.1)">
         <sc-for list="{{ modes }}" as="md" hint-placeholder-count="3">
           <button onClick="{{ md.set }}" title="{{ md.title }}" aria-label="{{ md.title }}" style="display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;cursor:pointer;background:{{ md.bg }};color:{{ md.fg }};transition:all .3s">
@@ -1450,6 +1450,9 @@ class Component extends DCLogic {
       indLeft:(this.state.ind?.l ?? 5)+'px', indWidth:(this.state.ind?.w ?? 0)+'px', indOpacity:this.state.ind?1:0,
       cform:{ on:!!((window.PORTFOLIO_CONFIG||{}).supabaseUrl && (window.PORTFOLIO_CONFIG||{}).supabaseAnonKey), open:this.state.cf.st!=='sent', sent:this.state.cf.st==='sent', busy:this.state.cf.st==='sending', label:this.state.cf.st==='sending'?'Sending…':'Send message', error:this.state.cf.err, send:()=>this.sendMessage() },
       goIntro:e=>this.go('intro',e), goWork:e=>this.go('projects',e), goContact:e=>this.go('contact',e),
+      ctaBadge:e=>{ window.PortfolioTracker?.trackEvent('cta_click','Open to new roles badge'); this.go('contact',e); },
+      ctaNav:e=>{ window.PortfolioTracker?.trackEvent('cta_click','Get in touch button (top bar)'); this.go('contact',e); },
+      ctaMenu:e=>{ window.PortfolioTracker?.trackEvent('cta_click','Get in touch button (menu)'); this.go('contact',e); },
       cvHref: cv || '#contact', cvTarget: cv ? '_blank' : '_self', onCv: e=>{ window.PortfolioTracker?.trackEvent('cv_download', 'Clicked CV / Resume download'); if(!cv) this.go('contact',e); },
       ctaBg:this.state.page==='contact'?'var(--accent-ink)':'var(--fg)', ctaFg:this.state.page==='contact'?'#0A0F1E':'var(--bg)', ctaBorder:this.state.page==='contact'?'var(--accent-ink)':'transparent', qRef1:this.qRef1, qRef2:this.qRef2, qRef3:this.qRef3,
       q: quotes[qi],

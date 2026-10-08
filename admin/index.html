@@ -653,6 +653,8 @@ function badgeFor(type){
     case 'page_view': return {text:'PAGE VIEW', bg:'rgba(34,211,238,.12)', fg:'#22D3EE', border:'rgba(34,211,238,.3)'};
     case 'project_view': return {text:'PROJECT', bg:'rgba(242,201,76,.12)', fg:'#F2C94C', border:'rgba(242,201,76,.3)'};
     case 'cv_download': return {text:'CV DOWNLOAD', bg:'rgba(155,231,160,.12)', fg:'#9BE7A0', border:'rgba(155,231,160,.3)'};
+    case 'cta_click': return {text:'REACH OUT', bg:'rgba(52,211,153,.12)', fg:'#34D399', border:'rgba(52,211,153,.3)'};
+    case 'contact_form': return {text:'MESSAGE', bg:'rgba(200,162,255,.12)', fg:'#C8A2FF', border:'rgba(200,162,255,.3)'};
     case 'contact_click': return {text:'CONTACT', bg:'rgba(200,162,255,.12)', fg:'#C8A2FF', border:'rgba(200,162,255,.3)'};
     case 'cert_view': return {text:'CERTIFICATE', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
     case 'photo_view': return {text:'PHOTO', bg:'rgba(122,162,255,.12)', fg:'#7AA2FF', border:'rgba(122,162,255,.3)'};
@@ -777,12 +779,14 @@ class Component extends DCLogic {
       {label:'Projects opened',value:num(a.projectViews),color:'#F2C94C'},
       {label:'Demos watched',value:num(a.demos),color:'#34D399'},
       {label:'CV downloads',value:num(a.cv),color:'#9BE7A0'},
+      {label:'Open to roles / Get in touch clicks',value:num(a.cta),color:'#34D399'},
       {label:'Contact clicks',value:num(a.contact),color:'#C8A2FF'},
+      {label:'Messages sent',value:num(a.form),color:'#C8A2FF'},
       {label:'Certificates viewed',value:num(a.certs),color:'#7AA2FF'},
       {label:'Photos viewed',value:num(a.photos),color:'#A4C8FF'},
       {label:'Recommendations read',value:num(a.recs),color:'#22D3EE'},
     ];
-    const goals=a.cv+a.contact;
+    const goals=a.cv+a.contact+a.cta+a.form;
     const goalRate=k.visits?pct(goals/k.visits*100)+' of visits reached out':'';
 
     // devices donut
