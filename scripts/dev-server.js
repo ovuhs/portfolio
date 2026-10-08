@@ -30,8 +30,12 @@ function sendFile(res, file) {
   });
 }
 
+// The same site-wide headers Vercel will send (from vercel.json), so a Content-Security-Policy problem shows up here first.
+const SITE_HEADERS = (JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')).headers || []).filter((h) => h.source === '/(.*)').flatMap((h) => h.headers);
+
 http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
+  SITE_HEADERS.forEach((h) => res.setHeader(h.key, h.value));
   const pathname = decodeURIComponent(url.pathname).replace(/\/+$/, '') || '/';
   const slug = pathname.replace(/^\//, '');
   const isBot = BOTS.test(req.headers['user-agent'] || '');
