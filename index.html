@@ -311,7 +311,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     <sc-for list="{{ shown }}" as="p" hint-placeholder-count="6">
       <article data-reveal="{{ p.delay }}" onClick="{{ p.open }}" style="position:relative;display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.08);overflow:hidden;cursor:pointer;transition:border-color .3s, background .3s" style-hover="border-color:rgba(34,211,238,.5);background:var(--surface2)">
         <div style="position:relative;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,rgba(var(--tint),.03) 0 10px,transparent 10px 20px);border-bottom:1px solid rgba(var(--tint),.06)">
-          <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ p.image }}" alt="{{ p.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if><sc-if value="{{ p.vidCover }}" hint-placeholder-val="{{ false }}"><video data-cover="1" src="{{ p.coverVideo }}" muted="{{ true }}" playsInline="{{ true }}" preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none"></video></sc-if><sc-if value="{{ p.noMedia }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:grid;place-items:center;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">Screenshot coming soon</div></sc-if>
+          <sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ p.image }}" data-w="640,960" data-sizes="(max-width:760px) 92vw, 420px" alt="{{ p.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if><sc-if value="{{ p.vidCover }}" hint-placeholder-val="{{ false }}"><video data-cover="1" src="{{ p.coverVideo }}" muted="{{ true }}" playsInline="{{ true }}" preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none"></video></sc-if><sc-if value="{{ p.noMedia }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:grid;place-items:center;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">Screenshot coming soon</div></sc-if>
           <span style="position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.8);backdrop-filter:blur(6px);font:500 11px 'IBM Plex Mono',monospace;color:{{ p.tagColor }};pointer-events:none">{{ p.tool }}</span>
           <span style="position:absolute;left:12px;bottom:12px;display:flex;gap:6px;pointer-events:none">
             <sc-if value="{{ p.hasDash }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(10,15,30,.85);backdrop-filter:blur(6px);font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:#34D399"><span style="width:6px;height:6px;border-radius:50%;background:#34D399;animation:pulse 1.8s infinite"></span>DEMO AVAILABLE</span></sc-if>
@@ -394,7 +394,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     <sc-for list="{{ certs }}" as="ce" hint-placeholder-count="5">
       <article data-reveal="{{ ce.delay }}" onClick="{{ ce.open }}" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--tint),.08);cursor:{{ ce.cursor }};transition:border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1)" style-hover="border-color:rgba(34,211,238,.5);transform:translateY(-4px)">
         <div style="position:relative;aspect-ratio:4/3;background:var(--bg);border-bottom:1px solid rgba(var(--tint),.06);overflow:hidden">
-          <sc-if value="{{ ce.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ ce.image }}" alt="{{ ce.title }} certificate" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14px;box-sizing:border-box;display:block"></sc-if>
+          <sc-if value="{{ ce.hasImg }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ ce.image }}" data-w="480,960" data-sizes="(max-width:600px) 92vw, 320px" alt="{{ ce.title }} certificate" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:14px;box-sizing:border-box;display:block"></sc-if>
           <sc-if value="{{ ce.noImg }}" hint-placeholder-val="{{ true }}">
             <div style="position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,rgba(34,211,238,.16),transparent 65%)">
               <div style="display:grid;place-items:center;gap:12px;text-align:center;padding:20px">
@@ -473,7 +473,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
             <div class="tl-card-bar"></div>
             <button onClick="{{ j.toggle }}" aria-expanded="{{ j.isOpen }}" style="display:flex;align-items:flex-start;gap:clamp(14px,2vw,20px);width:100%;padding:clamp(20px,2.4vw,28px);border:0;background:none;color:var(--fg);text-align:left;cursor:pointer;font-family:inherit">
               <span style="display:grid;place-items:center;width:{{ tlLogo }};height:{{ tlLogo }};border-radius:16px;overflow:hidden;flex:none;background:{{ j.logoBg }};border:1px solid rgba(var(--tint),.12);box-shadow:0 12px 28px -12px rgba(0,0,0,.55)">
-                <sc-if value="{{ j.hasLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ j.logo }}" alt="{{ j.company }} logo" style="width:76%;height:76%;object-fit:contain;display:block"></sc-if>
+                <sc-if value="{{ j.hasLogo }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ j.logo }}" data-w="96,256" data-sizes="60px" alt="{{ j.company }} logo" style="width:76%;height:76%;object-fit:contain;display:block"></sc-if>
                 <sc-if value="{{ j.noLogo }}" hint-placeholder-val="{{ true }}"><span style="font:700 17px 'IBM Plex Mono',monospace;color:#0A0F1E">{{ j.initials }}</span></sc-if>
               </span>
               <span style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1">
@@ -576,7 +576,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
           <div style="display:flex">
             <sc-for list="{{ recFaces }}" as="rf" hint-placeholder-count="3">
               <span style="display:grid;place-items:center;width:34px;height:34px;margin-left:-8px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);background:{{ rf.grad }};color:#0A0F1E;font:700 11px 'IBM Plex Mono',monospace">
-                <sc-if value="{{ rf.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rf.photo }}" alt="" style="width:100%;height:100%;object-fit:cover"></sc-if>
+                <sc-if value="{{ rf.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rf.photo }}" data-w="96,256" data-sizes="40px" alt="" style="width:100%;height:100%;object-fit:cover"></sc-if>
                 <sc-if value="{{ rf.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rf.initials }}</sc-if>
               </span>
             </sc-for>
@@ -628,7 +628,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <div style="display:flex;align-items:center;gap:16px;min-width:0">
           <span class="rec-ava" style="width:60px;height:60px">
             <span class="rec-ring"></span>
-            <sc-if value="{{ spotRec.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ spotRec.photo }}" alt="{{ spotRec.name }}" style="position:relative;width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--surface);box-sizing:border-box"></sc-if>
+            <sc-if value="{{ spotRec.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ spotRec.photo }}" data-w="96,256" data-sizes="64px" alt="{{ spotRec.name }}" style="position:relative;width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--surface);box-sizing:border-box"></sc-if>
             <sc-if value="{{ spotRec.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--surface);box-sizing:border-box;background:{{ spotRec.grad }};color:#0A0F1E;font:700 18px 'IBM Plex Mono',monospace">{{ spotRec.initials }}</span></sc-if>
           </span>
           <div style="min-width:0">
@@ -656,7 +656,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <sc-for list="{{ recThumbs }}" as="rt" hint-placeholder-count="3">
           <button data-rec-thumb="{{ rt.idx }}" onClick="{{ rt.onClick }}" class="rec-person" data-active="{{ rt.activeAttr }}" style="flex:{{ recItemFlex }}">
             <span style="position:relative;display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:50%;overflow:hidden;background:{{ rt.grad }};color:#0A0F1E;font:700 13px 'IBM Plex Mono',monospace">
-              <sc-if value="{{ rt.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rt.photo }}" alt="{{ rt.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+              <sc-if value="{{ rt.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rt.photo }}" data-w="96,256" data-sizes="40px" alt="{{ rt.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
               <sc-if value="{{ rt.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rt.initials }}</sc-if>
             </span>
             <span style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;text-align:left">
@@ -696,7 +696,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   <div style="columns:3 300px;column-gap:16px;margin-top:48px">
     <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="6">
       <figure data-reveal="{{ ph.delay }}" onClick="{{ ph.open }}" style="position:relative;margin:0 0 16px;break-inside:avoid;border-radius:18px;overflow:hidden;cursor:zoom-in;background:var(--surface)" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,.7)">
-        <img data-src="{{ ph.image }}" alt="{{ ph.alt }}" loading="lazy" style="display:block;width:100%;height:auto;transform:scale({{ ph.scale }});transition:transform .8s cubic-bezier(.2,.8,.2,1)" onMouseEnter="{{ ph.enter }}" onMouseLeave="{{ ph.leave }}">
+        <img data-src="{{ ph.image }}" data-w="480,960" data-sizes="(max-width:760px) 92vw, 440px" alt="{{ ph.alt }}" loading="lazy" style="display:block;width:100%;height:auto;transform:scale({{ ph.scale }});transition:transform .8s cubic-bezier(.2,.8,.2,1)" onMouseEnter="{{ ph.enter }}" onMouseLeave="{{ ph.leave }}">
         <sc-if value="{{ ph.hasCap }}" hint-placeholder-val="{{ false }}">
           <figcaption style="position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:40px 18px 16px;background:linear-gradient(180deg,rgba(4,7,16,0),rgba(4,7,16,.82));color:#E9EDF7;opacity:{{ ph.capOp }};transform:translateY({{ ph.capY }});transition:opacity .4s, transform .4s;pointer-events:none">
             <div style="min-width:0"><div style="font-weight:600;font-size:16px">{{ ph.title }}</div><div style="margin-top:2px;font:400 11px 'IBM Plex Mono',monospace;color:#AEB6CC">{{ ph.meta }}</div></div>
@@ -746,7 +746,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <div style="display:flex;height:100%;transform:translateX({{ slideX }});transition:transform .55s cubic-bezier(.2,.8,.2,1)">
           <sc-for list="{{ op.slides }}" as="sl" hint-placeholder-count="1">
             <div style="position:relative;flex:0 0 100%;height:100%;background:repeating-linear-gradient(135deg,rgba(var(--tint),.03) 0 10px,transparent 10px 20px)">
-              <sc-if value="{{ sl.has }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ sl.src }}" alt="{{ sl.alt }}" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none"></sc-if>
+              <sc-if value="{{ sl.has }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ sl.src }}" data-w="960,1600" data-sizes="(max-width:860px) 100vw, 760px" alt="{{ sl.alt }}" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none"></sc-if>
               <sc-if value="{{ sl.isVideo }}" hint-placeholder-val="{{ false }}"><video data-clip="1" src="{{ sl.src }}" controls="{{ true }}" playsInline="{{ true }}" preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#000"></video></sc-if>
               <sc-if value="{{ sl.isEmbed }}" hint-placeholder-val="{{ false }}"><iframe loading="lazy" src="{{ sl.embedSrc }}" title="{{ sl.alt }}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#000"></iframe></sc-if>
               <sc-if value="{{ sl.none }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:grid;place-items:center;font:400 12px 'IBM Plex Mono',monospace;color:var(--dim)">Screenshot coming soon</div></sc-if>
@@ -862,7 +862,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#22D3EE,#7AA2FF,transparent)"></div>
       <div style="display:flex;align-items:center;gap:16px;padding:clamp(22px,3vw,32px) clamp(22px,3vw,40px) 18px;padding-right:72px;border-bottom:1px solid rgba(var(--tint),.08)">
         <span style="display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:50%;overflow:hidden;background:{{ rm.grad }};color:#0A0F1E;font:700 16px 'IBM Plex Mono',monospace">
-          <sc-if value="{{ rm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rm.photo }}" alt="{{ rm.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+          <sc-if value="{{ rm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img loading="lazy" decoding="async" data-src="{{ rm.photo }}" data-w="96,256" data-sizes="64px" alt="{{ rm.name }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
           <sc-if value="{{ rm.noPhoto }}" hint-placeholder-val="{{ true }}">{{ rm.initials }}</sc-if>
         </span>
         <div style="min-width:0">
@@ -906,6 +906,8 @@ const spanOf = dates => { const [a,b='']=String(dates||'').split(/\s*[\u2014\u20
 const fmtDur = mo => { const y=Math.floor(mo/12), m=mo%12; return [y?y+(y>1?' yrs':' yr'):'', m?m+(m>1?' mos':' mo'):''].filter(Boolean).join(' ') || '1 mo'; };
 const MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const REC_MS = 8000;
+// The image service exists on the Vercel deployment only (not on localhost, unless forced for testing with localStorage shuvo_opt=1).
+const imgOptimizerOn = () => { try{ if(localStorage.getItem('shuvo_opt')==='1') return true; }catch(_){} return location.protocol==='https:' && !/^(localhost|127\.|\[::1\])/.test(location.hostname); };
 // A clip is either a direct video file or a link to a known player we can embed.
 const clipOf = u => { u = String(u||'').trim(); if(!u) return null;
   const y = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/); if(y) return {embed:'https://www.youtube-nocookie.com/embed/'+y[1]+'?rel=0&playsinline=1'};
@@ -1220,7 +1222,21 @@ class Component extends DCLogic {
   componentWillUnmount(){ cancelAnimationFrame(this.raf); clearInterval(this.iv); this.recBarAnim?.cancel(); clearInterval(this.qiv); clearInterval(this.sunIv); this.io?.disconnect(); this.tlIo?.disconnect(); window.removeEventListener('scroll',this.onScroll); window.removeEventListener('mousemove',this.onMove); window.removeEventListener('keydown',this.onKey); window.removeEventListener('message',this.onMsg); document.removeEventListener('fullscreenchange',this.onFull); document.removeEventListener('webkitfullscreenchange',this.onFull); window.removeEventListener('resize',this.onResize); window.removeEventListener('portfolio-content',this.onContent); window.removeEventListener('storage',this.onStorage); window.removeEventListener('popstate',this.onPop); window.removeEventListener('hashchange',this.onPop); clearInterval(this.cw); }
   scan(){
     // Images carry data-src in the template so the browser never fetches a raw {{ placeholder }}; apply the real address now.
-    document.querySelectorAll('img[data-src]').forEach(i=>{ const v=i.getAttribute('data-src')||''; if((i.getAttribute('src')||'')!==v){ if(v) i.setAttribute('src',v); else i.removeAttribute('src'); } });
+    // Images are requested at the size they are shown (Vercel image service, WebP, cached at the edge). Any failure falls back to the original file.
+    document.querySelectorAll('img[data-src]').forEach(i=>{
+      const v=i.getAttribute('data-src')||'';
+      if(i.dataset.applied===v) return;
+      i.dataset.applied=v; i.removeAttribute('srcset'); i.removeAttribute('sizes');
+      if(!v){ i.removeAttribute('src'); return; }
+      const ws=(i.getAttribute('data-w')||'').split(',').map(Number).filter(Boolean);
+      if(imgOptimizerOn() && ws.length && /^https?:\/\//i.test(v)){
+        const u=w=>'/_vercel/image?url='+encodeURIComponent(v)+'&w='+w+'&q=75';
+        i.setAttribute('sizes', i.getAttribute('data-sizes')||'100vw');
+        i.setAttribute('srcset', ws.map(w=>u(w)+' '+w+'w').join(', '));
+        i.setAttribute('src', u(ws[0]));
+        i.onerror=()=>{ i.onerror=null; i.removeAttribute('srcset'); i.removeAttribute('sizes'); i.setAttribute('src', v); };
+      } else i.setAttribute('src', v);
+    });
     document.querySelectorAll('video[data-cover],video[data-clip]').forEach(v=>{ if(!v.dataset.pl && v.getAttribute('src')){ v.dataset.pl='1'; v.preload='metadata'; } });
     if(!this.io) return;
     const motion = this.motionOn();

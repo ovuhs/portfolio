@@ -2,14 +2,58 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/seo.js": { "includeFiles": "{config.js,content.js,index.html}", "maxDuration": 10 },
-    "api/sitemap.js": { "includeFiles": "{config.js,content.js}", "maxDuration": 10 }
+    "api/seo.js": {
+      "includeFiles": "{config.js,content.js,index.html}",
+      "maxDuration": 10
+    },
+    "api/sitemap.js": {
+      "includeFiles": "{config.js,content.js}",
+      "maxDuration": 10
+    }
   },
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/(projects|skills|certifications|experience|recommendations|hobbies|contact)", "destination": "/" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/(projects|skills|certifications|experience|recommendations|hobbies|contact)",
+      "destination": "/"
+    }
   ],
   "headers": [
-    { "source": "/assets/vendor/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
-  ]
+    {
+      "source": "/assets/vendor/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "images": {
+    "sizes": [
+      96,
+      256,
+      480,
+      640,
+      960,
+      1600
+    ],
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "^lzidxeozzywnxwwmofvw\\.supabase\\.co$",
+        "pathname": "^/storage/v1/object/public/media/.*$"
+      }
+    ],
+    "minimumCacheTTL": 31536000,
+    "qualities": [
+      75
+    ],
+    "formats": [
+      "image/webp"
+    ]
+  }
 }

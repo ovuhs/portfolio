@@ -37,6 +37,24 @@ try {
   });
 } catch (e) { bad('vercel.json: ' + e.message); }
 
+// 2b. image service: every width the page asks for must be allowed, and the allowed host must be the Supabase project
+try {
+  const cfg = JSON.parse(read('vercel.json'));
+  const img = cfg.images;
+  if (!img) bad('vercel.json: "images" config is missing (the page requests /_vercel/image)');
+  else {
+    const asked = new Set();
+    (read('index.html').match(/data-w="[0-9,]+"/g) || []).forEach((a) => a.slice(8, -1).split(',').forEach((n) => asked.add(Number(n))));
+    const missing = [...asked].filter((w) => !(img.sizes || []).includes(w));
+    missing.length ? bad('vercel.json images.sizes is missing widths used by index.html: ' + missing.join(', ')) : ok('image widths used by the page are all allowed (' + [...asked].sort((a, b) => a - b).join(', ') + ')');
+    const host = (read('config.js').match(/supabaseUrl:\s*'https?:\/\/([^/']+)/) || [])[1];
+    const pat = (img.remotePatterns || [])[0];
+    if (host && pat && !new RegExp(pat.hostname).test(host)) bad('vercel.json images.remotePatterns hostname does not match ' + host);
+    else if (host) ok('image host pattern matches ' + host);
+    if (!/^\d+$/.test(String((img.qualities || [])[0])) || !(img.qualities || []).includes(75)) bad('vercel.json images.qualities must include 75 (the page asks for q=75)');
+  }
+} catch (e) { bad('image config check: ' + e.message); }
+
 // 3. every function parses (underscore files are helpers, not endpoints, but must still be valid)
 fs.readdirSync(path.join(ROOT, 'api')).filter((f) => f.endsWith('.js')).forEach((f) => {
   try { execFileSync(process.execPath, ['--check', path.join(ROOT, 'api', f)], { stdio: 'pipe' }); ok('api/' + f + ' parses'); }

@@ -38,6 +38,13 @@ http.createServer((req, res) => {
 
   if (pathname === '/api/seo') { req.query = Object.fromEntries(url.searchParams); return seo(req, res); }
   if (pathname === '/api/sitemap' || pathname === '/sitemap.xml') return sitemap(req, res);
+  // Stand-in for Vercel's image service: passes the original image through (no resizing), so the page logic can be tested.
+  // The page only uses /_vercel/image locally when localStorage has shuvo_opt=1.
+  if (pathname === '/_vercel/image') {
+    const target = url.searchParams.get('url') || '';
+    if (!/^https:\/\/[a-z0-9.-]+\.supabase\.co\/storage\/v1\/object\/public\//i.test(target)) { res.statusCode = 400; return res.end('url not allowed'); }
+    return fetch(target).then(async (r) => { res.statusCode = r.status; res.setHeader('Content-Type', r.headers.get('content-type') || 'application/octet-stream'); res.setHeader('X-Dev-Image-Proxy', 'w=' + url.searchParams.get('w')); res.end(Buffer.from(await r.arrayBuffer())); }).catch(() => { res.statusCode = 502; res.end('bad gateway'); });
+  }
   if (pathname === '/' || SECTIONS.includes(slug)) {
     if (isBot) { req.query = SECTIONS.includes(slug) ? { section: slug } : {}; return seo(req, res); }
     return sendFile(res, path.join(ROOT, 'index.html'));
