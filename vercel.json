@@ -13,6 +13,10 @@
   },
   "rewrites": [
     {
+      "source": "/googlec229be52c8fbbeca.html",
+      "destination": "/api/google-verify"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
