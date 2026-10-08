@@ -35,7 +35,7 @@ try {
   var __cfg = window.PORTFOLIO_CONFIG || {};
   if (__cfg.supabaseUrl) { var __pc = document.createElement('link'); __pc.rel = 'preconnect'; __pc.href = __cfg.supabaseUrl.replace(/\/$/, ''); __pc.crossOrigin = 'anonymous'; document.head.appendChild(__pc); }
   var __c = window.PortfolioContent && window.PortfolioContent.load(), __ph = __c && __c.hero && __c.hero.photo;
-  var __h = (location.hash || '').replace('#', ''); /* the hero photo only appears on the intro page */
+  var __h = (location.pathname || '/').replace(/^\/+|\/+$/g, '') || (location.hash || '').replace('#', ''); /* the hero photo only appears on the intro page */
   if (__ph && (!__h || __h === 'intro')) { var __pl = document.createElement('link'); __pl.rel = 'preload'; __pl.as = 'image'; __pl.href = __ph; __pl.setAttribute('fetchpriority', 'high'); document.head.appendChild(__pl); }
 } catch (e) {}
 </script>
@@ -259,7 +259,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
       </div>
       <p data-hero-p="1" style="max-width:520px;margin:32px 0 0;font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--fg2);text-wrap:pretty;animation:rise .9s .45s both">{{ c.hero.intro }}</p>
       <div style="display:flex;justify-content:flex-end;gap:12px;max-width:520px;margin-top:18px;flex-wrap:wrap;animation:rise .9s .55s both">
-        <a href="#work" onClick="{{ goWork }}" style="display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:15px;transition:transform .25s" style-hover="transform:translateY(-2px);color:#0A0F1E">{{ c.hero.cta1 }} <span>→</span></a>
+        <a href="/projects" onClick="{{ goWork }}" style="display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;background:#22D3EE;color:#0A0F1E;font-weight:600;font-size:15px;transition:transform .25s" style-hover="transform:translateY(-2px);color:#0A0F1E">{{ c.hero.cta1 }} <span>→</span></a>
         <a href="{{ cvHref }}" target="{{ cvTarget }}" rel="noopener noreferrer" onClick="{{ onCv }}" style="display:inline-flex;align-items:center;padding:16px 26px;border-radius:999px;border:1px solid rgba(var(--tint),.2);font-weight:500;font-size:15px;transition:border-color .25s" style-hover="border-color:var(--fg);color:var(--fg)">{{ c.hero.cta2 }}</a>
       </div>
       <div data-hero-stats="1" style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;justify-content:start;gap:clamp(24px,4vw,56px);margin-top:clamp(20px,4svh,40px);animation:rise .9s .65s both">
@@ -893,7 +893,9 @@ const PAL = ['#F2C94C','#7AA2FF','#22D3EE','#A4C8FF','#F59E9E','#9BE7A0','#C8A2F
 const PAGES = ['intro','projects','skills','certifications','experience','recommendations','hobbies','contact'];
 const LABELS = {intro:'Intro',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',hobbies:'Hobbies',contact:'Contact'};
 const ALIAS = {work:'projects', portals:'projects', certs:'certifications', recs:'recommendations', testimonials:'recommendations', endorsements:'recommendations', gallery:'hobbies', photos:'hobbies'};
-const pageFromHash = () => { let h=(location.hash||'').slice(1); h=ALIAS[h]||h; return PAGES.includes(h)?h:'intro'; };
+// Each section has a real address (/projects, /skills ...). Old #hash links still work and are rewritten to the path.
+const pageFromLocation = () => { let h=(location.pathname||'/').replace(/^\/+|\/+$/g,'').toLowerCase(); if(!h) h=(location.hash||'').slice(1).toLowerCase(); h=ALIAS[h]||h; return PAGES.includes(h)?h:'intro'; };
+const pathFor = page => page==='intro' ? '/' : '/'+page;
 const EMPTY = {hobbiesHead:{},photos:[],certsHead:{},certifications:[],recsHead:{},recommendations:[],site:{},hero:{},quotes:[],stats:[],marquee:[],work:{},projects:[],portals:{},modules:[],shots:[],skillsHead:{},skills:[],badges:[],expHead:{},jobs:[],education:[],contact:{},links:[]};
 const toArr = v => Array.isArray(v) ? v : String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
 const toLines = v => Array.isArray(v) ? v : String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
@@ -951,7 +953,7 @@ const DASH_FIT = '<script>(function(){if(window.__fit)return;window.__fit=1;var 
 const withFit = h => /<\/body>/i.test(h) ? h.replace(/<\/body>(?![\s\S]*<\/body>)/i, DASH_FIT + '</body>') : h + DASH_FIT;
 
 class Component extends DCLogic {
-  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromHash(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
+  state = { mode:(()=>{try{return localStorage.getItem('shuvo-theme')||'auto'}catch(e){return 'auto'}})(), sunTheme:'dark', page:pageFromLocation(), si:0, cert:-1, ph:-1, phHover:-1, phCat:'All', vw:(typeof innerWidth==='number'?innerWidth:1400), menu:false, recIdx:0, recOpen:-1, dash:null, dashState:'idle', dashZoom:1, dashFit:true, dashFull:false, ind:null, qi:0, filter:'All', open:null, jobsOpen:{0:true}, hoverMod:0, t:0, live:0 };
   componentDidMount(){
     const motion = this.motionOn();
     this.io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1, rootMargin:'0px 0px -40px 0px'});
@@ -976,7 +978,8 @@ class Component extends DCLogic {
     window.addEventListener('portfolio-content', this.onContent);
     window.addEventListener('storage', this.onStorage);
     if(!window.PortfolioContent){ this.cw = setInterval(()=>{ if(window.PortfolioContent){ clearInterval(this.cw); this.onContent(); this.boot(); } }, 40); } else this.boot();
-    this.onPop = () => this.go(pageFromHash(), null, true);
+    this.fixUrl();
+    this.onPop = () => { this.fixUrl(); this.go(pageFromLocation(), null, true); };
     window.addEventListener('popstate', this.onPop); window.addEventListener('hashchange', this.onPop);
     this.setTitle(this.state.page);
     this.qr = [this.qRef1, this.qRef2, this.qRef3];
@@ -998,7 +1001,12 @@ class Component extends DCLogic {
     window.gtag('js', new Date()); window.gtag('config', id, {anonymize_ip:true});
     const sc=document.createElement('script'); sc.async=true; sc.src='https://www.googletagmanager.com/gtag/js?id='+id; document.head.appendChild(sc);
   }
-  setTitle(page){ const n=(this.content()?.hero?.brand)||'Shuvo Ibn Alam'; document.title = page==='intro' ? n+' · Senior Data Analyst' : LABELS[page]+' · '+n; }
+  // An old #hash address (/#projects) becomes the real path (/projects).
+  fixUrl(){ try{ const pg=pageFromLocation(); if(pg!=='intro' && !(location.pathname||'/').replace(/^\/+|\/+$/g,'')) history.replaceState(null,'',pathFor(pg)+location.search); }catch(_){} }
+  setTitle(page){
+    const n=(this.content()?.hero?.brand)||'Shuvo Ibn Alam'; document.title = page==='intro' ? n+' · Senior Data Analyst' : LABELS[page]+' · '+n;
+    try{ const can=document.querySelector('link[rel=canonical]'); const url=(can?new URL(can.href).origin:location.origin)+pathFor(page); can?.setAttribute('href',url); document.querySelector('meta[property="og:url"]')?.setAttribute('content',url); }catch(_){}
+  }
   slide(d, to){ document.querySelectorAll('video[data-clip]').forEach(v=>{ try{ v.pause(); }catch(_){} }); this.setState(s=>{ const n=this._nSlides||1; const i = to!=null ? to : Math.max(0, Math.min(n-1, s.si+d)); return {si:i}; }); }
   openDash(p){
     if(!p?.dashboard) return;
@@ -1133,7 +1141,7 @@ class Component extends DCLogic {
     e?.preventDefault?.();
     if(this.state.menu) this.setState({menu:false});
     if(!PAGES.includes(page) || page===this.state.page || this.switching) return;
-    if(!fromHistory){ try{ history.pushState(null,'', page==='intro' ? location.pathname+location.search : '#'+page); }catch(_){} }
+    if(!fromHistory){ try{ history.pushState(null,'', pathFor(page)+location.search); }catch(_){} }
     this.setTitle(page);
     window.PortfolioTracker?.trackPage(page);
     if(window.gtag && window.__gaLoaded) window.gtag('event','page_view',{page_title:document.title, page_location:location.href});

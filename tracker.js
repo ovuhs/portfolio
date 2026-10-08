@@ -198,7 +198,7 @@
     var sess = touchSession(now);
     var vid = getVid();
     var client = getClientMeta();
-    var pageName = meta.page || (location.hash ? location.hash.replace(/^#/, '') : 'intro') || 'intro';
+    var pageName = meta.page || (location.pathname || '/').replace(/^\/+|\/+$/g, '') || (location.hash ? location.hash.replace(/^#/, '') : 'intro') || 'intro';
     if (type === 'page_view') {
       started = true;
       var lp = recordActivity.lastPV;   // ignore an identical page view repeated within 3 seconds
