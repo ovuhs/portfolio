@@ -25,3 +25,10 @@ Open http://localhost:5173. This behaves like the Vercel deployment: section add
 The routing (`vercel.json`, `middleware.js`, `api/`) is written for Vercel. On another host you need two things:
 every section address above must serve `index.html`, and `/sitemap.xml` is only available where the `api/` functions run.
 Without the first, a direct visit to `/projects` shows a "not found" page (the site itself still works from `/`).
+
+## Before and after you push
+
+```
+node scripts/preflight.js       # catches config mistakes that would fail the Vercel build
+node scripts/deploy-status.js   # waits for Vercel's result for the latest commit (exit 0 = deployed)
+```

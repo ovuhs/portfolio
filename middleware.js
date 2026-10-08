@@ -4,7 +4,8 @@
    would win over a rewrite). */
 const SECTIONS = ['projects', 'skills', 'certifications', 'experience', 'recommendations', 'hobbies', 'contact'];
 
-export const config = { matcher: ['/'].concat(SECTIONS.map((s) => '/' + s)) };
+// Vercel reads this statically at build time: it must stay a plain literal (no calls such as .map or .concat).
+export const config = { matcher: ['/', '/projects', '/skills', '/certifications', '/experience', '/recommendations', '/hobbies', '/contact'] };
 
 const BOTS = /googlebot|google-inspectiontool|googleother|storebot-google|bingbot|bingpreview|msnbot|duckduckbot|baiduspider|yandex|slurp|applebot|facebookexternalhit|facebot|meta-externalagent|meta-externalfetcher|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|slack-imgproxy|discordbot|pinterest|embedly|redditbot|skypeuripreview|vkshare|gptbot|chatgpt-user|oai-searchbot|claudebot|claude-web|claude-user|claude-searchbot|anthropic-ai|perplexitybot|perplexity-user|ccbot|bytespider|amazonbot|petalbot|cohere-ai|youbot/i;
 
