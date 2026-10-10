@@ -115,6 +115,7 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .rec-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#22D3EE,#7AA2FF,#C8A2FF,#22D3EE);animation:ringSpin 6s linear infinite}
 .rec-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid rgba(var(--tint),.18);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2);transition:all .25s}
 .rec-chip:hover{border-color:#22D3EE;color:var(--accent-ink)}
+.src-ic{display:inline-block;width:18px;height:18px;flex:none;border-radius:4px;background:center/contain no-repeat}.src-ic[data-src=linkedin]{background-image:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Crect width=%2224%22 height=%2224%22 rx=%224%22 fill=%22%230A66C2%22/%3E%3Cpath fill=%22%23fff%22 d=%22M6.1 9.6h2.5V18H6.1zM7.35 5.6a1.45 1.45 0 1 1 0 2.9 1.45 1.45 0 0 1 0-2.9M10.4 9.6h2.4v1.15h.04c.34-.64 1.15-1.32 2.37-1.32 2.54 0 3.01 1.67 3.01 3.85V18h-2.5v-4.2c0-1-.02-2.28-1.39-2.28-1.4 0-1.6 1.09-1.6 2.2V18h-2.5z%22/%3E%3C/svg%3E")}.src-ic[data-src=fiverr]{background-image:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Crect width=%2224%22 height=%2224%22 rx=%224%22 fill=%22%231DBF73%22/%3E%3Cg fill=%22none%22 stroke=%22%23fff%22 stroke-width=%222.2%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M8 18v-8a2.6 2.6 0 0 1 2.6-2.6H12%22/%3E%3Cpath d=%22M5.8 11.2h5.4%22/%3E%3Cpath d=%22M15.2 11.4V18%22/%3E%3C/g%3E%3Ccircle cx=%2215.2%22 cy=%227.9%22 r=%221.35%22 fill=%22%23fff%22/%3E%3C/svg%3E")}
 .rec-li{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:var(--accent-ink);font-weight:600;font-size:13px;transition:all .25s}
 .rec-li:hover{background:rgba(34,211,238,.18);border-color:#22D3EE;color:var(--accent-ink)}
 .rec-rail{display:flex;flex-direction:column;min-width:0;min-height:0;padding:18px 14px;border-radius:28px;background:var(--surface);border:1px solid rgba(var(--tint),.08);box-sizing:border-box}
@@ -642,7 +643,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
             <sc-if value="{{ spotRec.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--surface);box-sizing:border-box;background:{{ spotRec.grad }};color:#0A0F1E;font:700 18px 'IBM Plex Mono',monospace">{{ spotRec.initials }}</span></sc-if>
           </span>
           <div style="min-width:0">
-            <div style="font-weight:700;font-size:20px;letter-spacing:-.02em;color:var(--fg)">{{ spotRec.name }}</div>
+            <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;letter-spacing:-.02em;color:var(--fg)">{{ spotRec.name }}<span class="src-ic" role="img" data-src="{{ spotRec.source }}" aria-label="{{ spotRec.srcLabel }}" title="{{ spotRec.srcLabel }}"></span></div>
             <div style="margin-top:3px;font-size:14px;color:var(--fg3)">{{ spotRec.role }}</div>
           </div>
         </div>
@@ -674,7 +675,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
               <span style="font-size:12.5px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.role }}</span>
               <sc-if value="{{ rt.hasRelation }}" hint-placeholder-val="{{ false }}"><span style="font:500 10.5px 'IBM Plex Mono',monospace;color:var(--accent-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rt.relation }}</span></sc-if>
             </span>
-            <span style="flex:none;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ rt.num }}</span>
+            <span style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ rt.num }}<span class="src-ic" role="img" data-src="{{ rt.source }}" aria-label="{{ rt.srcLabel }}" title="{{ rt.srcLabel }}" style="width:16px;height:16px"></span></span>
           </button>
         </sc-for>
       </div>
@@ -1405,7 +1406,7 @@ class Component extends DCLogic {
     const spotRecRaw = recsAll[recIdx] || null;
     const initialsOf = name => (name || '?').replace(/\(.*?\)/g,'').split(/[\s.]+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0, 2).map(w=>w[0].toUpperCase()).join('') || '•';
     const gradOf = i => 'linear-gradient(135deg,'+PAL[(i+2)%PAL.length]+','+PAL[(i+3)%PAL.length]+')';
-    const recV = (r,i) => r ? {...r, hasPhoto:!!r.photo, noPhoto:!r.photo, hasLink:!!r.link, hasRelation:!!r.relation, initials:initialsOf(r.name), grad:gradOf(i)} : {};
+    const recV = (r,i) => r ? {...r, hasPhoto:!!r.photo, noPhoto:!r.photo, hasLink:!!r.link, hasRelation:!!r.relation, initials:initialsOf(r.name), grad:gradOf(i), source:r.source==='fiverr'?'fiverr':'linkedin', srcLabel:r.source==='fiverr'?'Fiverr review':'LinkedIn recommendation'} : {};
     const recWide = vw >= 980;
     const spotLen = (spotRecRaw?.text || '').length;
     const spotRec = {...recV(spotRecRaw, recIdx), isLong: spotLen > (recWide ? 520 : 340)};

@@ -643,8 +643,8 @@ const GROUPS = [
  ]},
  {key:'recommendations', label:'Recommendations', desc:'LinkedIn endorsements and testimonials.', count:'recommendations', blocks:[
   {path:'recsHead', kind:'object', title:'Section heading', desc:'Shown at the top of the Recommendations page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
-  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:''}, fields:[
-   {k:'name',label:'Name'},{k:'role',label:'Role · Company'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…'},
+  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:'',source:'linkedin'}, fields:[
+   {k:'source',label:'Where is it from?',t:'select',options:[{value:'linkedin',label:'LinkedIn recommendation'},{value:'fiverr',label:'Fiverr review'}],hint:'Shows the LinkedIn or Fiverr logo on the card.'},{k:'name',label:'Name'},{k:'role',label:'Role · Company'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…'},
    {k:'text',label:'Recommendation',t:'area',rows:6,full:true},{k:'photo',label:'Photo',t:'image',full:true}]},
  ]},
  {key:'hobbies', label:'Hobbies', desc:'Your photography gallery.', count:'photos', blocks:[
