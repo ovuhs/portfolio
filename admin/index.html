@@ -652,15 +652,16 @@ const GROUPS = [
  ]},
  {key:'recommendations', label:'Recommendations', desc:'LinkedIn endorsements and testimonials.', count:'recommendations', blocks:[
   {path:'recsHead', kind:'object', title:'Section heading', desc:'Shown at the top of the Recommendations page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
-  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:'',source:'linkedin',country:'',rating:''}, fields:[
+  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:'',source:'linkedin',country:'',rating:'',shot:''}, fields:[
    {k:'source',label:'Where is it from?',t:'select',options:[{value:'linkedin',label:'LinkedIn recommendation'},{value:'fiverr',label:'Fiverr review'}],hint:'Shows the LinkedIn or Fiverr logo on the card. Choosing Fiverr shows the Fiverr fields below.'},
    {k:'name',label:'Name',when:'linkedin'},{k:'role',label:'Role · Company',when:'linkedin'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly',when:'linkedin'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…',when:'linkedin'},
    {k:'name',label:'Buyer name',when:'fiverr'},{k:'country',label:'Buyer country',t:'select',options:COUNTRY_OPTIONS,hint:'The flag is shown next to the country.',when:'fiverr'},
    {k:'rating',label:'Star rating',t:'select',options:[{value:'',label:'No stars'},{value:'5',label:'★★★★★  5 stars'},{value:'4',label:'★★★★☆  4 stars'},{value:'3',label:'★★★☆☆  3 stars'},{value:'2',label:'★★☆☆☆  2 stars'},{value:'1',label:'★☆☆☆☆  1 star'}],hint:'Shown in yellow.',when:'fiverr'},
    {k:'relation',label:'Order / gig (optional)',placeholder:'e.g. Power BI dashboard',when:'fiverr'},
    {k:'link',label:'Link to your Fiverr profile (to see the reviews)',placeholder:'https://www.fiverr.com/…',when:'fiverr',full:true},
-   {k:'text',label:'Recommendation',t:'area',rows:6,full:true,when:'linkedin'},{k:'text',label:'Review',t:'area',rows:6,full:true,when:'fiverr'},
-   {k:'photo',label:'Photo',t:'image',full:true}]},
+   {k:'text',label:'Recommendation',t:'area',rows:6,full:true,when:'linkedin'},{k:'text',label:'Review',t:'area',rows:6,full:true,when:'fiverr',hint:'Optional if you add a screenshot below.'},
+   {k:'shot',label:'Screenshot of the review (optional)',t:'image',full:true,when:'fiverr',hint:'Shown inside the card, under the review text. Take it from your Fiverr reviews page.'},
+   {k:'photo',label:'Photo',t:'image',full:true,when:'linkedin'},{k:'photo',label:'Buyer photo (optional)',t:'image',full:true,when:'fiverr',hint:'A small picture shown next to the name. Leave empty to show their initials.'}]},
  ]},
  {key:'hobbies', label:'Hobbies', desc:'Your photography gallery.', count:'photos', blocks:[
   {path:'hobbiesHead', kind:'object', title:'Section heading', fields:[...HEAD,{k:'intro',label:'Intro line',t:'area',rows:2,full:true}]},
