@@ -841,6 +841,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
         <p>The pages you open and what you click (for example a project, the CV download or a contact link), your device type, browser, operating system, screen size, language and time zone, and the site you came from. It does not include your name, email address or IP address.</p>
         <p>A random ID is kept in your browser's local storage so repeat visits can be told apart. I set no cookies of my own.</p>
         <sc-if value="{{ privacy.hasGA }}" hint-placeholder-val="{{ true }}"><p>I also use Google Analytics (with IP anonymisation) for overall traffic numbers. Google sets its own cookies for that.</p></sc-if>
+        <p>Vercel Web Analytics, which sets no cookies, counts page views as well.</p>
         <sc-if value="{{ privacy.hasForm }}" hint-placeholder-val="{{ true }}">
           <h3>The contact form</h3>
           <p>If you send a message, I keep your name, email address and message so I can reply. Ask me and I will delete it.</p>
@@ -1064,7 +1065,15 @@ class Component extends DCLogic {
     setTimeout(()=>this.layoutHero(), 50); setTimeout(()=>this.layoutHero(), 800);
   }
   motionOn(){ const r = typeof matchMedia==='function' && matchMedia('(prefers-reduced-motion: reduce)').matches; return (this.props.motion ?? true) && !r; }
-  boot(){ if(this.booted||!window.PortfolioContent) return; this.booted=true; window.PortfolioContent.fetchRemote && window.PortfolioContent.fetchRemote(); this.initGA(); window.PortfolioTracker?.trackVisit(this.state.page); }
+  boot(){ if(this.booted||!window.PortfolioContent) return; this.booted=true; window.PortfolioContent.fetchRemote && window.PortfolioContent.fetchRemote(); this.initGA(); this.initVA(); window.PortfolioTracker?.trackVisit(this.state.page); }
+  // Vercel Web Analytics (cookie-free page views). Not loaded on localhost or for visitors who opted out in the privacy note.
+  initVA(){
+    if(window.__vaLoaded) return;
+    const h=location.hostname; if(h==='localhost'||h==='127.0.0.1'||h==='[::1]'||/\.localhost$/.test(h)) return;
+    if(window.PortfolioTracker && !window.PortfolioTracker.isCounting()) return;
+    window.__vaLoaded=true; window.va=window.va||function(){ (window.vaq=window.vaq||[]).push(arguments); };
+    const sc=document.createElement('script'); sc.defer=true; sc.src='/_vercel/insights/script.js'; document.head.appendChild(sc);
+  }
   initGA(){
     const id = (this.content()?.site?.gaId||'').trim();
     if(!/^G-[A-Z0-9]{4,20}$/.test(id) || window.__gaLoaded) return;
