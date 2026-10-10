@@ -652,16 +652,20 @@ const GROUPS = [
  ]},
  {key:'recommendations', label:'Recommendations', desc:'LinkedIn endorsements and testimonials.', count:'recommendations', blocks:[
   {path:'recsHead', kind:'object', title:'Section heading', desc:'Shown at the top of the Recommendations page.', fields:[...HEAD,{k:'linkedin',label:'"See all on LinkedIn" link',full:true,placeholder:'https://www.linkedin.com/in/…/details/recommendations/'}]},
-  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:'',source:'linkedin',country:'',rating:'',shot:''}, fields:[
-   {k:'source',label:'Where is it from?',t:'select',options:[{value:'linkedin',label:'LinkedIn recommendation'},{value:'fiverr',label:'Fiverr review'}],hint:'Shows the LinkedIn or Fiverr logo on the card. Choosing Fiverr shows the Fiverr fields below.'},
-   {k:'name',label:'Name',when:'linkedin'},{k:'role',label:'Role · Company',when:'linkedin'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly',when:'linkedin'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…',when:'linkedin'},
-   {k:'name',label:'Buyer name',when:'fiverr'},{k:'country',label:'Buyer country',t:'select',options:COUNTRY_OPTIONS,hint:'The flag is shown next to the country.',when:'fiverr'},
-   {k:'rating',label:'Star rating',t:'select',options:[{value:'',label:'No stars'},{value:'5',label:'★★★★★  5 stars'},{value:'4',label:'★★★★☆  4 stars'},{value:'3',label:'★★★☆☆  3 stars'},{value:'2',label:'★★☆☆☆  2 stars'},{value:'1',label:'★☆☆☆☆  1 star'}],hint:'Shown in yellow.',when:'fiverr'},
-   {k:'relation',label:'Order / gig (optional)',placeholder:'e.g. Power BI dashboard',when:'fiverr'},
-   {k:'link',label:'Link to your Fiverr profile (to see the reviews)',placeholder:'https://www.fiverr.com/…',when:'fiverr',full:true},
-   {k:'text',label:'Recommendation',t:'area',rows:6,full:true,when:'linkedin'},{k:'text',label:'Review',t:'area',rows:6,full:true,when:'fiverr',hint:'Optional if you add a screenshot below.'},
-   {k:'shot',label:'Screenshot of the review (optional)',t:'image',full:true,when:'fiverr',hint:'Shown inside the card, under the review text. Take it from your Fiverr reviews page.'},
-   {k:'photo',label:'Photo',t:'image',full:true,when:'linkedin'},{k:'photo',label:'Buyer photo (optional)',t:'image',full:true,when:'fiverr',hint:'A small picture shown next to the name. Leave empty to show their initials.'}]},
+  {path:'recommendations', kind:'list', noun:'recommendation', title:'LinkedIn recommendations', desc:'Copy each recommendation from LinkedIn and paste it here.', titleKey:'name', subKey:'role', thumbKey:'photo', blank:{name:'',role:'',relation:'',text:'',photo:'',link:''}, fields:[
+   {k:'name',label:'Name'},{k:'role',label:'Role · Company'},{k:'relation',label:'Relationship',placeholder:'e.g. Managed Shuvo directly'},{k:'link',label:'Their LinkedIn profile',placeholder:'https://…'},
+   {k:'text',label:'Recommendation',t:'area',rows:6,full:true},{k:'photo',label:'Photo',t:'image',full:true}]},
+ ]},
+ {key:'reviews', label:'Reviews', desc:'Reviews from your Fiverr clients, on their own page.', count:'reviews', blocks:[
+  {path:'reviewsHead', kind:'object', title:'Section heading', desc:'Shown at the top of the Reviews page.', fields:[...HEAD,{k:'fiverr',label:'"See all on Fiverr" link',full:true,placeholder:'https://www.fiverr.com/your-name',hint:'Your Fiverr profile. Leave empty to hide the button.'}]},
+  {path:'reviews', kind:'list', noun:'review', title:'Fiverr reviews', desc:'Add each review from your Fiverr profile. Add a screenshot to show the review exactly as it appears on Fiverr.', titleKey:'name', subKey:'relation', thumbKey:'photo', blank:{name:'',country:'',rating:'5',relation:'',text:'',shot:'',photo:'',link:''}, fields:[
+   {k:'name',label:'Buyer name'},{k:'country',label:'Buyer country',t:'select',options:COUNTRY_OPTIONS,hint:'The flag is shown next to the country.'},
+   {k:'rating',label:'Star rating',t:'select',options:[{value:'',label:'No stars'},{value:'5',label:'★★★★★  5 stars'},{value:'4',label:'★★★★☆  4 stars'},{value:'3',label:'★★★☆☆  3 stars'},{value:'2',label:'★★☆☆☆  2 stars'},{value:'1',label:'★☆☆☆☆  1 star'}],hint:'Shown in yellow.'},
+   {k:'relation',label:'Order / gig (optional)',placeholder:'e.g. Power BI dashboard'},
+   {k:'link',label:'Link to your Fiverr profile (to see the reviews)',placeholder:'https://www.fiverr.com/…',full:true},
+   {k:'text',label:'Review',t:'area',rows:6,full:true,hint:'Optional if you add a screenshot below.'},
+   {k:'shot',label:'Screenshot of the review (optional)',t:'image',full:true,hint:'Shown inside the card, under the review text. Take it from your Fiverr reviews page.'},
+   {k:'photo',label:'Buyer photo (optional)',t:'image',full:true,hint:'A small picture shown next to the name. Leave empty to show their initials.'}]},
  ]},
  {key:'hobbies', label:'Hobbies', desc:'Your photography gallery.', count:'photos', blocks:[
   {path:'hobbiesHead', kind:'object', title:'Section heading', fields:[...HEAD,{k:'intro',label:'Intro line',t:'area',rows:2,full:true}]},
@@ -743,10 +747,19 @@ const PALETTE=['#22D3EE','#7AA2FF','#9BE7A0','#F2C94C','#C8A2FF','#F59E9E','#A4C
 
 class Component extends DCLogic {
   state = { authed: (()=>{ try{ const PC=window.PortfolioContent; if(PC&&PC.remote) return !!PC.getSession(); return sessionStorage.getItem(AUTH_KEY)==='1'; }catch(e){ return false; } })(), email:'', busy:false, now:Date.now(), pw:'', err:'', group:'analytics', c:null, open:{}, status:'saved', savedAt:null, toast:'', newPw:'', hist:null, histLoading:false, histErr:'', msgs:null, msgsLoading:false, msgsErr:'', analyticsData:null, analyticsLoading:false, analyticsAt:0, range:30, counting:null };
+  // Fiverr reviews used to be saved in the recommendations list. Move them to the Reviews page once, when you are signed in.
+  migrateFiverr(){
+    const PC=window.PortfolioContent, c=this.state.c; if(!c || !PC) return;
+    if(!(PC.remote ? !!PC.getSession() : this.state.authed)) return;
+    if(!(c.recommendations||[]).some(r=>r&&r.source==='fiverr')) return;
+    this.commit(d=>{ const keep=[], move=[]; (d.recommendations||[]).forEach(r=>{ (r&&r.source==='fiverr'?move:keep).push(r); });
+      d.recommendations=keep; d.reviews=(d.reviews||[]).concat(move.map(r=>{ const o={...r}; delete o.source; return o; })); });
+    this.flash('Moved your Fiverr reviews to the new Reviews page');
+  }
   componentDidMount(){
     const init=()=>{ const PC=window.PortfolioContent; if(!PC) return; clearInterval(this.w);
-      if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'})); this.setState({c:PC.load(), status:'live'}); }
-      else this.setState({c:PC.load(), status: PC.hasDraft()?'saved':'published'}); };
+      if(PC.remote){ this.setState({authed:!!PC.getSession()}); PC.fetchRemote().then(c=>this.setState({c, status:'live'}, ()=>this.migrateFiverr())); this.setState({c:PC.load(), status:'live'}); }
+      else this.setState({c:PC.load(), status: PC.hasDraft()?'saved':'published'}, ()=>this.migrateFiverr()); };
     this.lockTick=setInterval(()=>{ if(getLock().until>Date.now()-1500) this.setState({now:Date.now()}); },1000);
     this.w=setInterval(init,40); init();
     this.tick=setInterval(()=>this.forceUpdate(),30000);
@@ -806,7 +819,7 @@ class Component extends DCLogic {
     const k=st.kpis, prev=st.prev;
     const num=x=>Number(x||0).toLocaleString();
     const pct=x=>Math.round(x)+'%';
-    const PAGES={intro:'Intro / Hero',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',hobbies:'Hobbies',contact:'Contact'};
+    const PAGES={intro:'Intro / Hero',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',reviews:'Reviews',hobbies:'Hobbies',contact:'Contact'};
     const rangeName=days===1?'today':days===0?'all time':'the last '+days+' days';
     const prevName=days===1?'yesterday':'the previous '+days+' days';
 
@@ -1003,7 +1016,7 @@ class Component extends DCLogic {
       }
     }catch(err){ msg = PC.remote ? (String(err&&err.message||'Sign-in failed')) : 'Sign-in failed'; }
     if(ok){ setLock({fails:0,until:0}); if(!PC.remote){ try{sessionStorage.setItem(AUTH_KEY,'1');}catch(_){} } this.setState({authed:true,pw:'',busy:false});
-      if(PC.remote) PC.fetchRemote().then(c=>this.setState({c})); return; }
+      if(PC.remote) PC.fetchRemote().then(c=>this.setState({c}, ()=>this.migrateFiverr())); return; }
     const fails=(lk.fails||0)+1; const locked=fails>=MAX_TRIES;
     setLock({fails: locked?0:fails, until: locked?Date.now()+LOCK_MS:0});
     this.setState({busy:false, pw:'', err: locked ? 'Too many attempts.' : msg+' ('+(MAX_TRIES-fails)+' tries left)', now:Date.now()});

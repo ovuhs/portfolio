@@ -495,7 +495,7 @@
 
   function recordTestVisit() {
     var b = ['Chrome', 'Safari', 'Edge', 'Firefox'], o = ['Windows', 'macOS', 'iOS', 'Android'];
-    var pages = ['intro', 'projects', 'skills', 'certifications', 'experience', 'recommendations', 'hobbies', 'contact'];
+    var pages = ['intro', 'projects', 'skills', 'certifications', 'experience', 'recommendations', 'reviews', 'hobbies', 'contact'];
     var tzs = ['Asia/Dhaka', 'Asia/Kolkata', 'Europe/London', 'America/New_York', 'Asia/Dubai', 'Asia/Singapore'];
     var refs = ['Direct', 'linkedin.com', 'google.com', 'fiverr.com'];
     var pick = function(a) { return a[Math.floor(Math.random() * a.length)]; };

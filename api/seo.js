@@ -6,7 +6,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const { ROOT, loadContent, SECTIONS, siteUrlFor } = require('./_content');
+const { ROOT, loadContent, SECTIONS, siteUrlFor, recsOf, reviewsOf } = require('./_content');
 
 /* ---------- small helpers ---------- */
 
@@ -65,7 +65,8 @@ function buildPage(c, site, section) {
   const skills = Array.isArray(c.skills) ? c.skills : [];
   const badges = Array.isArray(c.badges) ? c.badges : [];
   const certs = (Array.isArray(c.certifications) ? c.certifications : []).filter((x) => x && x.title);
-  const recs = (Array.isArray(c.recommendations) ? c.recommendations : []).filter((r) => r && (r.text || r.name));
+  const recs = recsOf(c);
+  const reviews = reviewsOf(c);
   const photos = (Array.isArray(c.photos) ? c.photos : []).filter((x) => x && x.image);
   const education = Array.isArray(c.education) ? c.education : [];
   const links = (Array.isArray(c.links) ? c.links : []).filter((l) => l && safeHref(l.href, site));
@@ -105,6 +106,9 @@ function buildPage(c, site, section) {
     case 'recommendations':
       title = 'Recommendations · ' + name;
       description = recs.length + ' LinkedIn recommendations for ' + name + ' from managers and colleagues' + (recs[0] && recs[0].name ? ', including ' + recs.slice(0, 2).map((r) => r.name).join(' and ') : '') + '.'; break;
+    case 'reviews':
+      title = 'Reviews · ' + name;
+      description = reviews.length + ' client reviews for ' + name + ' from Fiverr' + (reviews[0] && reviews[0].name ? ', including ' + reviews.slice(0, 2).map((r) => r.name).join(' and ') : '') + '.'; break;
     case 'hobbies':
       title = 'Photography · ' + name;
       description = 'Photography by ' + name + ': ' + photos.length + ' photos' + (photoCats.length ? ' (' + photoCats.join(', ') + ')' : '') + '.'; break;
@@ -176,6 +180,17 @@ function buildPage(c, site, section) {
       (href ? ' · <a href="' + esc(href) + '" rel="noopener">LinkedIn profile</a>' : '') + '</footer></blockquote>';
   }).join('');
 
+  const regionName = (() => { try { return new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) { return null; } })();
+  const reviewsHtml = reviews.map((r) => {
+    const cc = String(r.country || '').trim().toUpperCase();
+    let country = ''; if (/^[A-Z]{2}$/.test(cc) && regionName) { try { country = regionName.of(cc) || ''; } catch (e) { country = ''; } }
+    const stars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 0)));
+    const href = safeHref(r.link, site);
+    return '<blockquote>' + (r.text ? '<p>' + esc(r.text) + '</p>' : '') + '<footer>— <strong>' + esc(r.name) + '</strong>' + (country ? ', ' + esc(country) : '') +
+      (stars ? ' · ' + stars + '/5 stars' : '') + (r.relation ? ' (' + esc(r.relation) + ')' : '') + ' · Fiverr review' +
+      (href ? ' · <a href="' + esc(href) + '" rel="noopener">View on Fiverr</a>' : '') + '</footer></blockquote>';
+  }).join('');
+
   const hobbiesHtml = (c.hobbiesHead && c.hobbiesHead.intro ? '<p>' + esc(c.hobbiesHead.intro) + '</p>' : '') + photos.map((x) => {
     const u = absUrl(x.image, site + '/');
     return u ? '<figure><img src="' + esc(u) + '" alt="' + esc(x.title || (name + ' photo')) + '" loading="lazy" width="640">' +
@@ -192,6 +207,7 @@ function buildPage(c, site, section) {
     certifications: () => block('certifications', 'Certifications', certsHtml, head(c.certsHead)),
     experience: () => block('experience', 'Experience', jobsHtml, head(c.expHead)),
     recommendations: () => block('recommendations', 'Recommendations', recsHtml, head(c.recsHead)),
+    reviews: () => block('reviews', 'Reviews', reviewsHtml, head(c.reviewsHead)),
     hobbies: () => block('hobbies', 'Photography', hobbiesHtml, head(c.hobbiesHead)),
     contact: () => block('contact', 'Contact', contactHtml, '')
   };

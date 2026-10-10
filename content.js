@@ -721,6 +721,13 @@
   "italic": "say.",
   "linkedin": "https://www.linkedin.com/in/shuvoo/details/recommendations/"
  },
+ "reviewsHead": {
+  "label": "Fiverr reviews",
+  "title": "What clients",
+  "italic": "say.",
+  "fiverr": ""
+ },
+ "reviews": [],
  "recommendations": [
   {
    "name": "Recommender name",

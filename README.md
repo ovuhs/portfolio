@@ -5,7 +5,7 @@ Personal portfolio website for Shuvo Ibn Alam, Senior Data Analyst.
 ## Features
 
 - **Live Site**: `index.html` (interactive portfolio with dark/light mode, project showreel, animations)
-- **Real addresses**: each section has its own URL (`/projects`, `/skills`, `/certifications`, `/experience`, `/recommendations`, `/hobbies`, `/contact`). Old `/#projects` style links still work.
+- **Real addresses**: each section has its own URL (`/projects`, `/skills`, `/certifications`, `/experience`, `/recommendations`, `/reviews`, `/hobbies`, `/contact`). Old `/#projects` style links still work.
 - **Search and link previews**: crawlers that do not run JavaScript (LinkedIn, WhatsApp, Bing, AI assistants) receive a complete text version of each page (`api/seo.js`, routed by `middleware.js`). `/sitemap.xml` is generated from the live content (`api/sitemap.js`).
 - **Admin Panel**: `/admin` (in-browser content editor with Supabase integration). It also holds the **Messages** inbox (contact form), **Analytics**, and **Settings -> Version history** (automatic copies, restore points, one-click restore).
 - **Contact form**: visitors can message you from `/contact`; messages are saved in Supabase and read in the admin.

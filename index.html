@@ -67,8 +67,8 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 @keyframes radar{0%{box-shadow:0 0 0 0 rgba(34,211,238,.7)}70%{box-shadow:0 0 0 16px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
 @keyframes streamLine{0%{background-position:0 0}100%{background-position:0 400px}}
 @keyframes beamTravel{0%{top:0;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
-#recommendations,#recommendations *{scrollbar-width:none!important;-ms-overflow-style:none!important}
-#recommendations *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+#recommendations,#recommendations *,#reviews,#reviews *{scrollbar-width:none!important;-ms-overflow-style:none!important}
+#recommendations *::-webkit-scrollbar,#reviews *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
 .no-scrollbar{scrollbar-width:none!important;-ms-overflow-style:none!important}
 .no-scrollbar::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}html{scroll-behavior:auto}}
@@ -115,8 +115,10 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .rec-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#22D3EE,#7AA2FF,#C8A2FF,#22D3EE);animation:ringSpin 6s linear infinite}
 .rec-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid rgba(var(--tint),.18);font:500 12px 'IBM Plex Mono',monospace;color:var(--fg2);transition:all .25s}
 .rec-chip:hover{border-color:#22D3EE;color:var(--accent-ink)}
-.rec-shot{display:block;align-self:flex-start;max-width:100%;max-height:min(440px,48vh);width:auto;height:auto;margin-top:clamp(16px,2.4vh,26px);object-fit:contain;border-radius:14px;background:#fff;border:1px solid rgba(var(--tint),.16);box-shadow:0 14px 34px -18px rgba(0,0,0,.45)}
-@media (max-width:979px){.rec-shot{max-height:340px}}
+.rec-shotwrap{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;padding:clamp(14px,2.4vh,26px) 0}
+.rec-shot{display:block;width:min(100%,540px);max-width:100%;height:auto;max-height:min(520px,56vh);margin:0;object-fit:contain;border-radius:14px;background:#fff;border:1px solid rgba(var(--tint),.16);box-shadow:0 14px 34px -18px rgba(0,0,0,.45)}
+@media (max-width:979px){.rec-shot{max-height:380px}}
+.rec-fv{border-color:rgba(29,191,115,.4)!important;background:rgba(29,191,115,.1)!important}.rec-fv:hover{border-color:#1DBF73!important;background:rgba(29,191,115,.2)!important}
 .rec-flag{width:20px;height:15px;object-fit:cover;border-radius:2px;flex:none;box-shadow:0 0 0 1px rgba(var(--tint),.18)}.rec-stars{margin-top:6px;font-size:16px;line-height:1;letter-spacing:2px}.rec-stars b{font-weight:400;color:#FFB33E}.rec-stars i{font-style:normal;color:rgba(var(--tint),.28)}
 .src-ic{display:inline-block;width:18px;height:18px;flex:none;border-radius:4px;background:center/contain no-repeat}.src-ic[data-src=linkedin]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view%42ox='0 0 24 24'%3E%3Crect x='3' y='3' width='18' height='18' fill='%23fff'/%3E%3Cpath fill='%230A66C2' d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z'/%3E%3C/svg%3E")}.src-ic[data-src=fiverr]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view%42ox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4.5' fill='%231DBF73'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.6 18V9.9c0-1.9 1.4-3.5 3.5-3.5h.9'/%3E%3Cpath d='M5.8 11.9h5.6'/%3E%3Cpath d='M16.2 11.9V18'/%3E%3C/g%3E%3Ccircle cx='16.2' cy='7.6' r='1.7' fill='%23fff'/%3E%3C/svg%3E")}
 .rec-li{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:var(--accent-ink);font-weight:600;font-size:13px;transition:all .25s}
@@ -152,6 +154,8 @@ a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-ink)}
 .m-pager{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--tint),.1);color:var(--fg);font-family:inherit;cursor:pointer;min-width:0}
 html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 @media (max-width:1100px){[data-hero-glass]{display:none!important}}
+/* eight tabs need less spacing on narrower desktops so they all fit beside the buttons */
+@media (min-width:1100px) and (max-width:1339px){[data-nav-btn]{padding:10px 11px!important;font-size:13.5px!important}}
 @media (min-width:1100px) and (min-height:560px){[data-intro]{height:calc(100svh - var(--navh,70px));min-height:0!important;overflow:hidden}}
 @media (max-width:760px){
   [data-topnav]{padding:12px 16px!important}
@@ -576,13 +580,13 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 </section>
 </sc-if>
 
-<sc-if value="{{ pg.recommendations }}" hint-placeholder-val="{{ false }}">
-<!-- RECOMMENDATIONS (SPOTLIGHT STAGE + PEOPLE RAIL) -->
-<section id="recommendations" class="no-scrollbar" style="position:relative;min-height:calc(100svh - 70px);box-sizing:border-box;display:flex;flex-direction:column;gap:clamp(20px,3vh,32px);padding:clamp(24px,3vw,40px) clamp(20px,4vw,64px) clamp(28px,5vh,56px);max-width:1380px;margin:0 auto">
+<sc-if value="{{ pg.recsOrRevs }}" hint-placeholder-val="{{ false }}">
+<!-- RECOMMENDATIONS and REVIEWS (SPOTLIGHT STAGE + PEOPLE RAIL) -->
+<section id="{{ recSecId }}" class="no-scrollbar" style="position:relative;min-height:calc(100svh - 70px);box-sizing:border-box;display:flex;flex-direction:column;gap:clamp(20px,3vh,32px);padding:clamp(24px,3vw,40px) clamp(20px,4vw,64px) clamp(28px,5vh,56px);max-width:1380px;margin:0 auto">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
     <div>
-      <sc-if value="{{ hd.recsHead.showLabel }}" hint-placeholder-val="{{ true }}"><div data-reveal="0" style="font:500 12px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ c.recsHead.label }}</div></sc-if>
-      <sc-if value="{{ hd.recsHead.showTitle }}" hint-placeholder-val="{{ true }}"><h2 data-reveal="60" data-hs="{{ hd.recsHead.size }}" style="margin:{{ hd.recsHead.mt }} 0 0;font-weight:700;font-size:calc(clamp(36px,5vw,72px) * {{ hd.recsHead.fs }});line-height:.95;letter-spacing:-.04em">{{ c.recsHead.title }} <span style="font-weight:300;font-style:italic;color:var(--muted)">{{ c.recsHead.italic }}</span></h2></sc-if>
+      <sc-if value="{{ rhd.showLabel }}" hint-placeholder-val="{{ true }}"><div data-reveal="0" style="font:500 12px 'IBM Plex Mono',monospace;color:var(--accent-ink);letter-spacing:.08em;text-transform:uppercase">{{ rh.label }}</div></sc-if>
+      <sc-if value="{{ rhd.showTitle }}" hint-placeholder-val="{{ true }}"><h2 data-reveal="60" data-hs="{{ rhd.size }}" style="margin:{{ rhd.mt }} 0 0;font-weight:700;font-size:calc(clamp(36px,5vw,72px) * {{ rhd.fs }});line-height:.95;letter-spacing:-.04em">{{ rh.title }} <span style="font-weight:300;font-style:italic;color:var(--muted)">{{ rh.italic }}</span></h2></sc-if>
     </div>
     <div data-reveal="100" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <sc-if value="{{ hasRecs }}" hint-placeholder-val="{{ true }}">
@@ -598,8 +602,14 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
           <div style="line-height:1.2"><div style="font-weight:700;font-size:18px;letter-spacing:-.02em">{{ recCount }}</div><div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:var(--muted);text-transform:uppercase">{{ recCountLabel }}</div></div>
         </div>
       </sc-if>
+      <sc-if value="{{ hasRevLink }}" hint-placeholder-val="{{ false }}">
+        <a href="{{ rh.fiverr }}" target="_blank" rel="noopener noreferrer" class="rec-li rec-fv">
+          <span class="src-ic" data-src="fiverr" aria-hidden="true"></span>
+          See all on Fiverr ↗
+        </a>
+      </sc-if>
       <sc-if value="{{ hasRecsLink }}" hint-placeholder-val="{{ false }}">
-        <a href="{{ c.recsHead.linkedin }}" target="_blank" rel="noopener noreferrer" class="rec-li">
+        <a href="{{ rh.linkedin }}" target="_blank" rel="noopener noreferrer" class="rec-li">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z"/></svg>
           See all on LinkedIn ↗
         </a>
@@ -608,7 +618,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
   </div>
 
   <sc-if value="{{ noRecs }}" hint-placeholder-val="{{ false }}">
-    <div style="flex:1;display:grid;place-items:center;padding:48px 24px;border-radius:24px;border:1px dashed rgba(var(--tint),.16);text-align:center;color:var(--muted);font-size:16px">Recommendations coming soon.</div>
+    <div style="flex:1;display:grid;place-items:center;padding:48px 24px;border-radius:24px;border:1px dashed rgba(var(--tint),.16);text-align:center;color:var(--muted);font-size:16px">{{ recEmptyText }}</div>
   </sc-if>
 
   <sc-if value="{{ hasRecs }}" hint-placeholder-val="{{ true }}">
@@ -635,10 +645,10 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 
       <blockquote data-rec-anim="1" style="position:relative;z-index:1;margin:clamp(20px,3.5vh,40px) 0 0;font-size:{{ recQuoteSize }};line-height:1.5;font-weight:400;color:var(--fg);letter-spacing:-.015em;text-wrap:pretty;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:{{ recClamp }};overflow:hidden">{{ spotRec.text }}</blockquote>
       <sc-if value="{{ spotRec.isLong }}" hint-placeholder-val="{{ false }}">
-        <button data-rec-anim="1" onClick="{{ openRec }}" class="rec-more">Read full recommendation <span>→</span></button>
+        <button data-rec-anim="1" onClick="{{ openRec }}" class="rec-more">{{ recReadMore }} <span>→</span></button>
       </sc-if>
       <sc-if value="{{ spotRec.hasShot }}" hint-placeholder-val="{{ false }}">
-        <img data-rec-anim="1" class="rec-shot" loading="lazy" decoding="async" data-src="{{ spotRec.shot }}" data-w="640,960,1600" data-sizes="(min-width:980px) 60vw, 92vw" alt="Screenshot of the review from {{ spotRec.name }}">
+        <div class="rec-shotwrap"><img data-rec-anim="1" class="rec-shot" loading="lazy" decoding="async" data-src="{{ spotRec.shot }}" data-w="640,960,1600" data-sizes="(min-width:980px) 60vw, 92vw" alt="Screenshot of the review from {{ spotRec.name }}"></div>
       </sc-if>
 
       <div data-rec-anim="1" style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:auto;padding-top:clamp(20px,3vh,32px)">
@@ -667,7 +677,7 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
     <!-- PEOPLE RAIL -->
     <div class="rec-rail" style="contain:{{ recRailContain }}">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px 12px">
-        <span style="font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--fg3);text-transform:uppercase">Recommended by</span>
+        <span style="font:600 10.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--fg3);text-transform:uppercase">{{ recRailLabel }}</span>
         <span style="font:500 10.5px 'IBM Plex Mono',monospace;color:var(--muted)">{{ recAutoLabel }}</span>
       </div>
       <div data-rec-list="1" class="no-scrollbar" style="position:relative;flex:1;min-height:0;display:flex;flex-direction:{{ recListDir }};gap:8px;overflow:auto;-webkit-mask-image:{{ recMask }};mask-image:{{ recMask }}">
@@ -956,13 +966,13 @@ html,body{-webkit-tap-highlight-color:transparent;overflow-x:clip}
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animation&quot;},&quot;cursorGlow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Animation&quot;}}">
 const CATC = {'Power BI':'#F2C94C','Excel':'#7AA2FF','Web apps':'#22D3EE','Android':'#A4C8FF'};
 const PAL = ['#F2C94C','#7AA2FF','#22D3EE','#A4C8FF','#F59E9E','#9BE7A0','#C8A2FF'];
-const PAGES = ['intro','projects','skills','certifications','experience','recommendations','hobbies','contact'];
-const LABELS = {intro:'Intro',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',hobbies:'Hobbies',contact:'Contact'};
-const ALIAS = {work:'projects', portals:'projects', certs:'certifications', recs:'recommendations', testimonials:'recommendations', endorsements:'recommendations', gallery:'hobbies', photos:'hobbies'};
+const PAGES = ['intro','projects','skills','certifications','experience','recommendations','reviews','hobbies','contact'];
+const LABELS = {intro:'Intro',projects:'Projects',skills:'Skills',certifications:'Certifications',experience:'Experience',recommendations:'Recommendations',reviews:'Reviews',hobbies:'Hobbies',contact:'Contact'};
+const ALIAS = {work:'projects', portals:'projects', certs:'certifications', recs:'recommendations', testimonials:'recommendations', endorsements:'recommendations', fiverr:'reviews', gallery:'hobbies', photos:'hobbies'};
 // Each section has a real address (/projects, /skills ...). Old #hash links still work and are rewritten to the path.
 const pageFromLocation = () => { let h=(location.pathname||'/').replace(/^\/+|\/+$/g,'').toLowerCase(); if(!h) h=(location.hash||'').slice(1).toLowerCase(); h=ALIAS[h]||h; return PAGES.includes(h)?h:'intro'; };
 const pathFor = page => page==='intro' ? '/' : '/'+page;
-const EMPTY = {hobbiesHead:{},photos:[],certsHead:{},certifications:[],recsHead:{},recommendations:[],site:{},hero:{},quotes:[],stats:[],marquee:[],work:{},projects:[],portals:{},modules:[],shots:[],skillsHead:{},skills:[],badges:[],expHead:{},jobs:[],education:[],contact:{},links:[]};
+const EMPTY = {hobbiesHead:{},photos:[],certsHead:{},certifications:[],recsHead:{},recommendations:[],reviewsHead:{},reviews:[],site:{},hero:{},quotes:[],stats:[],marquee:[],work:{},projects:[],portals:{},modules:[],shots:[],skillsHead:{},skills:[],badges:[],expHead:{},jobs:[],education:[],contact:{},links:[]};
 const toArr = v => Array.isArray(v) ? v : String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
 const toLines = v => Array.isArray(v) ? v : String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const pad2 = n => String(n).padStart(2,'0');
@@ -972,6 +982,10 @@ const spanOf = dates => { const [a,b='']=String(dates||'').split(/\s*[\u2014\u20
 const fmtDur = mo => { const y=Math.floor(mo/12), m=mo%12; return [y?y+(y>1?' yrs':' yr'):'', m?m+(m>1?' mos':' mo'):''].filter(Boolean).join(' ') || '1 mo'; };
 const MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const REC_MS = 8000;
+const recSplit = C => { const all=(C.recommendations||[]).filter(r=>r && (r.text||r.name));
+  return { recs: all.filter(r=>r.source!=='fiverr'),
+           reviews: (C.reviews||[]).filter(r=>r && (r.text||r.name||r.shot)).concat(all.filter(r=>r.source==='fiverr')).map(r=>({...r, source:'fiverr'})) }; };
+const recListFor = (C, page) => page==='reviews' ? recSplit(C).reviews : recSplit(C).recs;
 // The image service exists on the Vercel deployment only (not on localhost, unless forced for testing with localStorage shuvo_opt=1).
 const imgOptimizerOn = () => { try{ if(localStorage.getItem('shuvo_opt')==='1') return true; }catch(_){} return location.protocol==='https:' && !/^(localhost|127\.|\[::1\])/.test(location.hostname); };
 // A clip is either a direct video file or a link to a known player we can embed.
@@ -1173,7 +1187,7 @@ class Component extends DCLogic {
   }
   phStep(d){ const L=this._phList||[]; if(!L.length) return; const k=Math.max(0,L.indexOf(this.state.ph)); this.setState({ph: L[(k+d+L.length)%L.length]}); }
   certStep(d){ const L=this._certImgs||[]; if(!L.length) return; const k=L.indexOf(this.state.cert); this.setState({cert: L[(k+d+L.length)%L.length]}); }
-  recList(){ return (this.content()?.recommendations||[]).filter(r=>r&&(r.text||r.name)); }
+  recList(){ return recListFor(this.content()||{}, this.state.page); }
   recStep(d, inModal){
     const n = this.recList().length; if(!n) return;
     const cur = Math.max(0, this.state.recIdx) % n;
@@ -1182,7 +1196,7 @@ class Component extends DCLogic {
   setRec(i, inModal){
     const L = this.recList(); if(!L.length) return;
     this.setState(inModal ? {recIdx:i, recOpen:i} : {recIdx:i}, ()=>{ this.recFx(); this.recKick(); this.scrollRecThumb(i); });
-    window.PortfolioTracker?.trackEvent('recommendation_view', 'Viewed recommendation: ' + (L[i]?.name || ('#' + (i+1))));
+    window.PortfolioTracker?.trackEvent('recommendation_view', (this.state.page==='reviews' ? 'Viewed review: ' : 'Viewed recommendation: ') + (L[i]?.name || ('#' + (i+1))));
   }
   openRec(){ this.setState({recOpen: this.state.recIdx}, ()=>this.recKick()); }
   closeRec(){ this.setState({recOpen:-1}, ()=>this.recKick()); }
@@ -1197,7 +1211,7 @@ class Component extends DCLogic {
   recKick(){
     this.recBarAnim?.cancel(); this.recBarAnim = null;
     const bar = this.recBarRef?.current;
-    if(!bar || this.state.page!=='recommendations') return;
+    if(!bar || (this.state.page!=='recommendations' && this.state.page!=='reviews')) return;
     if(!this.motionOn() || this.recList().length<2){ bar.style.transform='scaleX(0)'; return; }
     const a = this.recBarAnim = bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}], {duration:REC_MS, easing:'linear', fill:'forwards'});
     if(this.recHover || this.state.recOpen>=0) a.pause();
@@ -1268,13 +1282,14 @@ class Component extends DCLogic {
     this.setTitle(page);
     window.PortfolioTracker?.trackPage(page);
     if(window.gtag && window.__gaLoaded) window.gtag('event','page_view',{page_title:document.title, page_location:location.href});
-    if(!this.motionOn()){ window.scrollTo(0,0); this.setState({page}, ()=>{ this.measureNav(); if(page==='intro') setTimeout(()=>this.layoutHero(),30); }); return; }
+    const recReset = (page==='reviews' || this.state.page==='reviews') ? {recIdx:0, recOpen:-1} : {};
+    if(!this.motionOn()){ window.scrollTo(0,0); this.setState({page, ...recReset}, ()=>{ this.measureNav(); if(page==='intro') setTimeout(()=>this.layoutHero(),30); }); return; }
     this.switching=true;
     const el=this.mainRef.current;
     const out = el?.animate([{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:'translateY(-18px) scale(.985)',filter:'blur(8px)'}],{duration:320,easing:'cubic-bezier(.6,0,.8,.4)',fill:'forwards'});
     setTimeout(()=>{
       window.scrollTo({top:0,behavior:'instant'});
-      this.setState({page}, ()=>requestAnimationFrame(()=>{
+      this.setState({page, ...recReset}, ()=>requestAnimationFrame(()=>{
         out?.cancel(); this.measureNav();
         if(page==='intro'){ setTimeout(()=>this.layoutHero(),30); setTimeout(()=>this.layoutHero(),400); }
         el?.animate([{opacity:0,transform:'translateY(28px) scale(.99)',filter:'blur(8px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:620,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});
@@ -1407,7 +1422,8 @@ class Component extends DCLogic {
         ...op.imgs.map((src,k)=>({src, has:true, none:false, isVideo:false, isEmbed:false, alt:op.title+' screenshot '+(k+1)}))
       ] : [{has:false, none:true, isVideo:false, isEmbed:false}],
       dots: [...op.clipList, ...op.imgs].map((_,k)=>({n:k+1, w:k===si?'22px':'6px', bg:k===si?'#22D3EE':'rgba(var(--tint),.35)', go:()=>this.slide(0,k)}))} : {tags:[], slides:[], dots:[], blocks:[]};
-    const recsAll = (C.recommendations||[]).filter(r=>r && (r.text||r.name));
+    const recIsRev = this.state.page==='reviews';
+    const recsAll = recListFor(C, this.state.page);
     const recCount = recsAll.length;
     const recIdx = recCount ? (Math.max(0, this.state.recIdx) % recCount) : 0;
     const spotRecRaw = recsAll[recIdx] || null;
@@ -1456,7 +1472,7 @@ class Component extends DCLogic {
     const HS = {xs:.55, s:.75, m:1, l:1.2, xl:1.4};
     const headOf = h => { h = h || {}; const size = HS[h.headSize] ? h.headSize : 'm', show = h.headShow || 'all';
       return {size, fs: HS[size], showLabel: !!h.label && (show==='all' || show==='label'), showTitle: show==='all' || show==='title', mt: (!!h.label && show==='all') ? '14px' : '0'}; };
-    const hd = Object.fromEntries(['work','skillsHead','certsHead','expHead','recsHead','hobbiesHead','contact'].map(k=>[k, headOf(C[k])]));
+    const hd = Object.fromEntries(['work','skillsHead','certsHead','expHead','recsHead','reviewsHead','hobbiesHead','contact'].map(k=>[k, headOf(C[k])]));
     return {
       c: C, hd,
       hasHobbyIntro: !!C.hobbiesHead.intro, noPhotos: phAll.length===0, hasPhotoCats: phCats.length>1,
@@ -1474,8 +1490,10 @@ class Component extends DCLogic {
       sheetItems: PAGES.map((k,i)=>({label:LABELS[k], num:pad2(i+1), delay:(i*35)+'ms', arrowOp:this.state.page===k?1:.35, fg:this.state.page===k?'var(--accent-ink)':'var(--fg)', go:e=>this.go(k,e)})),
       brandName: C.hero.brand || 'Shuvo Ibn Alam', brandInitials: (C.hero.brand || 'Shuvo Ibn Alam').split(/\s+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join(''), pageLabel: LABELS[this.state.page],
       showPager: phone, pagerPrev: pagerOf(-1), pagerNext: pagerOf(1),
-      hasRecs: recCount > 0, noRecs: recCount === 0, hasRecsLink: !!C.recsHead.linkedin,
-      recCount, recCountLabel: recCount === 1 ? 'Recommendation' : 'Recommendations',
+      hasRecs: recCount > 0, noRecs: recCount === 0, hasRecsLink: !recIsRev && !!(C.recsHead||{}).linkedin, hasRevLink: recIsRev && !!(C.reviewsHead||{}).fiverr,
+      rh: (recIsRev ? C.reviewsHead : C.recsHead) || {}, rhd: recIsRev ? hd.reviewsHead : hd.recsHead, recSecId: recIsRev ? 'reviews' : 'recommendations',
+      recEmptyText: recIsRev ? 'Reviews coming soon.' : 'Recommendations coming soon.', recReadMore: recIsRev ? 'Read full review' : 'Read full recommendation', recRailLabel: recIsRev ? 'Reviewed by' : 'Recommended by',
+      recCount, recCountLabel: recIsRev ? (recCount === 1 ? 'Review' : 'Reviews') : (recCount === 1 ? 'Recommendation' : 'Recommendations'),
       recFaces: recsAll.slice(0, 4).map(recV),
       spotRec, spotRecNum: pad2(recIdx + 1), spotRecTotal: pad2(Math.max(1, recCount)),
       recQuoteSize: recWide ? (spotLen < 220 ? 'clamp(22px,2.5vw,34px)' : spotLen < 420 ? 'clamp(19px,2vw,27px)' : 'clamp(17px,1.6vw,22px)') : (spotLen < 220 ? '21px' : spotLen < 420 ? '18px' : '16.5px'),
@@ -1495,8 +1513,8 @@ class Component extends DCLogic {
       recThumbs, recBarRef: this.recBarRef,
       progressRef:this.pr, glowRef:this.gl,
       modes: [['auto','Auto (sunrise / sunset)'],['light','Light mode'],['dark','Dark mode']].map(([m,title])=>({title, isAuto:m==='auto', isLight:m==='light', isDark:m==='dark', bg:this.state.mode===m?'#22D3EE':'transparent', fg:this.state.mode===m?'#0A0F1E':'var(--fg2)', set:e=>this.setMode(m,e)})), navRef:this.navRef, mainRef:this.mainRef,
-      pg: Object.fromEntries(PAGES.map(k=>[k, this.state.page===k])),
-      navItems: [['intro','Intro'],['projects','Projects'],['skills','Skills'],['certifications','Certifications'],['experience','Experience'],['recommendations','Recommendations'],['hobbies','Hobbies']].map(([key,label],k)=>({key,label,fg:this.state.page===key?'#0A0F1E':'var(--fg2)',go:e=>this.go(key,e)})),
+      pg: {...Object.fromEntries(PAGES.map(k=>[k, this.state.page===k])), recsOrRevs: this.state.page==='recommendations' || this.state.page==='reviews'},
+      navItems: [['intro','Intro'],['projects','Projects'],['skills','Skills'],['certifications','Certifications'],['experience','Experience'],['recommendations','Recommendations'],['reviews','Reviews'],['hobbies','Hobbies']].map(([key,label],k)=>({key,label,fg:this.state.page===key?'#0A0F1E':'var(--fg2)',go:e=>this.go(key,e)})),
       indLeft:(this.state.ind?.l ?? 5)+'px', indWidth:(this.state.ind?.w ?? 0)+'px', indOpacity:this.state.ind?1:0,
       privacy:(()=>{ const T=window.PortfolioTracker, counting=!T||T.isCounting(), em=(C.contact&&C.contact.email)||'';
         return { show:this.state.priv, open:()=>this.setState({priv:true}), close:()=>this.setState({priv:false}),

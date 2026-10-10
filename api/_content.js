@@ -48,13 +48,20 @@ async function loadContent() {
 
 const arr = (v) => Array.isArray(v) ? v : [];
 
+// LinkedIn recommendations and Fiverr reviews live on separate pages. Fiverr entries that were saved in the
+// recommendations list before the Reviews page existed still count as reviews.
+const recsOf = (c) => arr(c.recommendations).filter((r) => r && (r.text || r.name) && r.source !== 'fiverr');
+const reviewsOf = (c) => arr(c.reviews).filter((r) => r && (r.text || r.name || r.shot))
+  .concat(arr(c.recommendations).filter((r) => r && (r.text || r.name) && r.source === 'fiverr'));
+
 // The pages that have their own address. "has" says whether the section currently has anything to show.
 const SECTIONS = [
   { slug: 'projects', label: 'Projects', has: (c) => arr(c.projects).some((p) => p && p.title) },
   { slug: 'skills', label: 'Skills', has: (c) => arr(c.skills).length > 0 || arr(c.badges).length > 0 },
   { slug: 'certifications', label: 'Certifications', has: (c) => arr(c.certifications).some((x) => x && x.title) },
   { slug: 'experience', label: 'Experience', has: (c) => arr(c.jobs).length > 0 || arr(c.education).length > 0 },
-  { slug: 'recommendations', label: 'Recommendations', has: (c) => arr(c.recommendations).some((r) => r && (r.text || r.name)) },
+  { slug: 'recommendations', label: 'Recommendations', has: (c) => recsOf(c).length > 0 },
+  { slug: 'reviews', label: 'Reviews', has: (c) => reviewsOf(c).length > 0 },
   { slug: 'hobbies', label: 'Hobbies', has: (c) => arr(c.photos).some((x) => x && x.image) },
   { slug: 'contact', label: 'Contact', has: () => true }
 ];
@@ -65,4 +72,4 @@ function siteUrlFor(req) {
   return (process.env.SITE_URL || (host ? 'https://' + host : 'https://shuvoia.vercel.app')).replace(/\/$/, '');
 }
 
-module.exports = { ROOT, loadContent, SECTIONS, SECTION_SLUGS, siteUrlFor };
+module.exports = { ROOT, loadContent, SECTIONS, SECTION_SLUGS, siteUrlFor, recsOf, reviewsOf };

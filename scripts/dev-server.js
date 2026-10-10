@@ -13,7 +13,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT) || 5173;
-const SECTIONS = ['projects', 'skills', 'certifications', 'experience', 'recommendations', 'hobbies', 'contact'];
+const SECTIONS = ['projects', 'skills', 'certifications', 'experience', 'recommendations', 'reviews', 'hobbies', 'contact'];
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8', '.mp4': 'video/mp4', '.woff2': 'font/woff2' };
 
 // One source of truth for which user agents count as crawlers: the regex in middleware.js.

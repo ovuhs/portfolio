@@ -21,7 +21,7 @@
       "destination": "/api/sitemap"
     },
     {
-      "source": "/(projects|skills|certifications|experience|recommendations|hobbies|contact)",
+      "source": "/(projects|skills|certifications|experience|recommendations|reviews|hobbies|contact)",
       "destination": "/"
     }
   ],
