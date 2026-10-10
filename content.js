@@ -716,13 +716,13 @@
   }
  ],
  "recsHead": {
-  "label": "LinkedIn recommendations",
+  "label": "Recommendations on LinkedIn",
   "title": "What people",
   "italic": "say.",
   "linkedin": "https://www.linkedin.com/in/shuvoo/details/recommendations/"
  },
  "reviewsHead": {
-  "label": "Fiverr reviews",
+  "label": "Reviews on Fiverr",
   "title": "What clients",
   "italic": "say.",
   "fiverr": ""
