@@ -11,3 +11,6 @@ desktop.ini
 
 # Local tool settings
 .claude/
+
+# Dependencies
+node_modules/
